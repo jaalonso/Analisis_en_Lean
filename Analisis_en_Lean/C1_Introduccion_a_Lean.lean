@@ -30,6 +30,10 @@
 -- El archivo concluye con un ejercicio integrador (§ 8) que combina la
 -- instanciación de existenciales, la reescritura condicional y la
 -- aritmética básica para resolver un problema más complejo.
+--
+-- Los ejercicios de esta relación son una adaptación del tema 1 del
+-- curso "Introduction to formal real analysis" de Alex Kontorovich que
+-- se encuentra en https://youtu.be/TN51-1RRenY
 
 import Mathlib.Tactic
 
