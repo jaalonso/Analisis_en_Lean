@@ -1,0 +1,10 @@
+#+TITLE: Análisis matemático en Lean 4
+
+Este repositorio contiene soluciones de los ejercicios del curso
+[[https://alexkontorovich.github.io/2025F311H/][Introduction to real analysis]] de [[https://math.rutgers.edu/~alexk][Alex Kontorovich]] en la [[https://es.wikipedia.org/wiki/Universidad_Rutgers][Universidad
+Rutgers]].
+
+De cada uno de los ejercicios se muestran distintas soluciones que
+varían en su grado de automatización o en su carácter declarativo.
+
++ [[./Analisis_en_Lean/C1_Introduccion_a_Lean.lean][1: Introducción a Lean]].
