@@ -1,1 +1,3 @@
-import AnalisisEnLean4.Basic
+import Analisis_en_Lean.C1_Introduccion_a_Lean
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Analisis_en_Lean.C3_Convergencia_de_sucesiones

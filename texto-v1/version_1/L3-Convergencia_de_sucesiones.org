@@ -1,0 +1,179 @@
+#+TITLE: Cap. 3: Convergencia de sucesiones
+#+OPTIONS: toc:t num:t html:inline-images html-preamble:nil html-postamble:nil html-style:nil
+#+LATEX_CLASS: book-noparts
+#+LATEX_CLASS_OPTIONS: [a4paper,12pt,twoside]
+#+LATEX_HEADER: \usepackage{amsmath, amsthm}
+#+LATEX_HEADER: \usepackage[spanish]{babel}
+#+LATEX_HEADER: \usepackage{a4wide}
+#
+#+LATEX_HEADER: \theoremstyle{teorema}
+#+LATEX_HEADER: \newtheorem{teorema}{Teorema}[section]
+#+LATEX_HEADER: \newtheorem{lema}[teorema]{Lema}
+#+LATEX_HEADER: \newtheorem{corolario}[teorema]{Corolario}
+#+LATEX_HEADER: \newtheorem{proposicion}[teorema]{Proposición}
+#+LATEX_HEADER: \newtheorem{definicion}[teorema]{Definición}
+#+LATEX_HEADER: \theoremstyle{remark}
+#+LATEX_HEADER: \newtheorem{nota}{Nota}[section]
+#+LATEX_HEADER: \newtheorem{ejemplo}[nota]{Ejemplo}
+#
+#+LATEX_HEADER: \newenvironment{demostracion}
+#+LATEX_HEADER:   {\noindent {\bf Demostración:}}
+#+LATEX_HEADER:   {\newline\mbox{ } \hfill $\square$}
+
+* Más sobre sucesiones
+
+En la Lección 2, aprendimos la definición de una sucesión $a :
+\mathbb{N} \to \mathbb{R}$ que converge a un límite $L$: para cualquier
+tolerancia $\epsilon > 0$, existe un momento $N$, de modo que, para
+cualquier punto posterior a ese momento, $n \ge N$, estamos dentro de la
+tolerancia, $|a_n - L| < \epsilon$.
+
+También aprendimos a hacer algo completamente trivial con ella:
+demostrar que la sucesión constante converge, siendo esa constante su
+límite. Vamos a subir un nivel, ¿os parece?
+
+* Nivel 1: La propiedad arquimediana
+
+La llamada propiedad arquimediana (que creo que se debe originalmente a
+Eudoxo y aparece ya en el Libro V de los /Elementos/ de Euclides) es una
+propiedad fundamental de los números reales que plasma la noción
+intuitiva de que no existen números reales positivos «infinitamente
+grandes» o «infinitamente pequeños».
+
+Más concretamente, establece que no importa lo pequeño que sea $\epsilon
+> 0$, siempre existe un número natural $N$ tal que $1/N$ es aún más
+pequeño que $\epsilon$ (y, por supuesto, positivo). De forma
+equivalente, podemos enunciarlo como: para cualquier número real
+positivo $\epsilon$, existe un número natural $N$ tal que $1/\epsilon <
+N$.
+
+*¿Por qué es esto importante?* La propiedad arquimediana es una de las
+propiedades más fundamentales que distinguen a los números reales de
+otros sistemas numéricos. Sin ella, podríamos tener números positivos
+«infinitamente grandes» o «infinitamente pequeños», lo que rompería la
+mayor parte del cálculo y el análisis.
+
+#+begin_theorem
+** Teorema (ArchProp)
+Para cualquier $\epsilon : \mathbb{R}$ con $0 < \epsilon$, existe un
+$N : \mathbb{N}$ tal que $1/\epsilon < N$.
+#+end_theorem
+
+Esto es matemáticamente «obvio» para la mayoría de la gente: si tienes un número positivo $\epsilon$, por muy pequeño que sea, siempre puedes encontrar un número natural lo suficientemente grande para que $1/\epsilon$ sea menor que él. Pero, ¿cómo se formaliza esto realmente en Lean?
+
+** 2.1 Estrategia de demostración en lenguaje natural
+
+Primero, pensemos en esto en lenguaje natural. La idea clave es que necesitamos proporcionar un número natural $N$ específico que funcione.
+
+Una opción natural sería utilizar algo relacionado con la función techo (/ceiling/). La función techo $x \mapsto \lceil x \rceil$ redondea cualquier número real al entero superior más cercano. Sin embargo, hay un problema sutil: la función techo estándar toma valores en los enteros $\mathbb{Z}$, pero nosotros necesitamos valores en $\mathbb{N}$ (los números naturales). *¡¡No son la misma cosa!!*
+
+Afortunadamente, Lean proporciona la «función techo para números naturales» escrita como $x \mapsto \lceil x \rceil_+$, que toma cualquier número real y devuelve un número natural. (Puedes escribir estos símbolos usando =\lceil=, =\rceil= y =\_+=). Para entradas negativas, esta función devuelve 0. Por ejemplo, $\lceil -3.14 \rceil_+ = 0$ y $\lceil 3.14 \rceil_+ = 4$.
+
+**Nuestra estrategia:**
+- *Elección de $N$:* Usar $N = \lceil 1/\epsilon \rceil_+ + 1$
+- *Por qué funciona:* Tenemos la «desigualdad clave»: $1/\epsilon \le \lceil 1/\epsilon \rceil_+$, que se cumple por la definición de la función techo.
+- *Obtención de la desigualdad estricta:* Al sumar 1 obtenemos $1/\epsilon < \lceil 1/\epsilon \rceil_+ + 1$.
+
+** 2.2 Los desafíos de la implementación en Lean
+
+En Lean, nos encontramos con el problema de la *coerción de tipos* (/type coercion/, convertir entre diferentes tipos de números). $\mathbb{N}, \mathbb{Z}, \mathbb{Q}$ y $\mathbb{R}$ son todos tipos de cosas diferentes.
+
+Por ejemplo, al escribir:
+#+begin_src lean4
+have fact : 1 / ε ≤ ⌈1 / ε⌉₊ := by WhateverTheProofIs
+#+end_src
+
+Lean lo registrará como:
+: fact : 1 / ε ≤ ↑⌈1 / ε⌉₊
+
+La flecha hacia arriba ~↑~ representa una función de coerción de los naturales a los reales: $↑ : \mathbb{N} \to \mathbb{R}$. Lean necesita estas funciones explícitas para convertir entre tipos.
+
+** 2.3 Nuevas herramientas que necesitarás
+
+- ~⌈ · ⌉₊~: La función techo para números naturales.
+- ~push_cast~: Táctica que gestiona las coerciones entre tipos numéricos.
+- ~bound~: Resuelve muchas desigualdades rutinarias y «triviales» una vez alineados los tipos.
+
+** 2.5 Demostración en Lean
+
+#+begin_src lean4
+Statement ArchProp {ε : ℝ} (hε : 0 < ε) :
+∃ (N : ℕ), 1 / ε < N := by
+  use ⌈ 1 / ε ⌉₊ + 1
+  have fact : 1 / ε ≤ ⌈ 1 / ε ⌉₊ := by bound
+  push_cast
+  bound
+#+end_src
+
+** 2.7 Revisión de errores comunes
+
+- ¡No uses la función techo regular $\lceil \cdot \rceil$! Devuelve enteros (~Int~), no naturales (~Nat~).
+- *Cuidado con los problemas de casting:* si ~bound~ no funciona, intenta usar primero ~push_cast~.
+
+* 3. Nivel 2: Nuestro primer límite real
+
+** 3.1 El objetivo: Demostrar que $1/n \to 0$
+
+Queremos demostrar que la sucesión $a(n) = 1/n$ converge a 0 cuando $n$ tiende a infinito.
+
+** 3.2 Recordatorio: La definición de convergencia secuencial
+
+Una sucesión $a : \mathbb{N} \to \mathbb{R}$ converge a un límite $L$ (~SeqLim a L~) si:
+$\forall \epsilon > 0, \exists N, \forall n \ge N, |a(n) - L| < \epsilon$.
+
+Para nuestro caso: $\forall \epsilon > 0, \exists N, \forall n \ge N, |1/n - 0| < \epsilon$.
+
+** 3.3 Estrategia en lenguaje natural
+
+- *Paso 1:* Sea $\epsilon > 0$ dado.
+- *Paso 2:* Necesitamos encontrar un $N$ tal que para todo $n \ge N$, tengamos $1/n < \epsilon$.
+  - *Idea clave:* $1/n < \epsilon \iff 1/\epsilon < n$.
+- *Paso 3:* Usamos la propiedad arquimediana para obtener ese $N$.
+- *Paso 4:* Como $1/\epsilon < N \le n$, entonces $1/n < \epsilon$.
+
+** 3.4 Los desafíos de la implementación en Lean
+
+*** 3.4.1 Multiplicación cruzada
+Lean es muy cuidadoso con la división por cero.
+- *Solución:* La táctica ~field_simp~ gestiona esto automáticamente multiplicando en cruz tras verificar que los denominadores no son cero.
+
+*** 3.4.2 Aritmética lineal
+Para combinar desigualdades como $1/\epsilon < N$ y $N \le n$:
+- *Solución:* La táctica ~linarith~ está diseñada específicamente para resolver objetivos que se deriven de combinaciones lineales de hipótesis.
+
+*** 3.4.3 Casting explícito y ~exact_mod_cast~
+A veces debemos ser específicos: ~(n : ℝ)~ le dice a Lean que trate a $n$ como un real.
+- ~exact_mod_cast~: Actúa como ~apply~, pero gestiona automáticamente las coerciones de tipo si la hipótesis es la misma que el objetivo pero en un tipo numérico diferente.
+
+** 3.8 Demostración en Lean
+
+#+begin_src lean4
+Statement OneOverNLimZero (a : ℕ → ℝ) (ha : ∀ n, a n = 1 / n) :
+SeqLim a 0 := by
+  change ∀ ε > 0, ∃ N, ∀ n ≥ N, | a n - 0| < ε
+  intro ε hε
+  have f1 : ∃ (N : ℕ), 1 / ε < N := by apply ArchProp hε
+  choose N eps_inv_lt_N using f1
+  use N
+  intro n n_ge_N
+  ring_nf
+  specialize ha n
+  rewrite [ha]
+  have f2 : |1 / (n : ℝ)| = 1 / n := by bound
+  rewrite [f2]
+  have f3 : 0 < 1 / ε := by bound
+  have Npos : (0 : ℝ) < N := by linarith [f3, eps_inv_lt_N]
+  have N_le_n : (N : ℝ) ≤ n := by exact_mod_cast n_ge_N
+  have npos : (0 : ℝ) < n := by linarith [Npos, N_le_n]
+  field_simp
+  field_simp at eps_inv_lt_N
+  have f4 : N * ε ≤ n * ε := by bound
+  linarith [eps_inv_lt_N, f4]
+#+end_src
+
+** 3.10 Lo que acabamos de lograr
+
+1. *El poder de la propiedad arquimediana:* Esencial para garantizar la existencia de $N$.
+2. *La definición $\epsilon-N$ en acción:* Construcción explícita de $N$ en términos de $\epsilon$.
+3. *Manipulación rigurosa:* Atención a la positividad y al casting de tipos.
+4. *Puente intuición-formalidad:* Lo «obvio» convertido en rigor matemático.

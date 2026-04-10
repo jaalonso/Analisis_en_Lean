@@ -1,0 +1,274 @@
+\documentclass[a4paper,12pt,twoside]{book}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Paquetes adicionales                                                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Configuración para XeLaTeX
+\usepackage{tocloft}
+\setlength{\cftbeforechapskip}{2ex}
+\setlength{\cftbeforesecskip}{0.5ex}
+\setlength{\cftchapnumwidth}{2em}
+\setlength{\cftsecnumwidth}{14mm}
+\cftsetindents{chapter}{0em}{\cftchapnumwidth}
+
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\defaultfontfeatures{Ligatures=TeX,Numbers=OldStyle} % inicial
+\setromanfont{DejaVu Sans} % inicial
+% \setmonofont{DejaVu Sans Mono}[Scale={0.90}] % inicial
+\setmonofont{JuliaMono}[Scale=MatchLowercase]
+
+% \setsansfont{Arial}§
+
+% \setmainfont{DejaVu Math TeX Gyre}
+% \setmonofont{DejaVu Math TeX Gyre}[Scale={1.1}]
+
+% Notas: La lista de fuentes disponibles se obtiene con fc-list
+
+\usepackage[spanish]{babel}          % Castellanización.
+% \usepackage{ucs}
+% \usepackage[utf8]{inputenc}        % Acentos de UTF8
+% \usepackage[T1]{fontenc}           % Codificación T1
+% \usepackage{graphicx}
+% \usepackage{fancyvrb}                % Verbatim extendido
+% \usepackage{mathpazo}              % Fuentes semejante a palatino
+% \usepackage[scaled=.90]{helvet}
+% \usepackage{cmtt}
+% \renewcommand{\ttdefault}{cmtt}
+\usepackage{a4wide}
+% \usepackage{amsmath,amssymb,amstext}
+\usepackage{amssymb, amsmath, mathtools}
+
+\usepackage{newunicodechar}
+\newunicodechar{⟹}{\ensuremath{\mathnormal\Longrightarrow}}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{minted}
+\usemintedstyle{emacs}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\newminted{lean}{bgcolor=bg, autogobble=true}
+
+\setminted{fontsize=\small,baselinestretch=1}
+
+\linespread{1.05}                  % Distancia entre líneas
+\setlength{\parindent}{2em}        % Indentación de comienzo de párrafo
+% \deactivatetilden                  % Elima uso de ~ para la eñe
+\raggedbottom                      % No ajusta los espacios verticales.
+
+\usepackage[%
+  colorlinks=true,
+  urlcolor=blue,
+  % pdftex,
+  pdfauthor={José A. Alonso <jalonso@us.es>},%
+  pdftitle={Calculemus con Lean},%
+  pdfstartview=FitH,%
+  bookmarks=false]{hyperref}
+
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{4}
+
+% No indenta los item
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*}
+
+\usepackage{makeidx}
+\makeindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Cabeceras                                                              %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+
+\addtolength{\headheight}{\baselineskip}
+
+\pagestyle{fancy}
+
+\cfoot{}
+
+%\fancyhead{}
+%\fancyhead[RE]{\mdseries\sffamily \nouppercase{\leftmark}}
+%\fancyhead[LO]{\mdseries\sffamily \nouppercase{\rightmark}}
+%\fancyhead[LE,RO]{\mdseries\sffamily \thepage}
+
+\fancyhead{}
+\fancyhead[RE]{\mdseries \nouppercase{\leftmark}}
+\fancyhead[LO]{\mdseries \nouppercase{\rightmark}}
+\fancyhead[LE,RO]{\mdseries \thepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Definiciones                                                           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input definiciones
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Título                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{
+  {\LARGE Calculemus \\
+    (Vol. 2: Demostraciones con Lean4)}}
+\author{
+  \href{http://www.cs.us.es/~jalonso}{José A. Alonso Jiménez}}
+\date{\vfill \hrule \vspace*{2mm}
+  \begin{tabular}{l}
+      \href{http://www.cs.us.es/glc}
+           {Grupo de Lógica Computacional} \\
+      \href{http://www.cs.us.es}
+           {Dpto. de Ciencias de la Computación e Inteligencia Artificial} \\
+      \href{http://www.us.es}
+           {Universidad de Sevilla}  \\
+    Sevilla, 10 de julio de 2023 (versión del \today)
+  \end{tabular}\hfill\mbox{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Documento                                                              %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \includeonly{}
+
+% \includexmp{licencia}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+% \input{Licencia/licenciaCC}
+% \newpage
+
+\tableofcontents
+\clearpage
+
+\section{Más sobre sucesiones}
+\label{sec:org4af785d}
+
+En la Lección 2, aprendimos la definición de una sucesión
+\(a : \mathbb{N} \to \mathbb{R}\) que converge a un límite \(L\): para cualquier
+tolerancia \(\epsilon > 0\), existe un momento \(N\), de modo que, para
+cualquier punto posterior a ese momento, \(n \ge N\), estamos dentro de la
+tolerancia, \(|a_n - L| < \epsilon\).
+
+También aprendimos a hacer algo completamente trivial con ella:
+demostrar que la sucesión constante converge, siendo esa constante su
+límite. Vamos a subir un nivel, ¿os parece?
+
+\section{Nivel 1: La propiedad arquimediana}
+\label{sec:orgbf2f934}
+
+La llamada propiedad arquimediana (que creo que se debe originalmente a
+Eudoxo y aparece ya en el Libro V de los \emph{Elementos} de Euclides) es una
+propiedad fundamental de los números reales que plasma la noción
+intuitiva de que no existen números reales positivos «infinitamente
+grandes» o «infinitamente pequeños».
+
+Más concretamente, establece que no importa lo pequeño que sea \(\epsilon
+> 0\),
+siempre existe un número natural \(N\) tal que \(1/N\) es aún más
+pequeño que \(\epsilon\) (y, por supuesto, positivo). De forma
+equivalente, podemos enunciarlo como: para cualquier número real
+positivo \(\epsilon\), existe un número natural \(N\) tal que \(1/\epsilon <
+N\).
+
+\textbf{¿Por qué es esto importante?} La propiedad arquimediana es una de las
+propiedades más fundamentales que distinguen a los números reales de
+otros sistemas numéricos. Sin ella, podríamos tener números positivos
+«infinitamente grandes» o «infinitamente pequeños», lo que rompería la
+mayor parte del cálculo y el análisis.
+
+\begin{teorema}
+Para cualquier \(\epsilon : \mathbb{R}\) con \(0 < \epsilon\), existe un \(N : \mathbb{N}\) tal que \(1/\epsilon < N\).
+\end{teorema}
+
+Esto es matemáticamente «obvio» para la mayoría de la gente: si tienes
+un número positivo \(\epsilon\), por muy pequeño que sea, siempre puedes
+encontrar un número natural lo suficientemente grande para que
+\(1/\epsilon\) sea menor que él. Pero, ¿cómo se formaliza esto realmente
+en Lean?
+
+\subsection{Estrategia de demostración en lenguaje natural}
+\label{sec:orge73f18e}
+
+Primero, pensemos sobre esto en lenguaje natural. La idea clave es que
+necesitamos proporcionar un número natural \(N\) específico que funcione.
+
+Una opción natural sería utilizar algo relacionado con la función techo
+(\emph{ceiling}). La función techo \(x \mapsto \lceil x \rceil\) redondea
+cualquier número real al entero superior más cercano. Sin embargo, hay
+un problema sutil: la función techo estándar toma valores en los enteros
+\(\mathbb{Z}\), pero nosotros necesitamos valores en \(\mathbb{N}\) (los
+números naturales). \textbf{¡¡No son la misma cosa!!}
+
+Afortunadamente, Lean proporciona la «función techo para números
+naturales» escrita como \(x \mapsto \lceil x \rceil_+\), que toma
+cualquier número real y devuelve un número natural. (Puedes escribir
+estos símbolos usando \texttt{\textbackslash{}lceil}, \texttt{\textbackslash{}rceil} y \texttt{\textbackslash{}\_+}). Para entradas negativas,
+esta función devuelve 0. Por ejemplo, \(\lceil -3.14 \rceil_+ = 0\) y
+\(\lceil 3.14 \rceil_+ = 4\).
+
+Nuestra estrategia es:
+\begin{itemize}
+\item \textbf{Elección de \(N\):} Usar \(N = \lceil 1/\epsilon \rceil_+ + 1\)
+\item \textbf{Por qué funciona:} Tenemos la «desigualdad clave»: \(1/\epsilon \le
+  \lceil 1/\epsilon \rceil_+\), que se cumple por la definición de la
+función techo.
+\item \textbf{Obtención de la desigualdad estricta:} Al sumar 1 obtenemos \(1/\epsilon < \lceil 1/\epsilon \rceil_+ + 1\).
+\end{itemize}
+
+\subsection{Los desafíos de la implementación en Lean}
+\label{sec:org7984489}
+
+En Lean, nos encontramos con el problema de la \textbf{coerción de tipos} (\emph{type
+coercion}, convertir entre diferentes tipos de números). \(\mathbb{N},
+\mathbb{Z}, \mathbb{Q}\) y \(\mathbb{R}\) son todos tipos de cosas
+diferentes.
+
+Por ejemplo, al escribir:
+\begin{verbatim}
+have fact : 1 / ε ≤ ⌈1 / ε⌉₊ := by WhateverTheProofIs
+\end{verbatim}
+
+Lean lo registrará como:
+\begin{verbatim}
+fact : 1 / ε ≤ ↑⌈1 / ε⌉₊
+\end{verbatim}
+
+La flecha hacia arriba \texttt{↑} representa una función de coerción de los
+naturales a los reales: \(↑ : \mathbb{N} \to \mathbb{R}\). Lean necesita
+estas funciones explícitas para convertir entre tipos.
+
+\subsection{Nuevas herramientas que necesitarás}
+\label{sec:org5613c60}
+
+\begin{itemize}
+\item \texttt{⌈ · ⌉₊}: La función techo para números naturales.
+\item \texttt{push\_cast}: Táctica que gestiona las coerciones entre tipos numéricos.
+\item \texttt{bound}: Resuelve muchas desigualdades rutinarias y «triviales» una vez
+alineados los tipos.
+\end{itemize}
+
+\subsection{Demostración en Lean}
+\label{sec:org6430881}
+
+\begin{verbatim}
+lemma ArchProp {ε : ℝ} (hε : 0 < ε) :
+∃ (N : ℕ), 1 / ε < N := by
+  use ⌈ 1 / ε ⌉₊ + 1
+  have fact : 1 / ε ≤ ⌈ 1 / ε ⌉₊ := by bound
+  push_cast
+  bound
+\end{verbatim}
+
+\subsection{Revisión de errores comunes}
+\label{sec:orgfe1a633}
+
+\begin{itemize}
+\item ¡No uses la función techo regular \(\lceil \cdot \rceil\)! Devuelve
+enteros (\texttt{Int}), no naturales (\texttt{Nat}).
+\item \textbf{Cuidado con los problemas de casting:} si \texttt{bound} no funciona, intenta
+usar primero \texttt{push\_cast}.
+\end{itemize}
+\end{document}

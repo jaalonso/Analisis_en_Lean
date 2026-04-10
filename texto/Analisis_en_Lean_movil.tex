@@ -1,0 +1,50 @@
+\documentclass[12pt, oneside]{book}
+
+% Tamaño Smartphone (9:16)
+\usepackage[
+    paperwidth=108mm,
+    paperheight=192mm,
+    margin=8mm,
+    bottom=15mm,
+    footskip=8mm
+]{geometry}
+
+\input{preambulo}
+
+% Ajustes específicos para Móvil
+\setminted{fontsize=\footnotesize} % Más pequeño para evitar cortes
+\setlength{\parskip}{1.2ex}
+\setlength{\parindent}{0pt}         % Sin sangría para ganar ancho
+\linespread{1.1}                    % Más aire para lectura táctil
+
+% Microtype es vital en columnas estrechas para evitar huecos blancos
+\usepackage{microtype}
+
+% Títulos compactos para no desperdiciar pantalla
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]{\huge\bfseries\color{blue!40!black}}{\thechapter. }{0pt}{\huge}
+\titlespacing*{\chapter}{0pt}{-15pt}{10pt}
+
+% Cabeceras simplificadas
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[L]{\small\sffamily\color{gray} \nouppercase{\rightmark}}
+\fancyhead[R]{\small\sffamily \thepage}
+\cfoot{}
+
+\usepackage[
+  colorlinks=true,
+  linkcolor=blue!70!black,
+  urlcolor=blue,
+  pdfauthor={Jose A. Alonso},
+  pdftitle={Análisis en Lean 4 (Móvil)},
+  pdfstartview=FitV]{hyperref}
+
+\input definiciones
+\input contenido
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: t
+%%% End:

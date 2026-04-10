@@ -1,0 +1,35 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Definiciones                                                           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Código Lean
+% ===========
+
+\let\verbatim\leancode
+\let\endverbatim\endleancode
+
+%%% 1. Estilo de teoremas, lemas, etc. (texto en cursiva)
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{lema}[theorem]{Lema}
+\newtheorem{corolario}[theorem]{Corolario}
+\newtheorem{proposicion}[theorem]{Proposición}
+
+%%% 2. Estilo de definiciones y ejemplos (texto normal)
+\theoremstyle{definition}
+\newtheorem{definicion}[theorem]{Definición}
+\newtheorem{ejemplo}[theorem]{Ejemplo}
+
+%%% 3. Estilo de notas (título en cursiva, texto normal)
+\theoremstyle{remark}
+\newtheorem{nota}[theorem]{Nota}
+
+%%% 4. Personalización de la demostración
+\addto\captionsspanish{
+  \renewcommand{\proofname}{\textbf{Demostración:}}
+}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

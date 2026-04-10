@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración}
+\PYG{k+kd}{example}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{y}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{x}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{n+nb+bp}{*}\PYG{n}{x}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{2}\PYG{n+nb+bp}{*}\PYG{n}{y}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{n+nb+bp}{*}\PYG{n}{x}\PYG{n+nb+bp}{*}\PYG{n}{y}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{y}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{ring}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración}
+\PYG{k+kd}{example}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{x}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{y}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{x}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{n+nb+bp}{*}\PYG{n}{x}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{2}\PYG{n+nb+bp}{*}\PYG{n}{y}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{n+nb+bp}{*}\PYG{n}{x}\PYG{n+nb+bp}{*}\PYG{n}{y}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{y}\PYG{n+nb+bp}{\PYGZca{}}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{ring\PYGZus{}nf}
+\end{Verbatim}

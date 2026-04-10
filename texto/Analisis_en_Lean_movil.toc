@@ -1,0 +1,14 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {chapter}{\numberline {1}La historia del análisis real}{2}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Preámbulo}{2}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Introducción a Lean}{9}{section.1.2}%
+\contentsline {section}{\numberline {1.3}La táctica \texttt {rfl}}{10}{section.1.3}%
+\contentsline {section}{\numberline {1.4}La táctica \texttt {rw}}{11}{section.1.4}%
+\contentsline {section}{\numberline {1.5}La táctica \texttt {ring\_nf}}{12}{section.1.5}%
+\contentsline {section}{\numberline {1.6}La táctica \texttt {use}}{13}{section.1.6}%
+\contentsline {section}{\numberline {1.7}La táctica \texttt {intro}}{13}{section.1.7}%
+\contentsline {section}{\numberline {1.8}La táctica \texttt {specialize}}{14}{section.1.8}%
+\contentsline {section}{\numberline {1.9}El desafío táctico definitivo}{17}{section.1.9}%
+\contentsline {chapter}{\numberline {2}El cálculo de Newton del número pi}{20}{chapter.2}%
+\contentsline {section}{\numberline {2.1}La revolución matemática de 1666}{20}{section.2.1}%
+\contentsline {section}{\numberline {2.2}La definición principal}{34}{section.2.2}%

@@ -1,0 +1,457 @@
+#+TITLE: La historia del análisis real
+#+OPTIONS: toc:t num:t html:inline-images html-style:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="estilo_oscuro.css" />
+
+* Preámbulo
+
+*SIMPLICIO:* ¿Qué es el "Análisis real"?
+
+*SOCRATES:* Oh, es simplemente Cálculo, pero hecho "bien".
+
+*SIMPLICIO:* ¿Eh? ¿Por qué el Cálculo necesita un nombre nuevo? ¿Qué tiene
+de malo?
+
+*SOCRATES:* Bueno, nada realmente. Rápido: ¿qué es una derivada?
+
+*SIMPLICIO:* ¡Fácil! Si tengo una función \(f : \mathbb{R} \to
+\mathbb{R}\) y es diferenciable en \( x \), entonces la derivada es
+\[f'(x) := \lim_{h\to 0} \frac{f(x+h)-f(x)}{h} \]
+Esto representa la pendiente "instantánea" de la gráfica de la función
+\( y = f(x) \) en el punto \( (x, f(x)) \).
+
+*SOCRATES:* ¡Muy bien! Y dime por favor, ¿qué es una integral?
+
+*SIMPLICIO:* ¡Eso también es fácil! Si quieres integrar nuestra función \(
+f \) a lo largo de un intervalo, \( [a, b] \), digamos, finges que
+tienes infinitos rectángulos infinitamente pequeños, calculas sus áreas
+como base por altura, y las sumas:
+
+$$ \int_{a}^{b} f(x)dx := \lim_{N\to\infty} \sum_{j=1}^{N} \frac{b-a}{N} f\left(a + j\frac{b-a}{N}\right) $$
+
+*SOCRATES:* Genial. ¿Y cuáles son los dos Teoremas Fundamentales del
+Cálculo?
+
+*SIMPLICIO:* ¡Estos también son fáciles! El primero dice que si creas una
+nueva función integrando \( f \) hasta una cantidad variable, \( x \),
+es decir, sea
+$$ F(x) := \int_{a}^{x} f(t)dt $$
+entonces la derivada de la nueva función es simplemente \( F'(x) = f(x)
+\).
+
+*SOCRATES:* ¿Y el segundo?
+
+*SIMPLICIO:* El segundo dice que, recíprocamente, si \( F \) es una antiderivada de \( f \), es decir, \( F'(x) = f(x) \), entonces es fácil calcular el área bajo la curva, porque
+$$ \int_{a}^{b} f(x)dx = F(b) - F(a) $$
+¡Así que la diferenciación y la integración son operaciones inversas!
+
+*SOCRATES:* Perfecto. Ahora, aquí está el problema. Usaste palabras como "límite", "infinitos", "infinitamente pequeños", y así sucesivamente. ¿Qué significan /realmente/?
+
+*SIMPLICIO:* Oh, ya sabes, es cuando algo sucede "eventualmente". Solo tienes que acostumbrarte a cómo se siente.
+
+*SOCRATES:* Hmm sí, veo. Estoy de acuerdo en que esa es una forma aceptable de pensarlo, al menos por un tiempo, y una que le acomodaba a Newton (quien se sentía bastante incómodo con tales palabras), y a Leibniz (quien era más despreocupado aquí), los dos inventores del cálculo del siglo XVII (si no cuentas a personas como los antiguos griegos Eudoxo y Arquímedes, o al indio del siglo XIV Madhava... pero esto no es una lección de historia). Leibniz enseñó a los hermanos Bernoulli (¡los "primeros estudiantes de Cálculo Avanzado" del mundo!), quienes enseñaron, entre otros, al Marqués de l'Hôpital, y al gran Leonhard Euler (el primer "nativo del Cálculo"), quien nos enseñó al resto de nosotros. Todo iba bastante bien... y entonces llegó el siglo XIX.
+
+*SIMPLICIO:* ¿Eh? ¿Qué pasó en el siglo XIX?
+
+*SOCRATES:* Bueno verás, un tipo llamado Augustin-Louis Cauchy apareció (aproximadamente en la década de 1810), y comenzó a hacer un alboroto de que realmente no estábamos haciendo las cosas perfectamente "con rigor". Se propuso volver a demostrar los teoremas del cálculo usando definiciones precisas en lugar de argumentos vagos (/hand-waving/). Estaba haciendo un gran progreso, incluyendo probar afirmaciones como: el límite de funciones continuas es continuo.
+
+*SIMPLICIO:* Seguro, eso suena perfectamente razonable. Un límite es un proceso continuo, así que si haces eso a funciones continuas, y por supuesto al final deberías obtener algo continuo también. ¿No?
+
+*SOCRATES:* Bueno, el problema es que casi al mismo tiempo, un tipo llamado Joseph Fourier andaba por ahí afirmando que podía sumar un montón de senos y cosenos, y obtener básicamente cualquier función que quisiera, incluyendo, digamos, ¡el diente de sierra discontinuo!
+
+*SIMPLICIO:* ¡¿Qué?!
+
+*SOCRATES:* Mira por ti mismo: Aquí hay un gráfico de \( \sum_{n=1}^{100} \frac{1}{n} \sin(nx) \). A medida que llevas el 100 al infinito, ¡Fourier afirma que esto se acercará cada vez más a una función de diente de sierra!
+
+*SIMPLICIO:* Wow. Espera, puedo pensar en un ejemplo aún más fácil: solo mira la familia más simple de polinomios, \( f_n(x) = x^n \), en el intervalo unitario \( [0, 1] \). Cuando tomas potencias altas de cualquier punto estrictamente menor que 1, eso va a 0 en el límite, pero las potencias de 1 siempre se quedan en 1. ¡Así que la función límite es discontinua también! ¿Qué diablos está pasando aquí?
+
+*SOCRATES:* ¡Muy bien, Simplicio! Exactamente, entre Fourier y Cauchy, "rompieron las matemáticas". ¡El que rompe, paga!
+
+*SIMPLICIO:* Ok, entonces ¿cuál es la respuesta correcta? ¿Cómo /haces/ cálculo rigurosamente?
+
+*SOCRATES:* ¡No tan rápido! Las cosas se pusieron aún peor, y para mediados del siglo XIX, la gente se dio cuenta de que ¡ni siquiera sabíamos qué /son/ los números reales!
+
+*SIMPLICIO:* ¿Qué? ¿Qué quieres decir con qué son? Aquí están justo aquí: Está el cero, y el uno, y el -2, y el \( 3/5 \), y \( \sqrt{2} \), y \( e \) y \( \pi \). ¿Cuál es el problema?
+
+*SOCRATES:* Bueno, ¿recuerdas que necesitas algo llamado el Teorema del Valor Intermedio en cálculo?
+
+*SIMPLICIO:* Claro, si tienes una función continua, y pasa de ser negativa a ser positiva, entonces tiene que cruzar el cero en algún punto intermedio.
+
+*SOCRATES:* Muy bien. Háblame de la función \( f : x \mapsto x^2 - 2 \). (Decimos: "\( f \) mapea \( x \) a \( x^2 - 2 \)". Nota que escribimos \( f : \mathbb{R} \to \mathbb{R} \) para significar que \( f \) lleva números reales a números reales, pero reemplazamos \( \to \) con \( \mapsto \) cuando queremos decir qué le pasa a una entrada particular \( x \) bajo la acción de \( f \). Déjame recordarte que \( x \) aquí es una variable muda, así que es la misma función si hubiéramos dicho \( f : u \mapsto u^2 - 2 \).) En particular, ¿qué le pasa a \( f \) en los números racionales?
+
+*SIMPLICIO:* Ok, bueno si \( x \) es un número racional, entonces también lo es \( x^2 \), y por ende también lo es \( x^2 - 2 \). Así que en realidad, podríamos decir que \( f : \mathbb{Q} \to \mathbb{Q} \), es decir, \( f \) mapea números racionales a números racionales. Sobre los reales, la gráfica de \( y = f(x) \) es una parábola simple. Pero me habías preguntado sobre el Teorema del Valor Intermedio. Hmm. Cuando \( x = 0 \), sé que \( f(x) \) será \( f(0) = 0^2 - 2 = -2 \) lo cual es negativo. Y cuando \( x = 2 \), \( f(2) = 2^2 - 2 = 2 \) lo cual es positivo.
+
+*SOCRATES:* Continúa...
+
+*SIMPLICIO:* Así que hay una raíz de \( f \) en algún lugar entre 0 y 2. Pero el lugar donde \( f \) cruza el eje x es en \( x = \sqrt{2} \approx 1.41\dots \).
+
+*SOCRATES:* ¿Y qué sabían los pitagóricos sobre este número?
+
+*SIMPLICIO:* Supuestamente uno de ellos, Hipaso, descubrió que \( \sqrt{2} \) es irracional, lo cual arruinó toda su teoría de geometría y forma (originalmente creían que /todos/ los números eran racionales); la leyenda dice que Hipaso fue ahogado en el mar por su herejía.
+
+*SOCRATES:* Entonces...
+
+*SIMPLICIO:* Entonces espera, si nos restringimos solo a entradas racionales, entonces esta parábola es negativa, y luego es positiva, ¡¿y /nunca/ cruza el cero?! Pero hay montones de números racionales casi en todas partes donde mires. ¿Entonces qué hace a los números reales diferentes de los números racionales, para que el Teorema del Valor Intermedio realmente se cumpla?
+
+*SOCRATES:* ¡Ah! Ahora, mi amigo, estamos listos para comenzar.
+
+* Introducción a Lean
+
+** Software demostrador de teoremas
+
+En este curso, usaremos un "asistente de demostración" llamado Lean. Este es un software que verifica que nuestras demostraciones prueben /exactamente/ lo que afirmamos que prueban. Tiene otras características pedagógicas realmente geniales a las que llegaremos más tarde. Tomará un poco de tiempo acostumbrarse a la sintaxis, así que hasta que estemos cómodos, intercalaremos ejercicios enseñando Lean con ejercicios enseñando Análisis Real. Muy pronto todos los ejercicios serán solo sobre Análisis Real.
+
+Para este primer ejercicio, tenemos una hipótesis que llamamos =h= (pero podríamos haberla llamado cualquier cosa, como =x_eq_5=, o =Alice=) que dice que un número real =x= es igual a 5. Nuestro objetivo es probar que =x= es igual a 5. Esto no debería ser muy difícil, pero si no conoces el comando, no tendrás suerte. Nuestro objetivo es probar /exactamente/ la misma afirmación que una de las hipótesis. Para resolver ese objetivo, la sintaxis es escribir =exact=, luego un espacio, y luego el nombre de la hipótesis que coincide exactamente con el objetivo.
+
+/Observación./ La táctica =exact= resuelve un objetivo cuando una de las hipótesis es /exactamente/ igual al objetivo. La sintaxis es =exact nombre_hipotesis=.
+
+*Teorema 2.1.* /Si sabemos que \( x = 5 \), entonces podemos probar que \( x = 5 \)./
+
+#+BEGIN_SRC lean
+Statement ( x : ℝ) ( h : x = 5) : x = 5 := by
+  exact h
+#+END_SRC
+
+*Pista:* Escribe =exact h= ya que la hipótesis =h= es exactamente lo que queremos probar.
+
+** Conclusión
+
+¡Perfecto! Has completado tu primera demostración en Lean involucrando números reales.
+Recuerda: la táctica =exact= se usa cuando tienes exactamente lo que necesitas para probar el objetivo. Mira arriba a la derecha: tu lista de tácticas ahora incluye =exact=, y si olvidas cómo funciona o qué hace, simplemente haz clic en ella para un recordatorio.
+
+* La táctica =rfl=
+
+** Cuando las cosas son idénticas a sí mismas
+
+A veces en matemáticas, necesitamos probar que algo es igual a sí mismo. Por ejemplo, podríamos necesitar probar que \( x^2 + 2y = x^2 + 2y \).
+Esto no es exactamente lo mismo que nuestro ejercicio anterior. Allí, teníamos una hipótesis =h= que nos decía =x = 5=, y usamos =exact h= para probar el objetivo =x = 5=.
+Pero ahora no tenemos ninguna hipótesis que diga =x^2 + 2*y = x^2 + 2*y=. Solo se nos pide probar que alguna expresión es igual a sí misma. No podemos decir =exact algo= porque no hay un =algo=.
+
+En su lugar, usaremos lo que los matemáticos llaman la /propiedad reflexiva/ de la igualdad: todo es igual a sí mismo. En Lean, si llegas a una situación donde estás tratando de probar una igualdad, y las dos cosas en ambos lados son /idénticas/, entonces la sintaxis es dar el comando =rfl= (abreviatura de "reflexividad").
+¡Pruébalo!
+
+/Observación./ La táctica =rfl= prueba objetivos de la forma =A = A= donde ambos lados son idénticos.
+
+*Teorema 3.1.* /Toda expresión matemática es igual a sí misma./
+
+#+BEGIN_SRC lean
+Statement ( x y : ℝ) : x ^2 + 2* y = x ^2 + 2* y := by
+  rfl
+#+END_SRC
+
+*Pista:* Escribe =rfl= ya que estamos probando que algo es igual a sí mismo.
+
+** Conclusión
+
+¡Excelente! Has aprendido la táctica =rfl=.
+La diferencia clave:
+- Usa =exact nombre_hipotesis= cuando tienes una hipótesis que coincide exactamente con tu objetivo.
+- Usa =rfl= cuando necesitas probar que algo es igual a sí mismo.
+
+Estas son dos de las tácticas más fundamentales en Lean. A medida que avancemos a través del análisis real, verás que muchas demostraciones complejas finalmente se reducen a mostrar que dos expresiones son idénticas.
+
+* La táctica =rw=
+
+** Reescribiendo con igualdades
+
+Ahora aprendamos sobre reescribir. Supón que tienes una hipótesis llamada =Bob : x = 2=, y tu objetivo es probar que =x + y = 2 + y=.
+¿Puedes usar =rfl=? No, porque los dos lados del objetivo (=x + y= y =2 + y=) no son /idénticamente/ lo mismo.
+¿Puedes usar =exact Bob=? No, porque =Bob= dice =x = 2=, lo cual no es /exactamente/ lo que el objetivo está pidiendo.
+
+Pero puedes usar la hipótesis =Bob= para /reescribir/ el objetivo. Dado que =Bob= nos dice que =x = 2=, podemos reemplazar =x= con 2 en nuestro objetivo.
+En Lean, si tienes una hipótesis que es una igualdad, y quieres reemplazar el /lado izquierdo/ de esa igualdad con el /lado derecho/ en tu objetivo, usas la táctica =rewrite= (reescribir). La sintaxis es:
+=rewrite [nombre_hipotesis]=
+Desafortunadamente, esos corchetes son parte de la sintaxis de Lean, y no hay nada que tú o yo podamos hacer al respecto ahora mismo. Solo recuerda: =rewrite [Bob]= significa "usa la igualdad en Bob para reescribir el objetivo".
+Después de reescribir, no has terminado. Pero deberías saber cómo terminar desde ahí.
+¡Pruébalo!
+
+/Observación./ La táctica =rewrite= reemplaza el lado izquierdo de una igualdad con el lado derecho en el objetivo. La sintaxis es =rewrite [nombre_hipotesis1, nombre_hipotesis2, etc]=.
+
+*Teorema 4.1.* /Si sabemos que \( x = 2 \), entonces podemos probar que \( x + y = 2 + y \)./
+
+#+BEGIN_SRC lean
+Statement ( x y : ℝ) ( Bob : x = 2) : x + y = 2 + y := by
+  rewrite [ Bob ]
+  rfl
+#+END_SRC
+
+*Pista:* Escribe =rewrite [Bob]= para reemplazar =x= con 2 en el objetivo. ¿Entonces qué?
+
+** Conclusión
+
+¡Genial! Has aprendido la táctica =rewrite=.
+Nota lo que sucedió: después de que escribiste =rewrite [Bob]=, el objetivo cambió de =x + y = 2 + y= a =2 + y = 2 + y=. Luego necesitaste escribir =rfl= para terminar la prueba, ya que ambos lados eran ahora idénticos.
+Hasta ahora has aprendido:
+- =exact nombre_hipotesis= cuando una hipótesis coincide exactamente con tu objetivo.
+- =rfl= cuando necesitas probar que algo es igual a sí mismo.
+- =rewrite [nombre_hipotesis]= cuando quieres usar una igualdad para reescribir tu objetivo.
+
+¡La táctica =rewrite= es increíblemente poderosa y la usarás constantemente en análisis real!
+
+* La táctica =ring_nf=
+
+** Manipulaciones algebraicas
+
+Ahora aprendamos sobre simplificación algebraica. Supón que necesitas probar que \( (x + y)^3 = x^3 + 3x^2y + 3xy^2 + y^3 \).
+Esto es cierto por las leyes básicas del álgebra - expandiendo el lado izquierdo usando la ley distributiva, conmutatividad, asociatividad, etc. Pero hacer esto a mano sería extremadamente tedioso.
+Afortunadamente, Lean tiene una táctica poderosa llamada =ring_nf= ("forma normal de anillo") que puede realizar automáticamente manipulaciones algebraicas como:
+- Expandir productos
+- Agrupar términos semejantes
+- Reordenar usando conmutatividad y asociatividad
+- Aplicar la ley distributiva
+
+Cuando tienes una identidad algebraica que involucra suma, resta y multiplicación, =ring_nf= a menudo puede probarla automáticamente.
+¡Pruébalo en esta clásica expansión binomial!
+
+/Observación./ La táctica =ring_nf= pone ambos lados de una ecuación en una forma algebraica estándar y verifica si son iguales.
+
+*Teorema 5.1.* /La expansión binomial: \( (x + y)^3 = x^3 + 3x^2y + 3xy^2 + y^3 \)./
+
+#+BEGIN_SRC lean
+Statement ( x y : ℝ) : ( x + y ) ^3 = x ^3 + 3* x ^2* y + 3* x * y ^2 + y ^3 := by
+  ring_nf
+#+END_SRC
+
+*Pista:* Escribe =ring_nf= para expandir y simplificar ambos lados algebraicamente.
+
+** Conclusión
+
+¡Excelente! Has aprendido la táctica =ring_nf=.
+Esta táctica es increíblemente poderosa para manipulaciones algebraicas. Maneja automáticamente toda el álgebra tediosa que tomaría muchos pasos hacer a mano.
+Tu caja de herramientas ahora incluye:
+- =exact nombre_hipotesis= para cuando una hipótesis coincide exactamente con tu objetivo
+- =rfl= para probar que algo es igual a sí mismo
+- =rewrite [nombre_hipotesis]= para reescribir usando igualdades
+- =ring_nf= para simplificaciones algebraicas y expansiones
+
+A medida que avancemos hacia el análisis real propiamente dicho, encontrarás que =ring_nf= es invaluable para tratar con expresiones polinomiales, ¡que aparecen en todas partes en cálculo!
+
+* La táctica =use=
+
+** Demostrando existencia
+
+A veces en matemáticas, necesitas probar que algo existe. Por ejemplo, supón que quisiera preguntarte cuál es el coeficiente binomial frente a \( x^2y^2 \) en la expansión de \( (x + y)^4 \); ¿cómo lo haría? ¡Lean no puede hacer preguntas, solo puede probar teoremas! Así que la forma en que pediría esto es: prueba que existe un número real \( c \) tal que
+$$ (x + y)^4 = x^4 + 4x^3y + cx^2y^2 + 4xy^3 + y^4 $$
+La forma de probar que tal número existe es exhibirlo, es decir, decirme qué número /usar/, y luego probar que ese número de hecho satisface la ecuación.
+Esto se llama una /declaración existencial/. En Lean, como en matemáticas, la existencia se escribe usando \( \exists \) (se lee: "existe"). Este símbolo se llama el /cuantificador existencial/, y se escribe en Lean escribiendo =\exists=, es decir, una barra invertida, luego la palabra =exists=, y luego un espacio. Así que este objetivo se vería en Lean así:
+=∃ (c : ℝ), (x + y)^4 = x^4 + 4*x^3*y + c*x^2*y^2 + 4*x*y^3 + y^4=
+Para probar una declaración de existencia, necesitas proporcionar un valor específico que funcione. Aquí es donde entra la táctica =use=.
+Si crees saber qué valor de =c= funcionaría, puedes escribir =use 42= (o con 42 reemplazado por cualquier número que pienses que es correcto). Lean sustituirá ese valor y te pedirá que pruebes que la ecuación resultante es verdadera.
+Prueba escribir =use=, luego un espacio, y luego un número. ¿Ves qué hacer después de eso?
+
+/Observación./ La táctica =use= proporciona un valor específico para probar una declaración de existencia.
+
+*Teorema 6.1.* /Existe un número real que hace que esta expansión binomial funcione./
+
+#+BEGIN_SRC lean
+Statement ( x y : ℝ) : ∃ ( c : ℝ) , ( x + y ) ^4 = x ^4 + 4* x
+^3* y + c * x ^2* y ^2 + 4* x * y ^3 + y ^4 := by
+  use 6
+  ring_nf
+#+END_SRC
+
+*Pista:* Escribe =use 42=, pero con 42 reemplazado por la respuesta correcta. ¿Entonces cómo deberías terminar?
+
+** Conclusión
+
+¡Perfecto! Has aprendido la táctica =use= para pruebas de existencia.
+Nota lo que sucedió:
+1. =use 6= le dijo a Lean que \( c = 6 \) es nuestro valor propuesto.
+2. El objetivo cambió a probar \( (x + y)^4 = x^4 + 4x^3y + 6x^2y^2 + 4xy^3 + y^4 \).
+3. =ring_nf= verificó que esta identidad algebraica es correcta.
+
+La táctica =use= es fundamental en análisis real. La necesitarás para:
+- Encontrar valores específicos de \( \varepsilon \) y \( \delta \) en pruebas de límites.
+- Construir testigos para teoremas de existencia.
+- Proporcionar contraejemplos.
+
+Tu creciente caja de herramientas:
+- =exact=, =rfl=, =rewrite= para razonamiento básico de igualdad
+- =ring_nf= para manipulación algebraica
+- =use= para pruebas de existencia
+
+* La táctica =intro=
+
+** Declaraciones universales
+
+En matemáticas, a menudo necesitamos probar declaraciones que son verdaderas "para todos" los valores de alguna variable. Por ejemplo, podríamos querer probar: "para todo \( \varepsilon > 0 \), tenemos \( (\varepsilon + 1)^2 = (\varepsilon + 1)^2 \)." (Por supuesto, la condición de que \( \varepsilon \) sea positivo es matemáticamente superflua, y solo está aquí con fines pedagógicos).
+Si estás pensando que =rfl= hará el truco, es una buena idea, pero no funcionará, porque el objetivo no es (todavía) una igualdad. Así que necesitamos hacer algo más primero.
+En Lean, como en matemáticas, "para todo" se escribe usando \( \forall \); esto se llama el /cuantificador universal/, y se obtiene escribiendo =\forall=, es decir, barra invertida, luego =forall=, luego un espacio. En Lean, este objetivo se ve así:
+=∀ ε > 0, (ε + 1)^2 = (ε + 1)^2=
+(Nota que para escribir un épsilon en Lean, solo escribes =\e=, es decir, barra invertida, luego =e=, luego espacio.)
+Para probar una declaración "para todo", necesitas mostrar que es verdad para un elemento arbitrario. En español, dirías: dame un \( \varepsilon \) arbitrario, y dame el hecho de que es positivo (podemos darle un nombre a ese hecho, como =hε=, ya que es una hipótesis sobre \( \varepsilon \), o quizás un nombre aún más descriptivo como =ε_pos=, ya que la hipótesis es la positividad de \( \varepsilon \)). Nota que \( \varepsilon \) aquí es una variable muda, y podríamos elegir nombrarla de otra manera sobre la marcha.
+En español, podríamos decir: dame algún \( \varepsilon \), pero quiero llamarlo Alice; luego dame el hecho de que Alice es positivo, y mi objetivo será probar que =(Alice + 1)^2 = (Alice + 1)^2=. Si fuéramos más educados, podríamos reemplazar "dame" arriba con "introduce", como: introduce un \( \varepsilon \), e introduce el hecho, llámalo =hε=, de que \( \varepsilon \) es positivo.
+En Lean, la sintaxis para esto es el comando =intro=, seguido del nombre que quieras darle a una variable muda o una hipótesis.
+Así que: cuando veas un objetivo que comienza con \( \forall \), puedes escribir =intro= para "introducir" la variable. Por ejemplo:
+- =intro ε= introduce la variable \( \varepsilon \). ¡Pero mira el estado del objetivo ahora! Cambia a: =ε > 0 → (ε + 1)^2 = (ε + 1)^2=. Así que no hemos terminado de introducir cosas.
+- Luego =intro hε= introduce la hipótesis de que \( \varepsilon > 0 \) (y de nuevo, puedes llamar a la hipótesis como quieras; prueba =intro ε_pos= en su lugar).
+
+Después de usar =intro= dos veces, el objetivo se convertirá en uno que deberías saber resolver.
+Si quieres ser realmente hábil, puedes combinar los dos comandos =intro= en uno solo: =intro ε hε=. Pero no te sientas obligado.
+
+/Observación./ La táctica =intro= introduce variables e hipótesis de declaraciones \( \forall \) o implicaciones.
+
+*Teorema 7.1.* /Para todos los números reales positivos, esta identidad algebraica se cumple./
+
+#+BEGIN_SRC lean
+Statement : ∀ ε : ℝ, ε > 0 → ( ε + 1) ^2 = ( ε + 1) ^2 := by
+  intro ε
+  intro h
+  rfl
+#+END_SRC
+
+*Pista:* Usa =intro ε= para introducir la variable, luego =intro hε= para introducir la hipótesis \( \varepsilon > 0 \). ¿Entonces cómo resuelves el objetivo?
+
+** Conclusión
+
+¡Excelente! Has aprendido la táctica =intro= para declaraciones universales.
+Nota lo que sucedió:
+1. =intro ε= introdujo el número real arbitrario \( \varepsilon \)
+2. =intro hε= introdujo la hipótesis =hε : ε > 0=
+3. El objetivo se convirtió en =(ε + 1)^2 = (ε + 1)^2=
+4. =rfl= resolvió el objetivo, por la propiedad reflexiva del signo igual.
+
+Podrías haber notado algo interesante: usamos =intro= de dos maneras aparentemente diferentes—primero para introducir un "Objeto" (el número real \( \varepsilon \)), y segundo para introducir una "Suposición" o hipótesis (que \( \varepsilon > 0 \)). En la lógica subyacente de Lean ("teoría de tipos dependientes"), en realidad hay una profunda unidad aquí que los matemáticos llaman la /correspondencia Curry-Howard/: las proposiciones son "Tipos", y las demostraciones son "Términos" de esos Tipos. Esto significa que introducir una hipótesis es realmente solo introducir un término de cierto tipo, tal como introducir una variable.
+Pero aquí hay una perspectiva aún más alucinante: ¡toda nuestra Declaración es realmente una /función/! Sus entradas son primero un =ε : ℝ=, luego una prueba de que =ε > 0=, y su salida es una prueba de que =(ε + 1)^2 = (ε + 1)^2=. Cuando escribimos =intro ε= e =intro h=, estamos literalmente definiendo esta función diciendo "dadas estas entradas, aquí está cómo calcular la salida". ¡En esta visión, todas las matemáticas – desde las definiciones más simples hasta las pruebas de los teoremas más profundos – son secretamente solo funciones transformando entradas en salidas!
+
+Esta hermosa conexión entre lógica y computación subyace en gran parte de los asistentes de prueba modernos, aunque no profundizaremos en los detalles en este curso – ¡está perfectamente bien si no seguiste los últimos dos párrafos! Por ahora, solo aprecia que =intro= funciona uniformemente ya sea que estés introduciendo objetos matemáticos o suposiciones lógicas, ¡y que cada prueba que escribes es secretamente un programa!
+La táctica =intro= es absolutamente crucial en análisis real. La usarás constantemente para:
+- Manejar declaraciones "para todo \( \varepsilon > 0 \)" en definiciones de límites
+- Introducir puntos arbitrarios en pruebas de dominio/rango
+- Trabajar con definiciones de funciones
+
+¡Este patrón de =intro= seguido de manipulación algebraica está en todas partes en análisis!
+
+* La táctica =specialize=
+
+** Usando declaraciones universales
+
+Ahora aprendamos la otra cara de =intro=. Ya has aprendido que:
+- si tienes \( \exists \) en el objetivo, escribes =use= para proporcionar un valor específico. Y
+- si tienes \( \forall \) en el objetivo, escribes =intro= para introducir una variable arbitraria
+
+Pero, ¿qué pasa si tienes \( \forall \) en una /hipótesis/ y quieres usarla para un valor particular?
+Para un ejemplo concreto, supón que tienes:
+- Un número real positivo =t=; es decir, un número real =t=, junto con una hipótesis, digamos, =t_pos= de que =t > 0=
+- Una función =f : ℝ → ℝ=
+- Una hipótesis =hf : ∀ x > 0, f(x) = x^2=, significando "para todo x positivo, f(x) es igual a x²". (Nota que tienes que poner un espacio después de =f= antes de =(x)= o si no Lean se enojará mucho contigo. De hecho, Lean a menudo eliminará paréntesis innecesarios, así que verás =f x= en lugar de =f(x)= – y de nuevo, definitivamente no =f(x)=.)
+- Y quieres probar el objetivo =f(t) = t^2=.
+
+¿Puedes usar =exact hf=? ¡No! La hipótesis =hf= dice "para todo \( x \) positivo, \( f(x) = x^2 \)" pero el objetivo pregunta específicamente sobre =f(t) = t^2=. No son /exactamente/ lo mismo.
+Aquí es donde entra el comando =specialize=. Puedes escribir =specialize hf t= para especializar la declaración =hf= al valor particular =t=. Esto transforma =hf= de "∀ x > 0, f(x) = x^2" en "t > 0 → f(t) = t^2". Al igual que tuvimos que usar =intro= múltiples veces (una vez para el nombre de la variable muda, y otra vez para nombrar la hipótesis), podemos especializar múltiples veces; así que ahora puedes escribir =specialize hf t_pos=. O puedes matar dos pájaros de un tiro vía: =specialize hf t t_pos=.
+¡Estoy seguro de que puedes resolver el objetivo desde allí tú mismo!
+
+/Observación./ La táctica =specialize= aplica una declaración universal en una hipótesis a un valor específico.
+
+*Teorema 8.1.* /Si una función de x siempre es igual a \( x^2 \), entonces es igual a \( t^2 \) cuando se evalúa en t./
+
+#+BEGIN_SRC lean
+Statement ( t : ℝ) ( t_pos : t > 0) ( f : ℝ → ℝ) ( hf : ∀ x
+> 0 , f ( x ) = x ^2) : f ( t ) = t ^2 := by
+  specialize hf t
+  specialize hf t_pos
+  exact hf
+#+END_SRC
+
+*Pista:* Escribe =specialize hf t= para aplicar la declaración universal al valor específico =t=.
+
+** Conclusión
+
+¡Genial! Has aprendido la táctica =specialize=.
+Nota lo que sucedió:
+1. Inicialmente, =hf : ∀x > 0, f(x)= x^2= era una declaración universal
+2. =specialize hf t= la transformó en =hf : t > 0 → f(t)= t^2=
+3. Otro comando =specialize=, específicamente =specialize hf t_pos= convirtió la hipótesis =hf= en =hf : f(t)= t^2=
+4. Y finalmente, =exact hf= funcionó porque la hipótesis coincidía exactamente con el objetivo.
+
+El patrón es:
+- =intro= cuando tienes \( \forall \) en el objetivo ("introduce un término arbitrario...")
+- =specialize= cuando tienes \( \forall \) en una hipótesis ("aplica la hipótesis a un valor específico...")
+
+Esto es fundamental en análisis real cuando trabajas con:
+- Propiedades de funciones que se mantienen "para todo x"
+- Definiciones de límite involucrando "para todo \( \varepsilon > 0 \)"
+- Declaraciones de continuidad
+
+La última lección en la Lección 1 está por venir.
+
+* El desafío definitivo
+
+** El Desafío Final
+
+¡Felicidades! Has aprendido muchas tácticas fundamentales para el razonamiento matemático en Lean:
+- =exact nombreHipotesis= para cuando una hipótesis coincide exactamente con el objetivo
+- =rfl= para reflexividad (probar X = X)
+- =rewrite [nombreHipotesis]= para reescribir usando igualdades
+- =ring_nf= para manipulación algebraica
+- =use= para proporcionar testigos a declaraciones de existencia en objetivos
+- =intro= para manejar cuantificadores universales en objetivos
+- =specialize= para aplicar declaraciones universales a valores específicos en hipótesis
+- =choose valor hipotesisSobreValor using HipotesisExistencial= para extraer información de declaraciones de existencia en hipótesis
+
+Aquí hay una pequeña "Hoja de Trucos de Cuantificadores Universales/Existenciales":
+
+| empieza con: | \( \forall \) | \( \exists \) |
+|--------------+---------------+---------------|
+| *Objetivo*   | =intro=       | =use=         |
+| *Hipótesis*  | =specialize=  | =choose=      |
+
+Ahora es el momento de tu primer *Gran Jefe* - ¡un problema que requiere que uses casi TODAS estas tácticas en una sola prueba!
+*Gran Jefe del Mundo 1* Dada una función =f= e información sobre su comportamiento, prueba una declaración compleja que involucra existencia, universales, álgebra y reescritura.
+Así es como se ven las pruebas matemáticas reales: una orquestación cuidadosa de múltiples pasos de razonamiento. ¡Tú puedes con esto! Usa todo lo que has aprendido.
+
+*Desafío Extra* Si quieres desafiarte /realmente/ a ti mismo, juega este nivel "a ciegas". Escribe las suposiciones y el objetivo en papel, cierra la computadora, resuélvelo a mano, manteniendo un registro /en tu mente/ de lo que le sucede al tablero de juego después de cada comando, y solo una vez que lo hayas resuelto todo, abre la computadora y mira si Lean acepta tu solución.
+¿Por qué crees que esto sería algo bueno de hacer?
+En general, espero que tu /meta/ al tomar este curso sea hacer más fuertes tus "Músculos Cerebrales de Análisis Real". Al final, deberías ser /realmente bueno/ resolviendo problemas de Análisis Real en papel, donde no tienes a Lean mostrándote el Estado del Objetivo después de cada movimiento. Más ampliamente, el propósito de aprender a resolver problemas de Análisis Real es aprender a /pensar/, clara y precisamente. Fortalecer tu habilidad para trabajar con lápiz y papel (o solo mentalmente) se transfiere directamente a /cualquier/ otro contexto donde estés explorando ideas, luchando con argumentos complicados, o tratando de comunicarte claramente con otros.
+Un LLM podría trabajar fácilmente a través de todos estos niveles de Lean mediante el reconocimiento de patrones y manipulación lógica - tal como podrías resolver problemas de multiplicación conectándolos a una calculadora en lugar de memorizar tus tablas de multiplicar. Pero eso derrota completamente el propósito del ejercicio, el cual es recablear tu cerebro y construir intuición matemática. Es como decidir que quieres hacer press de banca con 200 libras, cargar la barra, y luego usar un montacargas para levantarla por ti mientras estás parado debajo - podrías haber movido el peso, pero no te has vuelto más fuerte. El valor real no está en producir pruebas correctas, está en la transformación cognitiva que ocurre cuando /luchas/ a través del razonamiento tú mismo, construyendo los caminos mentales que te permiten ver la estructura matemática intuitivamente.
+
+/Observación./ *NIVEL DE GRAN JEFE*: ¡Este problema requiere todas las tácticas que has aprendido!
+
+*Teorema 9.1.* /Dada una función con propiedades específicas, podemos probar una declaración compleja involucrando existencia y universales./
+
+#+BEGIN_SRC lean
+Statement ( f : ℝ → ℝ) ( h_existential : ∃ ( a : ℝ) , f ( a )
+= 3)
+( h_universal : ∀ x > 0 , f ( x + 1) = f ( x ) + 9) :
+∃ ( b : ℝ) , ∀ y > 0 , f ( y + 1) ^2 = ( f ( y ) + ( f b ) ^2) ^2
+:= by
+-- Paso 1: Extraer el testigo de la hipótesis de existencia
+choose a ha using h_existential
+-- Paso 2: Usaremos a como nuestro testigo para b
+use a
+-- Paso 3: Introducir el cuantificador universal
+intro y
+intro hy
+-- Paso 4: Aplicar la propiedad universal a nuestro valor específico a
+specialize h_universal y hy
+-- Paso 5: Reescribir usando lo que aprendimos sobre f(y + 1)
+rewrite [ h_universal ]
+-- Paso 6: Reescribir usando lo que sabemos sobre f(a)
+rewrite [ ha ]
+-- Paso 7: Simplificar el álgebra
+ring_nf
+#+END_SRC
+
+** Conclusión
+
+¡VICTORIA!
+¡Has derrotado al Gran Jefe y dominado todas las tácticas fundamentales del razonamiento matemático!
+*Veamos qué acabas de lograr:*
+
+1. =choose a ha using h_existential= - Extrajiste el testigo =a= y el hecho de que =f(a) = 3= de la hipótesis
+2. =use a= - Elegiste =a= como tu testigo para la declaración de existencia en el objetivo
+3. =intro y hy= - Manejaste el cuantificador universal "para todo \( y > 0 \)" en el objetivo
+4. =specialize h_universal y hy= - Aplicaste la propiedad universal a tu valor específico en la hipótesis
+5. =rewrite [h_universal]= - Usaste el hecho especializado para reescribir el objetivo
+6. =rewrite [ha]= - Usaste el hecho original de que =f(a) = 3= para reescribir también el objetivo
+7. =ring_nf= - Verificaste finalmente que =(f y + 9)^2 = (f y + 3^2)^2=
+
+¡Acabas de completar un argumento matemático genuinamente sofisticado!
+Este tipo de razonamiento de múltiples pasos, combinando declaraciones de existencia, propiedades universales y manipulación algebraica, es exactamente lo que encontrarás a lo largo del análisis real.
+*¡Ahora estás listo para comenzar tu viaje hacia el cálculo riguroso!*
+Bienvenido a la Introducción al Análisis Real Formal.
+
+** Epílogo
+
+Antes de continuar con más Análisis Real y más Lean, hagamos una pausa para notar algunas cosas interesantes sobre trabajar formalmente. Usar un demostrador de teoremas interactivamente es (espero) tremendamente divertido y (espero) conduce a ganancias rápidas, retroalimentación inmediata y claridad de pensamiento.
+Imagina tratar de aprender ajedrez simplemente leyendo a través de la notación algebraica - 1.e4 e5 2.Nf3 Nf6 3.Bb5 a6 - seguro, toda la información está técnicamente ahí, ¿pero no es mucho más fácil aprender mirando realmente un tablero de ajedrez y viendo cómo cambia la posición después de cada movimiento? En matemáticas, sería extraordinariamente tedioso escribir manualmente en la pizarra todo el estado del objetivo después de cada movimiento, manteniendo un registro de todas las hipótesis y sus relaciones a mano. Un demostrador de teoremas hace esta contabilidad por ti automáticamente, permitiéndote enfocarte en el contenido matemático en lugar del trabajo administrativo.
+¡Pero! Esto es, como ya hemos notado, una espada de doble filo. Todavía queremos entrenar nuestros cerebros para "ver" un modelo mental del estado del objetivo evolucionando - los buenos jugadores de ajedrez pueden visualizar muchas jugadas por delante precisamente porque han aprendido a mantener múltiples tableros de juego mentales simultáneamente. Pero hasta que desarrolles esa habilidad, e incluso después de que la tengas, hay un valor inmenso en ser capaz de generar instantáneamente el "tablero de juego" actual de tu estado de prueba. La retroalimentación inmediata te ayuda a entender las consecuencias de cada movimiento lógico, construyendo la intuición misma que eventualmente te permitirá trabajar de manera más independiente. Es la diferencia entre aprender a navegar revisando siempre tu GPS versus desarrollar eventualmente un sentido interno de dirección - ambos tienen su lugar, y el primero ayuda a desarrollar el segundo.

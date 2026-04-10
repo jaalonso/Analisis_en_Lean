@@ -1,0 +1,36 @@
+\chapter{Convergencia en Lean}
+
+\section{Pruebas}
+
+\begin{teorema}
+  Este es un teorema con el texto en cursiva. $\alpha \notin  \beta$
+\end{teorema}
+
+\begin{definicion}
+Esta es una definición con el texto normal.
+\end{definicion}
+
+\begin{proof}
+Aquí va la lógica. El cuadradito aparecerá automáticamente al final a la derecha.
+\end{proof}
+
+\begin{teorema}[Límite de la constante]
+Sea $c \in \mathbb{R}$. La sucesión constante $a_n = c$ converge a $c$.
+\end{teorema}
+
+\begin{proof}
+Dado $\varepsilon > 0$, tomamos $N = 1$. Entonces para todo $n \geq N$:
+\[ |a_n - c| = |c - c| = 0 < \varepsilon \]
+\end{proof}
+
+Aquí tienes el código correspondiente en Lean 4:
+
+\begin{minted}{lean4}
+theorem const_limit (c : ℝ) : ∀ ε > 0, ∃ N, ∀ n ≥ N, |c - c| < ε := by
+  intro ε hε
+  use 1
+  intro n hn
+  simp [hε]
+\end{minted}
+
+\end{document}

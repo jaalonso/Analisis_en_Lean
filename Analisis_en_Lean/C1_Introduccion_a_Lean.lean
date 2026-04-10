@@ -1,5 +1,5 @@
 -- C1_Introduccion_a_Lean.lean
--- Cap. 1: Introducción a Lean.
+-- Introducción a Lean.
 -- José A. Alonso Jiménez <https://jaalonso.github.io>
 -- Sevilla, 26-noviembre-2025
 -- ---------------------------------------------------------------------
@@ -165,18 +165,6 @@ by
 --    (ε+1)² = (ε+1)²
 -- ---------------------------------------------------------------------
 
--- 1ª demostración
-example : ∀ ε : ℝ, ε > 0 → (ε + 1) ^ 2 = (ε + 1) ^ 2 :=
-by
-  intro ε
-  -- ε : ℝ
-  -- ⊢ ε > 0 → (ε + 1) ^ 2 = (ε + 1) ^ 2
-  intro h
-  -- h : ε > 0
-  -- ⊢ (ε + 1) ^ 2 = (ε + 1) ^ 2
-  rfl
-
--- 2ª demostración
 example : ∀ ε : ℝ, ε > 0 → (ε + 1) ^ 2 = (ε + 1) ^ 2 :=
 by
   intro ε h
@@ -244,7 +232,7 @@ by
   -- ⊢ t > 0
   exact ht
 
--- 4ª demostración
+-- 5ª demostración
 -- ===============
 
 example
@@ -256,7 +244,7 @@ example
 by
   simp_all
 
--- 5ª demostración
+-- 6ª demostración
 -- ===============
 
 example
@@ -268,7 +256,7 @@ example
 by
   aesop
 
--- 6ª demostración
+-- 7ª demostración
 -- ===============
 
 example

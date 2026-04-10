@@ -1,0 +1,120 @@
+\documentclass[12pt,a4paper]{book}
+
+% --- SOPORTE DE IDIOMA Y MATEMÁTICAS ---
+\usepackage[spanish, es-tabla]{babel} % Español y tablas
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{graphicx}
+
+% Configuramos unicode-math para que no choque con mathtools
+\usepackage[
+    warnings-off={
+        mathtools-colon,    % Silencia el aviso de los dos puntos
+        mathtools-overbracket % Silencia el aviso de los brackets
+    }
+]{unicode-math}
+
+\usepackage{a4wide}
+
+\usepackage[%
+  colorlinks=true,
+  urlcolor=blue,
+  pdfauthor={Jose A. Alonso},%
+  pdftitle={Analisis en Lean 4},%
+  pdfstartview=FitH,%
+  bookmarks=false]{hyperref}
+
+\usepackage{titletoc}
+
+\linespread{1.05}                  % Distancia entre líneas
+\raggedbottom                      % No ajusta los espacios verticales.
+\setlength{\parskip}{1ex}          % Distancia entre párrfos
+\setlength{\parindent}{2em}        % Indentación de comienzo de párrafo
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% --- CONFIGURACIÓN DE FUENTES (Crucial para Lean) ---
+\usepackage{fontspec}
+% Fuente principal para el texto
+\setmainfont{Latin Modern Roman}
+\setmathfont{Latin Modern Math}
+% Fuente para el código Lean (debe soportar Unicode matemático)
+\setmonofont{JuliaMono-Regular.ttf}[
+    Path = /home/jalonso/.local/share/fonts/juliamono/, % Usa tu ruta absoluta
+    Scale = MatchLowercase,
+    BoldFont = JuliaMono-Bold.ttf,
+    ItalicFont = JuliaMono-RegularItalic.ttf,
+    BoldItalicFont = JuliaMono-BoldItalic.ttf
+]
+
+% --- CONFIGURACIÓN DE MINTED (Código Lean) ---
+\usepackage{minted}
+\renewcommand{\MintedPygmentize}{/home/jalonso/.local/bin/pygmentize}
+\usemintedstyle{emacs} % Estilo de colores (puedes probar 'friendly' o 'lovelace')
+\setminted{
+    fontsize=\small,
+    breaklines=true,   % Ajustar líneas largas automáticamente
+    frame=lines,       % Líneas arriba y abajo del código
+    framesep=2mm,
+    baselinestretch=1,
+    linenos=false      % Cambia a true si quieres números de línea
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Cabeceras                                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{fancyhdr}
+
+\addtolength{\headheight}{\baselineskip}
+
+\pagestyle{fancy}
+
+\cfoot{}
+
+\fancyhead{}
+\fancyhead[RE]{\mdseries\sffamily \nouppercase{\leftmark}}
+\fancyhead[LO]{\mdseries\sffamily \nouppercase{\rightmark}}
+\fancyhead[LE,RO]{\mdseries\sffamily \thepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Definiciones                                                     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input definiciones
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Título                                                           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{{\LARGE Análisis en Lean 4} }
+\author{Alex Kontorovich}
+\date{Sevilla, \today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Documento                                                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\includeonly{C3-Convergencia_de_sucesiones}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+% \input{Licencia/licenciaCC}
+% \newpage
+
+\tableofcontents
+\clearpage
+
+\include{C1-La_historia_del_analisis_real}
+\include{C2-El_calculo_de_pi}
+\include{C3-Convergencia_de_sucesiones}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: t
+%%% End:

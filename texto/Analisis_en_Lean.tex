@@ -1,0 +1,36 @@
+\documentclass[12pt, a4paper]{book}
+
+% Geometría A4 con márgenes para encuadernación
+\usepackage[inner=3cm, outer=2.5cm, top=3cm, bottom=3cm]{geometry}
+
+\input{preambulo}
+
+% Ajustes específicos para A4
+\setminted{fontsize=\small}
+\setlength{\parskip}{1ex}
+\setlength{\parindent}{2em}
+\linespread{1.05}
+
+% Cabeceras profesionales (Pares/Impares)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[RE]{\mdseries\sffamily \nouppercase{\leftmark}}
+\fancyhead[LO]{\mdseries\sffamily \nouppercase{\rightmark}}
+\fancyhead[LE,RO]{\mdseries\sffamily \thepage}
+\cfoot{}
+
+\usepackage[
+  colorlinks=true,
+  urlcolor=blue,
+  pdfauthor={Jose A. Alonso},
+  pdftitle={Análisis en Lean 4 (A4)},
+  pdfstartview=FitH]{hyperref}
+
+\input definiciones
+\input contenido
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: t
+%%% End:
