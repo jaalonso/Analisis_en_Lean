@@ -1,0 +1,458 @@
+\chapter{No convergencia}
+
+\section{Un gran debate}
+
+En el siglo XIX, cuando la gente aún tenía confusión sobre los límites en general,
+existía una sucesión concreta sobre la que se discutía acaloradamente:
+\[
+  1,\; -1,\; 1,\; -1,\; 1,\; -1,\; \ldots
+\]
+¿Converge o no converge?
+
+Algunos decían: subes uno y bajas uno, así que en promedio está alrededor de
+cero. Por tanto, el límite debería ser~$0$.
+
+Otros respondían: fíjate en las sumas parciales de la sucesión:
+\begin{align*}
+  1 &= 1 \\
+  1 + (-1) &= 0 \\
+  1 + (-1) + 1 &= 1 \\
+  1 + (-1) + 1 + (-1) &= 0
+\end{align*}
+Las sumas parciales alternan entre~$1$ y~$0$, así que quizá el límite sea
+$\tfrac{1}{2}$.
+
+Esto es el tipo de problema al que te enfrentas cuando no existe un consenso
+comunitario sobre las definiciones, es decir, cuando no hay una definición
+rigurosa de límite. ¡Por suerte, ahora sí la tenemos!
+
+Con esa definición, esta sucesión \ldots\ \textbf{no tiene límite} (diverge).
+
+Para expresarlo formalmente, introduzcamos una nueva definición:
+
+\begin{minted}{lean4}
+def SucConv (a : ℕ → ℝ) : Prop :=
+  ∃ L, LimSuc a L
+\end{minted}
+
+Es decir, una sucesión~$a$ «converge» (sin especificar a qué) si existe algún
+número real~$L$ tal que $a$ converge a ese número.
+
+El objetivo de este capítulo es demostrar:
+\[
+  \text{Meta}: \neg\,\texttt{SucConv}\;a,
+\]
+dado la hipótesis
+\[
+  \texttt{ha : ∀n, a n = (-1 : R)\^{}n}
+\]
+(Nota: el símbolo $\neg$ se obtiene escribiendo \verb|\not|.)
+
+¿Cómo se demuestra la negación de algo? Lógicamente hablarías así: si eso
+ocurriera, obtendríamos una contradicción. Técnicamente, $\neg P$ es
+por definición equivalente a \[P \to \text{False}\]
+
+Por tanto, podemos comenzar la demostración recordándonos este hecho escribiendo:
+\begin{minted}{lean4}
+change SucConv a → False
+\end{minted}
+Eso cambiará la meta a: \texttt{SucConv a → False}.
+
+En general, recomiendo el siguiente protocolo:
+
+\begin{enumerate}
+  \item \textbf{Pensar.} Hacer un borrador, tener una idea vaga de cómo
+        ensamblar el argumento.
+  \item \textbf{Demostrarlo formalmente.} ¡Pero no has terminado! Que algo
+        funcione formalmente no significa necesariamente que entiendas qué está
+        ocurriendo. El objetivo de las matemáticas \emph{no} es que simplemente
+        funcione, sino que \textbf{entiendas exactamente} qué está pasando y por
+        qué. Por eso existe el paso~3:
+  \item \textbf{Dar una demostración en lenguaje natural} que explique
+        (para ti mismo tanto como para cualquier otra persona, incluyéndome a
+        mí) qué ocurre y por qué.
+\end{enumerate}
+
+Usando únicamente reacciones instintivas (si ves $P \to Q$ en la meta,
+escribe \texttt{intro}; si ves $\exists$ en una hipótesis, escribe
+\texttt{choose}; si ves una definición en la meta o en una hipótesis,
+escribe \texttt{change}), llegamos al siguiente punto:
+
+\medskip
+\noindent\textbf{Objetos:} $a : \mathbb{N} \to \mathbb{R}$, $L : \mathbb{R}$
+
+\noindent\textbf{Supuestos:}
+\begin{itemize}
+  \item \texttt{ha : ∀(n : N), a n = (-1)\^{}n}
+  \item \texttt{hL : ∀ε > 0, ∃N, ∀n ≥ N, |a n - L| < ε}
+\end{itemize}
+
+\noindent\textbf{Meta:} \texttt{False}
+
+\medskip
+Recuerda al Ingeniero y al Mecánico: el Ingeniero especifica cualquier
+tolerancia, y el Mecánico debe garantizar que estaremos dentro de esa
+tolerancia «eventualmente», es decir, para todo~$n$ suficientemente grande,
+medido por la cota inferior~$N$.
+
+\medskip
+\noindent\textbf{Idea clave:} Encontrar un~$\varepsilon$ cuya tolerancia sea
+demasiado ajustada para que el Mecánico pueda cumplirla. Como la sucesión
+alterna entre~$1$ y~$-1$, que difieren en~$2$, la tolerancia $\varepsilon = 1$
+ya sería suficiente, pero para tener un poco más de margen tomemos
+$\varepsilon = \tfrac{1}{2}$.
+
+\begin{nota}
+  Si hubiéramos tomado $\varepsilon = 1.5$, \emph{no} funcionaría. No podemos
+  descartar la posibilidad de que $L = 0$, y los valores~$1$ y~$-1$ \emph{sí}
+  están dentro de esa tolerancia. Por tanto, no hallaríamos ninguna
+  contradicción.
+\end{nota}
+
+Tras varios cálculos, llegamos a:
+\[
+  |1 - L| < \tfrac{1}{2}
+  \qquad\text{y}\qquad
+  |-1 - L| < \tfrac{1}{2}.
+\]
+Intentemos obtener una contradicción a partir de ahí:
+\begin{align*}
+  2 &= |2| \\
+    &= |1 - (-1)| \\
+    &= |(1 - L) + (L - (-1))| \\
+    &\leq |(1 - L)| + |(L - (-1))| \\
+    &= |(1 - L)| + |{-}((-1) - L)| \\
+    &= |(1 - L)| + |((-1) - L)| \\
+    & < \tfrac{1}{2} + \tfrac{1}{2} \\
+    &= 1.
+\end{align*}
+Eso nos da la contradicción deseada.
+
+% ─── Nuevas herramientas ──────────────────────────────────────────────────────
+\subsection*{Nuevas herramientas que necesitarás}
+
+\begin{itemize}
+  \item \textbf{Negación:} Si $P$ es alguna \texttt{Prop}, entonces $\neg P$
+        es por definición equivalente a $P \to \text{False}$. Por tanto,
+        puedes escribir `\texttt{change P → False}`, ya sea en la meta o en una
+        hipótesis.
+
+  \item \textbf{La desigualdad triangular:} Para añadir el hecho de que
+        $|x + y| \leq |x| + |y|$ a nuestra lista de hipótesis, invoca el
+        teorema \texttt{abs\_add}:
+\begin{minted}{lean4}
+have h : |x + y| ≤ |x| + |y| := by apply abs_add
+\end{minted}
+
+  \item \textbf{Negación dentro de un valor absoluto:} También puede
+        resultar útil el teorema \texttt{abs\_neg}, que se llama así:
+\begin{minted}{lean4}
+have h : |-x| = |x| := by apply abs_neg
+\end{minted}
+
+  \textbf{¡Atención!} Asegúrate de que el patrón \texttt{|-Algo|} esté en el
+  lado izquierdo. Si Lean no ve un valor absoluto seguido de un signo menos,
+  \texttt{abs\_neg} no funcionará.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Paso 2: Solución en Lean}
+
+\begin{minted}{lean4}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea a la sucesión definida por a(n) = (-1)^n. Supongamos que a es
+-- convergente. Entonces, existe un L tal que a converge L. Por tanto,
+-- existe un N ∈ ℕ tal que,
+--    ∀n ≥ N, |a(n) - L| < 1/2                                      (1)
+-- Entonces,
+--    2 = |2|
+--      = |(1 - L) + (1 + L)|
+--      = |(1 - L) + (-1)(-1 - L)|
+--      ≤ |1 - L| + |(-1)(-1 - L)|
+--      = |1 - L| + |-1 - L|
+--      = |(-1)^{2N} - L| + |(-1)^{2N+1} - L|
+--      = |a(2N) - L| + |a(2N+1) - L|
+--      < 1/2 + 1/2                            [por (1), 2N ≥ N y 2N+1 ≥ N]
+--      = 1
+-- Luego, 2 < 1 que es una contradicción.
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : ∀ n, a n = (-1) ^ n)
+  : ¬ SucConv a :=
+by
+  intro h
+  -- h : SucConv a
+  -- ⊢ False
+  choose L hL using h
+  -- L : ℝ
+  -- hL : LimSuc a L
+  choose N hN using hL (1/2) (by grind)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1 / 2
+  have h1 : (2:ℝ) < 1 := by calc
+    2 = |2|                                        := by grind
+    _ = |(1 - L) + (1 + L)|                        := by grind
+    _ = |(1 - L) + (-1)*(-1 - L)|                  := by grind
+    _ ≤ |1 - L| + |(-1)*(-1 - L)|                  := by grind
+    _ = |1 - L| + |-1 - L|                         := by grind
+    _ = |(-1:ℝ)^(2*N) - L| + |(-1:ℝ)^(2*N+1) - L|  := by
+          have h2 : (-1:ℝ)^(2*N) = 1    := by simp
+          have h3 : (-1:ℝ)^(2*N+1) = -1 := by grind
+          rw [h2, h3]
+    _ = |a (2*N) - L| + |a (2*N+1) - L|            := by simp [ha]
+    _ < 1/2 + 1/2                                  := by grind
+    _ = 1                                          := by grind
+  linarith
+
+-- 2ª demostración
+-- ===============
+
+variable {x y z x' y' : ℝ}
+variable {m n k : ℕ}
+variable (f : ℝ → ℝ)
+
+lemma L1 : (1 - x) + (1 + x) = 2 := by
+  calc (1 - x) + (1 + x)
+       = 1 + 1             := sub_add_add_cancel 1 1 x
+     _ = 2                 := one_add_one_eq_two
+
+lemma L2 : (-1:ℝ) * -1 = 1 := by
+  calc (-1:ℝ) * -1
+       = 1 * 1   := neg_mul_neg 1 1
+     _ = 1       := one_mul 1
+
+lemma L3 : -1 * -x = x := by
+  calc -1 * -x
+       = -(1 * -x) := neg_mul 1 (-x)
+     _ = - -x      := congr_arg (- ·) (one_mul (-x))
+     _ = x         := neg_neg x
+
+lemma L4 : -1 * (-1 - x) = 1 + x := by
+  calc -1 * (-1 - x)
+       = -1 * (-1 + -x)     := congr_arg (-1 * ·) (sub_eq_add_neg (-1) x)
+     _ = -1 * -1 + -1 * -x  := left_distrib (-1) (-1) (-x)
+     _ = 1 + -1 * -x        := congr_arg (· + (-1)*(-x)) L2
+     _ = 1 + x              := congr_arg ( 1 + ·) L3
+
+lemma L5 : |-1 * (-1 - x)| = |-1 - x| := by
+  calc |-1 * (-1 - x)|
+       = |-1| * |-1 - x| := abs_mul (-1) (-1 - x)
+     _ = |1| * |-1 - x|  := congrArg (· * |-1 - x|) (abs_neg 1)
+     _ = 1 * |-1 - x|    := congrArg (· * |-1 - x|) abs_one
+     _ = |-1 - x|        := one_mul |-1 - x|
+
+lemma L6 : (-1:ℝ)^(2*n) = 1 := by
+  calc (-1:ℝ)^(2*n)
+       = ((-1:ℝ)^2)^n := pow_mul (-1) 2 n
+     _ = (1:ℝ)^n      := congr_arg ( · ^ n) neg_one_sq
+     _ = 1            := one_pow n
+
+lemma L7 : (-1:ℝ)^(2*n+1) = -1 := by
+  calc (-1:ℝ)^(2*n+1)
+       = (-1)^(2*n) * -1 := pow_succ (-1) (2 * n)
+     _ = 1 * -1          := congr_arg (· * -1) L6
+     _ = -1              := one_mul (-1)
+
+lemma L8 : n ≤ 2 * n := by
+  calc n
+       = 1 * n := (one_mul n).symm
+     _ ≤ 2 * n := Nat.mul_le_mul_right n one_le_two
+
+lemma L9
+  (hN : ∀ n ≥ N, |a n - x| < 1 / 2)
+  : |a (2*N) - x| < 1 / 2 :=
+hN (2*N) L8
+
+lemma L10 : n ≤ 2 * n + 1 := by
+  calc n
+       ≤ 2 * n     := L8
+     _ ≤ 2 * n + 1 := Nat.le_add_right (2 * n) 1
+
+lemma L11
+  (hN : ∀ n ≥ N, |a n - x| < 1 / 2)
+  : |a (2*N+1) - x| < 1 / 2 :=
+hN (2*N+1) L10
+
+example
+  (ha : ∀ n, a n = (-1) ^ n)
+  : ¬ SucConv a :=
+by
+  intro h
+  -- h : SucConv a
+  -- ⊢ False
+  choose L hL using h
+  -- L : ℝ
+  -- hL : LimSuc a L
+  choose N hN using hL (1/2) one_half_pos
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1 / 2
+  have h1 : (2:ℝ) < 1 := by calc
+    2 = |2| :=
+          abs_two.symm
+    _ = |(1 - L) + (1 + L)| :=
+          congrArg abs L1.symm
+    _ = |(1 - L) + (-1)*(-1 - L)| :=
+          congr_arg (abs ((1 - L) + ·)) L4.symm
+    _ ≤ |1 - L| + |(-1)*(-1 - L)| :=
+          abs_add_le (1 - L) (-1 * (-1 - L))
+    _ = |1 - L| + |-1 - L| :=
+          congr_arg (|1 - L| + ·) L5
+    _ = |(-1:ℝ)^(2*N) - L| + |(-1:ℝ)^(2*N+1) - L|  :=
+          congrArg₂ (|· - L| + |· - L|) L6.symm L7.symm
+    _ = |a (2*N) - L| + |a (2*N+1) - L| :=
+          congrArg₂ (· + ·)
+            (congrArg (|· - L|) (ha (2*N)).symm)
+            (congrArg (|· - L|) (ha (2*N+1)).symm)
+    _ < 1 / 2 + 1 / 2 :=
+          add_lt_add (L9 hN) (L11 hN)
+    _ = 1 := add_halves 1
+  have h2 : (1:ℝ) < 1 := lt_trans one_lt_two h1
+  exact (lt_irrefl 1) h2
+
+-- Lemas usados
+-- ============
+
+#check (Nat.le_add_right n m : n ≤ n + m)
+#check (Nat.mul_le_mul_right k : n ≤ m → n * k ≤ m * k)
+#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+#check (add_halves x : x / 2 + x / 2 = x)
+#check (add_lt_add : x < x' → y < y' → x + y < x' + y')
+#check (congrArg₂  (· + ·) : x = x' → y = y' → x + y = x' + y')
+#check (congr_arg f  : x = y → f x = f y)
+#check (left_distrib x y z : x * (y + z) = x * y + x * z)
+#check (lt_irrefl x : ¬x < x)
+#check (lt_trans : x < y → y < z → x < z)
+#check (neg_mul 1 x : -1 * x = -(1 * x))
+#check (neg_mul_neg x y : -x * -y = x * y)
+#check (neg_neg x : - -x = x)
+#check (neg_one_sq : (-1)^2 = 1)
+#check (one_add_one_eq_two : 1 + 1 = 2)
+#check (one_le_two : 1 ≤ 2)
+#check (one_lt_two : (1 : ℝ) < 2)
+#check (one_mul x : 1 * x = x)
+#check (one_mul x : 1 * x = x)
+#check (one_pow n : 1 ^ n = 1)
+#check (pow_mul x m n : x ^ (m * n) = (x ^ m) ^ n)
+#check (pow_succ x n : x ^ (n + 1) = x ^ n * x)
+#check (sub_add_add_cancel x y z : (x - z) + (y + z) = x + y)
+#check (sub_eq_add_neg x y : x - y = x + -y)
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : ∀ n, a n = (-1) ^ n)
+  : ¬ SucConv a :=
+by
+  change SucConv a → False
+  -- ⊢ SucConv a → False
+  intro h
+  -- h : SucConv a
+  -- ⊢ False
+  change ∃ L, LimSuc a L at h
+  -- h : ∃ L, LimSuc a L
+  choose L hL using h
+  -- L : ℝ
+  -- hL : LimSuc a L
+  change ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε at hL
+  -- hL : ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε
+  specialize hL (1/2)
+  -- hL : 1 / 2 > 0 → ∃ N, ∀ n ≥ N, |a n - L| < 1 / 2
+  have h0 : (0 : ℝ) < 1/2 := by norm_num
+  specialize hL h0
+  -- hL : ∃ N, ∀ n ≥ N, |a n - L| < 1 / 2
+  choose N hN using hL
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1 / 2
+  have h2N : N ≤ 2 * N := by bound
+  have h2Np1 : N ≤ 2 * N + 1 := by bound
+  have h1 : |a (2 * N) - L| < 1 / 2 := by apply hN (2 * N) h2N
+  have h2 : |a (2 * N + 1) - L| < 1 / 2 := by apply hN (2 * N + 1) h2Np1
+  have h3 : a (2 * N) = (-1) ^ (2 * N) := by apply ha (2 * N)
+  have h4 : a (2 * N + 1) = (-1) ^ (2 * N + 1) := by apply ha (2 * N + 1)
+  rewrite [h3] at h1
+  -- h1 : |(-1) ^ (2 * N) - L| < 1 / 2
+  rewrite [h4] at h2
+  -- h2 : |(-1) ^ (2 * N + 1) - L| < 1 / 2
+  have h5 : (-1 : ℝ) ^ (2 * N) = 1 := by bound
+  rewrite [h5] at h1
+  -- h1 : |1 - L| < 1 / 2
+  have h6 : (-1 : ℝ) ^ (2 * N + 1) = -1 := by grind
+  rewrite [h6] at h2
+  -- h2 : |-1 - L| < 1 / 2
+  have h7 : (2 : ℝ) = |2| := by norm_num
+  have h8 : |(2 : ℝ)| = |1 - (-1)| := by ring_nf
+  have h9 : |1 - (-1)| = |(1 - L) + (L - (-1))| := by noncomm_ring
+  have h10 : |(1 - L) + (L - (-1))| ≤ |(1 - L)| + |(L - (-1))| :=
+    abs_add_le (1 - L) (L - -1)
+  have h11 : |(L - (-1))| = |-((-1) - L)| := by ring_nf
+  have h12 : |-((-1) - L)| = |((-1) - L)| := by apply abs_neg
+  have h13 : (2 : ℝ) < 1/2 + 1/2 := by
+    linarith [h8, h9, h10, h11, h12, h7, h1, h2]
+  norm_num at h13
+\end{minted}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Paso 3: Demostración en lenguaje natural}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{theorem}
+  La sucesión $1, -1, 1, -1, \ldots$ no converge.
+\end{theorem}
+
+\begin{proof}[Demostración por contradicción]
+\mbox{}
+\begin{enumerate}
+  \item Supongamos que la sucesión converge a algún límite~$L$.
+  \item Tomamos $\varepsilon = \tfrac{1}{2}$ y aplicamos la definición de
+        convergencia.
+  \item Esto garantiza la existencia de algún~$N$ tal que
+        $|a_n - L| < \tfrac{1}{2}$ para todo $n \geq N$.
+  \item Consideramos dos índices concretos: $n = 2N$ y $n = 2N+1$
+        (ambos son $\geq N$):
+        \begin{itemize}
+          \item $a(2N) = (-1)^{2N} = 1$, luego $|1 - L| < \tfrac{1}{2}$.
+          \item $a(2N+1) = (-1)^{2N+1} = -1$, luego $|-1 - L| < \tfrac{1}{2}$.
+        \end{itemize}
+  \item Pero entonces:
+        \begin{align*}
+          2 &= |1 - (-1)| \\
+            &= |(1 - L) + (L + 1)| \\
+            &\leq |1 - L| + |L + 1| \quad \text{(desigualdad triangular)} \\
+            &= |1 - L| + |-1 - L| \quad \text{(manipulación algebraica)} \\
+            &< \tfrac{1}{2} + \tfrac{1}{2} \\
+            &= 1 \quad \text{(de los pasos anteriores).}
+        \end{align*}
+  \item Esto nos da $2 < 1$, lo cual es imposible. \qedhere
+\end{enumerate}
+\end{proof}
+
+\subsection{Ideas clave}
+
+\begin{itemize}
+  \item \textbf{Intuición geométrica:} Cualquier límite propuesto~$L$ debe
+        estar simultáneamente a distancia menor de $\tfrac{1}{2}$ tanto de~$1$
+        como de~$-1$, pero estos valores están a distancia~$2$ entre sí.
+
+  \item \textbf{Elección crítica:} Escogimos $\varepsilon = \tfrac{1}{2}$
+        de forma estratégica; valores mayores como $\varepsilon = 1.5$ no
+        funcionarían, ya que $L = 0$ podría satisfacer las restricciones.
+
+  \item \textbf{Desigualdad triangular:} El paso clave usa
+        $|a + b| \leq |a| + |b|$ para convertir la distancia entre los valores
+        de la sucesión en una suma de distancias al límite.
+\end{itemize}
+
+Esta demostración ilustra cómo las definiciones rigurosas resuelven debates
+matemáticos históricos y proporcionan criterios claros para la convergencia.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

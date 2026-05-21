@@ -1,0 +1,278 @@
+\chapter{Los números reales I}
+
+\section{Introducción: Sucesiones de Cauchy y los números reales}
+
+\socrates{Hasta ahora hemos aprendido que si una sucesión converge, entonces es acotada, y además que cualquier subsucesión suya también converge al mismo límite.}
+
+\simplicio{Sí, ¿y?}
+
+\socrates{Y vimos que pueden existir sucesiones que no convergen por sí mismas —como $(-1)^n$— pero que son acotadas y tienen subsucesiones que sí convergen. Los términos de índice par, en este ejemplo, son todos iguales a $1$.}
+
+\simplicio{¿Adónde quieres llegar?}
+
+\socrates{Bien, ¿qué pregunta podría hacerse naturalmente un matemático a partir de esa información?}
+
+\simplicio{¿Te refieres a si eso siempre ocurre?}
+
+\socrates{Sí, algo así. ¿Puedes elaborarlo?}
+
+\simplicio{De acuerdo, voy al juego. Intentas que yo formule algún tipo de recíproco. Si una sucesión es acotada, entonces\ldots\ ¿converge? No, eso no puede ser correcto —una sucesión acotada puede oscilar sin converger, como la propia $(-1)^n$.
+
+Ah, pero quizás siempre existe alguna subsucesión que converge. Hmm, pero tampoco puede ser correcto, ya que la sucesión $a_n = n$ no tiene ninguna subsucesión convergente: simplemente escapa al infinito.
+
+¡Oh! Pero espera, esa sucesión no es acotada. ¿Estás diciendo que si lo único que sé de una sucesión es que es acotada, entonces siempre existe alguna subsucesión que converge?}
+
+\socrates{¡Sí, exactamente! Este hecho importante se llama el \textbf{teorema de Bolzano-Weierstrauss}. Pero aquí es donde la cosa se vuelve realmente sutil. Piensa en la sucesión de fracciones:
+  \begin{align*}
+    a^{(0)} &= \tfrac{1}{1}, \\
+    a^{(1)} &= \tfrac{14}{10}, \\
+    a^{(2)} &= \tfrac{141}{100}, \\
+    a^{(3)} &= \tfrac{1414}{1000}, \\
+    \ldots
+  \end{align*}
+que se acercan cada vez más a $1{,}4142\cdots = \sqrt{2}$. La sucesión es acotada (por $2$, siendo generosos) e incluso creciente, pero su límite \emph{no es un número racional}. Por tanto, el teorema de Bolzano-Weierstrauss \emph{no es verdadero} para los racionales. Como te advertí hace tiempo, tendremos que enfrentarnos finalmente al hecho de que ni siquiera sabemos qué son los números reales. Creo que ese momento ha llegado.}
+
+\simplicio{Bien, estoy listo; dime qué son.}
+
+\socrates{Por desgracia, es bastante complicado, y nos llevará algún tiempo llegar a la respuesta y comprender por qué es la respuesta. Demos un paso atrás. ¿Qué te gustaría poder decir sobre los números reales?}
+
+\simplicio{Bueno, supongo que me gustaría decir algo como: son los límites de sus expansiones decimales. Así que son límites de sucesiones racionales. Por ejemplo, $\sqrt{2}$ es el límite de la sucesión que acabas de mencionar: $1,\; 1{,}4,\; 1{,}41,\; 1{,}414,\;\ldots$}
+
+\socrates{¡Bien! Entonces quieres definir un número real como «el límite de una sucesión de racionales». Pero recuérdame: ¿qué significa que una sucesión tenga un límite?}
+
+\simplicio{Significa que para todo $\varepsilon > 0$ existe un $N$, bla, bla, bla. Los términos se acercan arbitrariamente a algún número $L$.}
+
+\socrates{¿Y qué es ese misterioso número $L$? ¿De qué tipo es?}
+
+\simplicio{Es\ldots\ un número real. Ay, no.}
+
+\socrates{¡Exactamente! Tenemos una definición circular. Intentamos definir los números reales como límites de sucesiones racionales, pero la propia noción de «límite» que hemos venido usando presupone que ya sabemos qué son los números reales.}
+
+\simplicio{¿Entonces estamos atascados? ¿No podemos definir los números reales?}
+
+\socrates{¡Así parece! Pero aquí es donde Cauchy tuvo una idea brillante. Se dio cuenta de lo mismo que tú: no puede usar números reales para definir los límites. Quiere decir: «$a_n$ se acerca cada vez más a $L$», pero sin referencia al propio $L$. Necesita encontrar algo más a lo que poder decir que $a_n$ se acerca.}
+
+\simplicio{Pero no tiene nada más.}
+
+\socrates{¡Exactamente!! Entonces\ldots}
+
+\simplicio{Entonces, si todo lo que tiene es la sucesión $a_n$, y tiene que compararla con algo, y no tiene nada más\ldots\ ¡Oh! ¿Tiene que compararla \emph{consigo misma}? ¿Pero cómo?}
+
+\socrates{¡Vaya, lo has captado! Sí, exactamente. ¿Cómo?}
+
+\simplicio{Pues claro que es inútil preguntar si $|a_n - a_n| < \varepsilon$. Pero\ldots\ ¡podría preguntar si $|a_n - a_m| < \varepsilon$, una vez que $n$ y $m$ sean ambos suficientemente grandes!}
+
+\socrates{¡Ja, lo lograste! Sí, exactamente: si $a_n$ y $a_m$ están ambos dentro de $\varepsilon$ el uno del otro, eso debería ser un sustituto de la convergencia.}
+
+\simplicio{¡Qué ingenioso! ¿Entonces, en lugar de decir «la sucesión converge a $L$», decimos «los términos de la sucesión se acercan arbitrariamente entre sí»?}
+
+\socrates{Precisamente. ¿Puedes formalizarlo usando $\varepsilon$'s y $N$'s?}
+
+\simplicio{Creo que sí. Supongo que deberíamos decir que una sucesión $a_n$ tiene un límite si: para todo $\varepsilon > 0$, existe un $N$ tal que para todos $m, n \geq N$ se tiene $|a_m - a_n| < \varepsilon$.}
+
+\socrates{¡Hermoso! Pero como ya tenemos un significado distinto para la noción de «tiene un límite», llamaremos «Cauchy» a esta propiedad. Así que decimos que una sucesión es \emph{de Cauchy} si, como dijiste:
+\[
+\forall\,\varepsilon > 0,\;\exists\,N,\;\forall\,m \geq N,\;\forall\,n \geq N,\quad |a_m - a_n| < \varepsilon.
+\]
+Esta es una de las definiciones más importantes de toda la matemática. Aparece no solo aquí en el análisis real, sino también en aritmética superior al construir los números $p$-ádicos, en análisis funcional al estudiar espacios de Banach y de Hilbert, y en topología y geometría al «completar» espacios métricos. Dondequiera que los matemáticos quieran hablar de «convergencia» sin saber de antemano hacia dónde convergen las cosas, recurren a una versión de la definición de Cauchy.}
+
+\simplicio{Me gusta; ¡sigamos!}
+
+\section{Nivel superior: Los límites son Cauchy}
+
+Uno de los vínculos fundamentales en el análisis es que la convergencia implica la propiedad de Cauchy. Este teorema establece que cualquier sucesión que tenga un límite satisface el criterio autorreferencial de Cauchy para la convergencia.
+
+\subsection{Planteamiento matemático}
+
+\begin{definicion}[EsCauchy]
+Una sucesión $a : \mathbb{N} \to \mathbb{R}$ se dice \emph{de Cauchy} si para todo $\varepsilon > 0$ existe $N \in \mathbb{N}$ tal que para todos $m, n \geq N$ se tiene $|a_m - a_n| < \varepsilon$.
+\end{definicion}
+
+\begin{teorema}
+Si una sucesión $a : \mathbb{N} \to \mathbb{R}$ converge, entonces es de Cauchy.
+\end{teorema}
+
+\subsection{Nuevas herramientas}
+
+\textbf{abs\_sub\_comm:} Para cualesquiera números reales $x$ e $y$, se tiene $|x - y| = |y - x|$. Esta propiedad de simetría es crucial para manipular expresiones con valor absoluto de diferencias.
+
+\subsection{Enfoque estratégico}
+
+La estrategia de demostración consiste en:
+\begin{itemize}
+  \item Usar la hipótesis de convergencia para acercarse al límite $L$.
+  \item Aplicar la desigualdad triangular para relacionar $|a_m - a_n|$ con las distancias al límite.
+  \item Elegir $\varepsilon/2$ al aplicar la definición de límite para garantizar que la suma permanezca por debajo de $\varepsilon$.
+\end{itemize}
+
+La idea clave es que si tanto $a_m$ como $a_n$ están a distancia menor que $\varepsilon/2$ de $L$, entonces deben estar a distancia menor que $\varepsilon$ el uno del otro.
+
+\subsection{Solución en Lean}
+
+\begin{minted}{lean}
+Statement IsCauchyOfLim (a : N → R) (ha : SeqConv a)
+    : IsCauchy a := by
+  choose L hL using ha
+  intro ε hε
+  choose N hN using hL (ε / 2) (by bound)
+  use N
+  intro n hn m hm
+  have hn' : |a n - L| < ε / 2 := by apply hN n hn
+  have hm' : |a m - L| < ε / 2 := by apply hN m hm
+  rewrite [(by ring_nf : |a n - a m| = |(a n - L) + (L - a m)|)]
+  have f1 : |(a n - L) + (L - a m)| ≤ |a n - L| + |L - a m|
+      := by apply abs_add
+  have f2 : |L - a m| = |a m - L| := by apply abs_sub_comm
+  linarith [f1, f2, hn', hm']
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Supongamos que $a$ converge. Entonces existe $L \in \mathbb{R}$ tal que $a_n \to L$. Dado $\varepsilon > 0$, como $a_n \to L$, existe $N$ tal que para todo $n \geq N$:
+\[|a_n - L| < \frac{\varepsilon}{2}.\]
+Ahora, para cualesquiera $m, n \geq N$:
+\begin{align*}
+  |a_m - a_n| &= |(a_m - L) + (L - a_n)| \\
+              &\leq |a_m - L| + |L - a_n| \\
+              &= |a_m - L| + |a_n - L| \\
+              &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} \\
+              &= \varepsilon
+\end{align*}
+Por tanto, $a$ es de Cauchy.
+\end{proof}
+
+\section{Nivel 2: Sumas de sucesiones de Cauchy}
+
+Así como las sumas de sucesiones convergentes convergen, las sumas de sucesiones de Cauchy son de Cauchy. Este resultado es importante porque muestra que la propiedad de Cauchy se preserva bajo operaciones aritméticas.
+
+\subsection{Planteamiento matemático}
+
+\begin{teorema}
+Si las sucesiones $a$ y $b$ son de Cauchy, entonces su suma $a + b$ también lo es.
+\end{teorema}
+
+\subsection{Enfoque estratégico}
+
+La demostración sigue un patrón similar al de la suma de límites:
+\begin{itemize}
+  \item Aplicar la propiedad de Cauchy tanto a $a$ como a $b$ con $\varepsilon/2$.
+  \item Tomar $N$ como el máximo de los dos valores individuales de $N$.
+  \item Usar la desigualdad triangular para combinar las estimaciones.
+\end{itemize}
+
+\subsection{Solución en Lean}
+
+\begin{minted}{lean}
+Statement IsCauchyOfSum (a b : N → R) (ha : IsCauchy a)
+    (hb : IsCauchy b)
+    : IsCauchy (a + b) := by
+  intro ε hε
+  choose N1 hN1 using ha (ε / 2) (by bound)
+  choose N2 hN2 using hb (ε / 2) (by bound)
+  use N1 + N2
+  intro m hm n hn
+  specialize hN1 m (by bound) n (by bound)
+  specialize hN2 m (by bound) n (by bound)
+  change |(a m + b m) - (a n + b n)| < ε
+  rewrite [(by ring_nf : |(a m + b m) - (a n + b n)|
+      = |(a m - a n) + (b m - b n)|)]
+  have f1 : |a m - a n + (b m - b n)| ≤ |a m - a n| + |(b m - b n)|
+      := by apply abs_add
+  linarith [f1, hN1, hN2]
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Supongamos que $a$ y $b$ son sucesiones de Cauchy. Dado $\varepsilon > 0$, como $a$ es de Cauchy, existe $N_1$ tal que para todos $m, n \geq N_1$:
+\[|a_m - a_n| < \frac{\varepsilon}{2}.\]
+De manera similar, como $b$ es de Cauchy, existe $N_2$ tal que para todos $m, n \geq N_2$:
+\[|b_m - b_n| < \frac{\varepsilon}{2}.\]
+Sea $N = N_1 + N_2$. Para cualesquiera $m, n \geq N$:
+\begin{align*}
+|(a+b)_m - (a+b)_n| &= |(a_m + b_m) - (a_n + b_n)|\\
+&= |(a_m - a_n) + (b_m - b_n)|\\
+&\leq |a_m - a_n| + |b_m - b_n|\\
+&< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
+\end{align*}
+Por tanto, $a + b$ es de Cauchy.
+\end{proof}
+
+\section{Nivel 3: Cauchy implica acotada}
+
+Una de las propiedades clave de las sucesiones de Cauchy es que son acotadas. Esto es paralelo al resultado de que las sucesiones convergentes son acotadas, pero ahora lo demostramos directamente a partir de la propiedad de Cauchy, sin referencia a un límite.
+
+\subsection{Planteamiento matemático}
+
+\begin{teorema}
+Si una sucesión $a : \mathbb{N} \to \mathbb{R}$ es de Cauchy, entonces es acotada.
+\end{teorema}
+
+\subsection{Enfoque estratégico}
+
+La estrategia de demostración consiste en:
+\begin{itemize}
+  \item Usar la propiedad de Cauchy con $\varepsilon = 1$ para asegurar que eventualmente todos los términos permanezcan a distancia $1$ de algún término fijo.
+  \item Manejar por separado los términos iniciales, que es un número
+    finito,  tomando su máximo.
+  \item Combinar estas dos cotas para obtener una cota global para toda la sucesión.
+\end{itemize}
+
+La idea clave es que una sucesión de Cauchy está «eventualmente agrupada», y solo necesitamos dar cuenta de los términos anteriores a que comience ese agrupamiento.
+
+\subsection{Solución en Lean}
+
+\begin{minted}{lean}
+Statement IsBddOfCauchy (a : N → R) (ha : IsCauchy a)
+    : SeqBdd a := by
+  choose N hN using ha 1 (by bound)
+  use |a N| + 1 + ∑ k ∈ range N, |a k|
+  have aNnonneg : 0 ≤ |a N| := by bound
+  have sumNonneg : 0 ≤ ∑ k ∈ range N, |a k|
+      := by apply sum_nonneg (by bound)
+  have f1 : ∀ n < N, |a n| ≤ ∑ k ∈ range N, |a k|
+      := by apply TermLeSum a N
+  split_ands
+  · linarith [aNnonneg, sumNonneg]
+  intro n
+  specialize hN N (by bound) n
+  by_cases hn : n < N
+  · specialize f1 n hn
+    linarith [f1, aNnonneg]
+  · specialize hN (by bound)
+    have f2 : |a n| = |(a n - a N) + a N| := by ring_nf
+    have f3 : |(a n - a N) + a N| ≤ |a n - a N| + |a N|
+        := by apply abs_add
+    rewrite [(by apply abs_sub_comm : |a n - a N| = |a N - a n|)] at f3
+    linarith [f2, f3, hN, sumNonneg]
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Supongamos que $a$ es de Cauchy. Como $a$ es de Cauchy, tomando $\varepsilon = 1$, existe $N$ tal que para todos $m, n \geq N$:
+\[|a_m - a_n| < 1.\]
+En particular, para todo $n \geq N$:
+\[|a_n - a_N| < 1.\]
+Por la desigualdad triangular:
+\begin{align*}
+  |a_n| &= |a_n - a_N + a_N| \\
+        &\leq |a_n - a_N| + |a_N| \\
+        &< 1 + |a_N|
+\end{align*}
+Para los términos con $n < N$, sea:
+\[M_0 = \max\{|a_0|, |a_1|, \ldots, |a_{N-1}|\}.\]
+Entonces para todo $n \in \mathbb{N}$:
+\[|a_n| \leq \max\{M_0,\; 1 + |a_N|\}.\]
+Por tanto, $a$ es acotada.
+\end{proof}
+
+\subsection{Importancia}
+
+Este teorema es crucial para la construcción de los números reales. Muestra que las sucesiones de Cauchy comparten una propiedad fundamental con las sucesiones convergentes, aun cuando todavía no hayamos establecido que las sucesiones de Cauchy convergen (¡en los racionales no siempre lo hacen!). Esta acotación será esencial cuando finalmente demostremos el teorema de Bolzano-Weierstrauss y establezcamos que los números reales son «completos», es decir, que toda sucesión de Cauchy de números reales converge a un número real.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

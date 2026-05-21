@@ -1,0 +1,403 @@
+\chapter{Técnicas avanzadas de demostración y el teorema del emparedado}
+
+\section{La suma de sucesiones convergentes}
+
+Una de las ideas más fundamentales en análisis es que ``las operaciones
+agradables preservan la convergencia''. Si dos sucesiones convergen cada
+una, entonces su suma también converge, y converge a la suma de sus
+límites.
+
+Esto puede parecer obvio a primera vista: si $a(n)$ se acerca a $L$ y
+$b(n)$ se acerca a $M$, ¿no debería $a(n)+b(n)$ acercarse a $L+M$? Aunque
+la intuición es correcta, hacer esto riguroso requiere cierta habilidad en
+el manejo de nuestra definición épsilon-$N$.
+
+La idea clave es la siguiente: si un ingeniero exige que nuestra producción
+combinada esté dentro de $\varepsilon$ del objetivo $L+M$, no podemos
+simplemente pedir a cada fábrica que cumpla independientemente la
+tolerancia completa $\varepsilon$. En cambio, debemos ser inteligentes al
+repartir nuestro ``presupuesto de tolerancia''.
+
+Piénselo así: si la primera fábrica puede garantizar que su producción
+está dentro de $\varepsilon/2$ de $L$, y la segunda fábrica puede
+garantizar que su producción está dentro de $\varepsilon/2$ de $M$,
+entonces, por la desigualdad triangular, su suma estará dentro de
+$\varepsilon$ de $L+M$. ¡Este es el corazón de la demostración!
+
+\subsection{La configuración matemática}
+
+Supongamos que tenemos:
+\begin{itemize}
+  \item Una sucesión $a : \mathbb{N} \to \mathbb{R}$ que converge a $L$.
+  \item Una sucesión $b : \mathbb{N} \to \mathbb{R}$ que converge a $M$.
+  \item Una sucesión $c : \mathbb{N} \to \mathbb{R}$ con la propiedad de
+        que $c(n) = a(n) + b(n)$ para todo $n$.
+\end{itemize}
+
+Queremos demostrar que $c$ converge a $L+M$.
+
+\subsection{Estrategia}
+
+\begin{enumerate}
+  \item Comenzar desplegando las definiciones de convergencia en la meta y
+        las hipótesis.
+  \item Dado cualquier $\varepsilon > 0$, usar la convergencia de $a$ para
+        obtener un $N_a$ que funcione para $\varepsilon/2$.
+  \item Similarmente, usar la convergencia de $b$ para obtener un $N_b$
+        que funcione para $\varepsilon/2$.
+  \item Tomar $N = N_a + N_b$ (asegurando que ambas condiciones se
+        satisfagan).
+  \item Usar la desigualdad triangular para combinar las dos
+        semitolerancias.
+\end{enumerate}
+
+\subsection{Solución en Lean}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement SumLim (a b c : ℕ → ℝ) (L M : ℝ)
+    (ha : SeqLim a L) (hb : SeqLim b M) (hc : ∀ n, c n = a n + b n) :
+    SeqLim c (L + M) := by
+  change ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |c n - (L + M)| < ε
+  intro ε hε
+  unfold SeqLim at ha
+  change ∀ ε1 > 0, ∃ Na : ℕ, ∀ n ≥ Na, |a n - L| < ε1 at ha
+  change ∀ ε2 > 0, ∃ Nb : ℕ, ∀ n ≥ Nb, |b n - M| < ε2 at hb
+  specialize ha (ε / 2)
+  specialize hb (ε / 2)
+  have eps_on_2_pos : 0 < ε / 2 := by linarith [hε]
+  specialize ha eps_on_2_pos
+  specialize hb eps_on_2_pos
+  choose Na hNa using ha
+  choose Nb hNb using hb
+  use Na + Nb
+  intro n hn
+  specialize hc n
+  rewrite [hc]
+  have thing : a n + b n - (L + M) = (a n - L) + (b n - M) := by ring_nf
+  rewrite [thing]
+  specialize hNa n
+  specialize hNb n
+  have ineq_a : Na ≤ n := by bound
+  have ineq_b : Nb ≤ n := by bound
+  specialize hNa ineq_a
+  specialize hNb ineq_b
+  have ineq : |a n - L + (b n - M)| ≤ |a n - L| + |(b n - M)| :=
+    by apply abs_add
+  bound
+\end{minted}
+
+\subsection{Demostración en Lenguaje Natural}
+
+\begin{theorem}
+Si dos sucesiones de números reales convergen a sus respectivos límites,
+entonces la sucesión formada sumando los términos correspondientes también
+converge, y su límite es la suma de los límites originales.
+\end{theorem}
+
+\begin{proof}
+Supongamos que las sucesiones $a(n)$ y $b(n)$ convergen a $L$ y $M$
+respectivamente, y queremos demostrar que $c(n) = a(n)+b(n)$ converge a
+$L+M$.
+
+Por definición, debemos demostrar que para cualquier tolerancia
+$\varepsilon > 0$, podemos encontrar un punto $N$ tal que para todo
+$n \geq N$ se tiene $|c(n)-(L+M)| < \varepsilon$.
+
+Como $a(n)$ converge a $L$, podemos encontrar $N_1$ tal que
+$|a(n)-L| < \varepsilon/2$ para todo $n \geq N_1$. Como $b(n)$ converge a
+$M$, podemos encontrar $N_2$ tal que $|b(n)-M| < \varepsilon/2$ para todo
+$n \geq N_2$.
+
+Sea $N = N_1 + N_2$. Entonces, para cualquier $n \geq N$:
+\[
+  |c(n)-(L+M)| = |(a(n)+b(n))-(L+M)| = |(a(n)-L)+(b(n)-M)|.
+\]
+Por la desigualdad triangular, esto es a lo sumo:
+\[
+  |a(n)-L| + |b(n)-M| < \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon.
+\]
+Por lo tanto, $c(n)$ converge a $L+M$.
+\end{proof}
+
+\section{Separar conjunciones: Descomponiendo metas complejas}
+
+Las demostraciones matemáticas a menudo requieren establecer múltiples
+hechos relacionados simultáneamente. Cuando la meta consiste en demostrar
+múltiples enunciados conectados por ``y'' ($\wedge$), la táctica
+\texttt{split\_ands} resulta invaluable.
+
+Piense en \texttt{split\_ands} como una forma de descomponer una
+especificación de fabricación compleja en verificaciones de calidad
+individuales. En lugar de intentar verificar que un producto cumple tres
+estándares diferentes a la vez, podemos abordar cada estándar de forma
+separada y sistemática.
+
+\subsection{Nuevas herramientas}
+
+La táctica \texttt{split\_ands} divide las metas ``y'' en piezas
+individuales. Si la meta es $h_1 \wedge h_2 \wedge h_3$, llamar a
+\texttt{split\_ands} la dividirá en tres metas separadas: primero $h_1$,
+luego $h_2$ y finalmente $h_3$.
+
+\subsection{Ejemplo}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement (x y : ℝ) (hx : x = 2) (hy : y = 3) :
+    x = 2 ∧ y = 3 := by
+  split_ands
+  apply hx
+  apply hy
+\end{minted}
+
+La táctica \texttt{split\_ands} puede parecer sencilla, pero es
+increíblemente poderosa para organizar demostraciones complejas. Muchos
+teoremas matemáticos importantes tienen conclusiones que son
+conjunciones---enunciados de la forma ``A y B y C''. Poder
+descomponerlos sistemáticamente hace que las demostraciones sean mucho más
+manejables y legibles.
+
+\section{Izquierda y derecha: Tomando decisiones en matemáticas}
+
+Tras dominar \texttt{split\_ands} para manejar situaciones en las que
+necesitamos demostrar múltiples cosas simultáneamente, nos dirigimos ahora
+a un escenario fundamentalmente diferente: demostrar que al menos una de
+varias posibilidades es verdadera. Este es el mundo de los enunciados
+``o'' ($\vee$).
+
+Mientras que \texttt{split\_ands} consistía en ser exhaustivos---demostrando
+cada parte de una conjunción---, demostrar un enunciado ``o'' (disyunción)
+consiste en hacer una elección estratégica. ¡Cuando se trata de demostrar
+``$P$ o $Q$'', no es necesario demostrar ambos $P$ y $Q$, basta con
+demostrar uno de ellos!
+
+\subsection{Nuevas herramientas}
+
+Cuando la meta es demostrar un enunciado ``o'', $P \vee Q$, se puede hacer
+demostrando $P$ o $Q$:
+\begin{itemize}
+  \item Si se quiere demostrar $P$, se escribe \texttt{left} y la meta se
+        convierte en $P$.
+  \item Si se quiere demostrar $Q$, se escribe \texttt{right} y la meta se
+        convierte en $Q$.
+\end{itemize}
+
+\subsection{Ejemplo}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement (x y : ℝ) (hx : x = 2) (hy : y = 3) :
+    x = 3 ∨ y = 3 := by
+  right
+  apply hy
+\end{minted}
+
+Los enunciados ``o'' están en todas partes en matemáticas. Las
+demostraciones de existencia a menudo tienen este sabor, y poder elegir la
+rama correcta puede simplificar drásticamente la estrategia de demostración.
+
+\section{Notación de punto: Accediendo a partes de información compleja}
+
+A menudo en matemáticas se nos dará una hipótesis que contiene múltiples
+piezas de información agrupadas. Por ejemplo, podríamos saber que ``$x=2$
+Y $y=3$'' pero solo necesitar el hecho de que ``$y=3$'' para nuestra meta
+actual. Lean proporciona una forma elegante: la notación de punto.
+
+\subsection{Reglas de la notación de punto}
+
+Cuando se tiene una hipótesis $h : P \wedge Q$, se puede acceder a:
+\begin{itemize}
+  \item La primera parte con \texttt{h.1} (que da $P$).
+  \item La segunda parte con \texttt{h.2} (que da $Q$).
+\end{itemize}
+
+Para conjunciones más largas como $P \wedge Q \wedge R$, nótese que
+\texttt{h.1} da $P$, pero \texttt{h.2} da $Q \wedge R$ debido a paréntesis
+ocultos: $P \wedge Q \wedge R = P \wedge (Q \wedge R)$. Para obtener $Q$
+solo, se usa \texttt{h.2.1}, y para $R$ se usa \texttt{h.2.2}.
+
+\subsection{Ejemplo}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement (x y : ℝ) (h : x = 2 ∧ y = 3) :
+    y = 3 := by
+  apply h.2
+\end{minted}
+
+La notación de punto es esencial para mantener la claridad en demostraciones
+complejas donde múltiples condiciones o propiedades están agrupadas.
+
+\section{\texttt{cases'}: Manejando todas las posibilidades}
+
+Cuando se tiene una hipótesis $h : P \vee Q$, se sabe que $P$ es verdadera
+o $Q$ es verdadera, pero no cuál de ellas. Para continuar con la
+demostración, es necesario considerar ambas posibilidades de forma
+sistemática. La táctica \texttt{cases'} hace exactamente esto.
+
+\subsection{La Táctica \texttt{cases'}}
+
+Cuando se tiene una hipótesis $h : P \vee Q$, se puede escribir
+\texttt{cases' h with h1 h2}. Esto crea dos metas separadas:
+\begin{itemize}
+  \item En la primera meta, se obtiene una nueva hipótesis $h_1 : P$.
+  \item En la segunda meta, se obtiene una nueva hipótesis $h_2 : Q$.
+\end{itemize}
+Deben resolverse ambas metas para completar la demostración, asegurando
+que se han cubierto todas las posibilidades lógicas.
+
+\subsection{Ejemplo}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement (x y : ℝ) (h : x = 2 ∨ y = 3) :
+    (x - 2) * (y - 3) = 0 := by
+  cases' h with h1 h2
+  rewrite [h1]
+  ring_nf
+  rewrite [h2]
+  ring_nf
+\end{minted}
+
+\subsection{El conjunto completo de herramientas y/o}
+
+Ahora se dispone de la matriz completa de Y/O:
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+ & $\wedge$ & $\vee$ \\
+\hline
+\textbf{Meta} & \texttt{split\_ands} & \texttt{left}/\texttt{right} \\
+\textbf{Hipótesis} & \texttt{h.1}, \texttt{h.2} & \texttt{cases'} \\
+\hline
+\end{tabular}
+\end{center}
+
+El análisis por casos está en todas partes en matemáticas, desde demostrar
+que todo entero es par o impar, hasta mostrar que las funciones continuas
+en intervalos cerrados alcanzan sus extremos.
+
+\section{\texttt{abs\_lt}: Trabajando con valores absolutos en convergencia}
+
+Trabajar con valores absolutos es fundamental en análisis real,
+especialmente en el contexto de la convergencia de sucesiones. A veces
+necesitamos extraer información más específica de las condiciones de valor
+absoluto, como cotas direccionales.
+
+\subsection{El teorema \texttt{abs\_lt}}
+
+El teorema \texttt{abs\_lt} establece que $|x| < y$ si y solo si
+$-y < x \wedge x < y$. Esto permite convertir entre desigualdades de valor
+absoluto y conjunciones de desigualdades regulares, haciéndolas más fáciles
+de trabajar en las demostraciones.
+
+La idea clave es que $|x| < y$ captura la idea de que $x$ está dentro de
+la distancia $y$ de cero, lo que significa que $x$ pertenece al intervalo
+$(-y, y)$.
+
+\subsection{Ejemplo de aplicación}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement (a : ℕ → ℝ) (L : ℝ) (ha : SeqLim a L) :
+    ∃ N, ∀ n ≥ N, a n ≥ L - 1 := by
+  specialize ha 1 (by bound)
+  choose N hN using ha
+  use N
+  intro n hn
+  specialize hN n hn
+  rewrite [abs_lt] at hN
+  have : -1 < a n - L := by apply hN.1
+  bound
+\end{minted}
+
+Esta demostración ilustra la extracción de una cota inferior a partir de
+una condición de convergencia. Mostramos que cualquier sucesión convergente
+está eventualmente acotada inferiormente (relativa a su límite), lo cual es
+un bloque de construcción para muchos teoremas importantes.
+
+\section{El teorema del emparedado}
+
+El Teorema del Emparedado (también conocido como Teorema del Sándwich o
+Teorema de Compresión) captura de forma hermosa la idea intuitiva de que si
+se atrapa una sucesión entre otras dos sucesiones que convergen al mismo
+límite, entonces la sucesión atrapada también debe converger a ese límite.
+
+\subsection{La imagen intuitiva}
+
+Imagine tres corredores en una pista. El corredor A y el corredor C se
+dirigen ambos a la misma meta $L$, y el corredor B está siempre entre
+ellos. No importa cómo A y C zigzagueen de un lado a otro: mientras ambos
+lleguen a $L$ y B permanezca entre ellos, B también debe llegar a $L$.
+¡Simplemente no hay otro lugar al que ir!
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[Teorema del emparedado]
+Si $a, c : \mathbb{N} \to \mathbb{R}$ convergen ambas a $L$, y $b$ es otra
+sucesión comprimida entre $a$ y $c$ (es decir, $a(n) \leq b(n) \leq c(n)$
+para todo $n$), entonces $b$ también converge a $L$.
+\end{theorem}
+
+\subsection{Demostración en Lean}
+
+\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
+Statement SqueezeThm (a b c : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
+    (cToL : SeqLim c L) (aLeb : ∀ n, a n ≤ b n) (bLec : ∀ n, b n ≤ c n) :
+    SeqLim b L := by
+  intro ε hε
+  specialize aToL ε hε
+  specialize cToL ε hε
+  choose Na hNa using aToL
+  choose Nc hNc using cToL
+  use Na + Nc
+  intro n hn
+  have hna : Na ≤ n := by bound
+  have hnc : Nc ≤ n := by bound
+  specialize hNa n hna
+  specialize hNc n hnc
+  rewrite [abs_lt] at hNa
+  rewrite [abs_lt] at hNc
+  rewrite [abs_lt]
+  split_ands
+  · specialize aLeb n
+    bound
+  · specialize bLec n
+    bound
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Dado cualquier $\varepsilon > 0$, necesitamos demostrar que
+$|b(n)-L| < \varepsilon$ para $n$ suficientemente grande.
+
+Como $a(n) \to L$, existe $N_a$ tal que $|a(n)-L| < \varepsilon$ para todo
+$n \geq N_a$. Como $c(n) \to L$, existe $N_c$ tal que $|c(n)-L| < \varepsilon$
+para todo $n \geq N_c$.
+
+Sea $N = N_a + N_c$. Para cualquier $n \geq N$, tenemos:
+\begin{equation}
+  L - \varepsilon < a(n) \leq b(n) \leq c(n) < L + \varepsilon.
+\end{equation}
+Por lo tanto, $L - \varepsilon < b(n) < L + \varepsilon$, lo que significa
+$|b(n)-L| < \varepsilon$. Luego $b(n) \to L$.
+\end{proof}
+
+\subsection{Aplicaciones}
+
+El Teorema del Emparedado es un caballo de batalla del análisis matemático,
+utilizado para demostrar resultados de convergencia difíciles reduciéndolos
+a problemas más sencillos. Algunos ejemplos son:
+\begin{itemize}
+  \item $\sin(1/n) \to 0$ (comprimido entre $-1/n$ y $1/n$).
+  \item Sucesiones recursivas donde las fórmulas exactas son intratables.
+  \item Sucesiones definidas por procesos geométricos o probabilísticos
+        complejos.
+\end{itemize}
+
+El teorema demuestra el poder de combinar múltiples técnicas: argumentos
+épsilon-$N$, manipulación de valores absolutos, descomposición lógica y
+razonamiento con desigualdades. Esta síntesis de herramientas es lo que
+hace posible la demostración matemática avanzada.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

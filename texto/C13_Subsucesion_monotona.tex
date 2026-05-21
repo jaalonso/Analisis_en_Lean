@@ -1,0 +1,331 @@
+\chapter{Subsucesión monótona}
+
+\section{Introducción: El teorema de la subsucesión monótona}
+%-----------------------------------------------------------------------
+
+\begin{claim}
+Toda sucesión infinita de números reales (o racionales) tiene una subsucesión
+\emph{monótona} (no decreciente) o \emph{antítona} (no creciente).
+\end{claim}
+
+Este resultado fundamental es una piedra angular del análisis real y proporciona
+una visión profunda de la estructura de las sucesiones. En este capítulo
+demostraremos la mitad del teorema: que las sucesiones sin picos no acotados
+poseen una subsucesión monótona.
+
+La estrategia gira en torno a una hermosa dicotomía. Definiremos qué significa
+que una sucesión tenga \emph{picos no acotados}: intuitivamente, posiciones desde
+las cuales la sucesión nunca vuelve a subir, y de las que existen arbitrariamente
+muchas. La idea clave es que si una sucesión no tiene esta propiedad, podemos
+construir una subsucesión creciente evitando hábilmente los picos.
+
+\section{Nuevas definiciones}
+
+\subsection{Picos en una sucesión}
+
+Consideremos una sucesión $a : \mathbb{N} \to X$, donde $X$ puede ser
+$\mathbb{Q}$ o $\mathbb{R}$ (o cualquier conjunto linealmente ordenado).
+Decimos que la posición $n$ es un \emph{pico} si desde ese punto podemos mirar
+hacia adelante y ver que todos los valores futuros son menores o iguales que
+$a(n)$.
+
+\begin{definicion}
+Para una sucesión $a : \mathbb{N} \to X$ y un índice $n : \mathbb{N}$, decimos
+que $n$ es un \textbf{pico} de $a$ si:
+\[
+  \mathrm{IsAPeak}(a,\, n) \;:=\; \forall\, m > n,\quad a(m) \leq a(n).
+\]
+En otras palabras, parados en la posición $n$, podemos mirar hacia abajo
+todos los valores futuros.
+\end{definicion}
+
+\subsection{Picos no acotados}
+
+Una sucesión puede tener muchos picos, pocos, o incluso ninguno. Nos interesan
+especialmente las sucesiones cuyos picos son \emph{no acotados}: sin importar
+qué tan lejos miremos, siempre hay otro pico aún más adelante.
+
+\begin{definicion}
+Una sucesión $a : \mathbb{N} \to X$ tiene \textbf{picos no acotados} si:
+\[
+  \mathrm{UnBddPeaks}(a) \;:=\; \forall\, k,\; \exists\, n > k,\;
+  \mathrm{IsAPeak}(a,\, n).
+\]
+Esto afirma que para cualquier cota $k$, existe una posición de pico $n$ más
+allá de $k$. El conjunto de picos no tiene cota superior.
+\end{definicion}
+
+\subsection{Expresiones condicionales: \texttt{if-then-else}}
+
+En Lean, podemos definir valores de forma condicional. La sintaxis es:
+
+\begin{minted}{lean4}
+if h : condicion then valor_si_verdadero else valor_si_falso
+\end{minted}
+
+El \texttt{h :} opcional enlaza una prueba de la condición (cuando es
+verdadera) o su negación (cuando es falsa), disponible en la rama respectiva.
+Es una característica poderosa que usaremos para construir nuestra subsucesión.
+
+\section{Nuevo teorema: \texttt{lt\_of\_not\_ge}}
+
+Una de las propiedades fundamentales de los conjuntos ordenados es que las
+comparaciones son decidibles: para cualesquiera dos elementos $m, n$, se tiene
+$m \leq n$ o bien $n < m$.
+
+\begin{theorem}[\texttt{lt\_of\_not\_ge}]
+Si $\lnot(m \leq n)$, entonces $n < m$.
+\end{theorem}
+
+Este hecho, aparentemente simple, es crucial para nuestra construcción: nos
+permite extraer desigualdad estricta a partir del fracaso de la desigualdad
+débil.
+
+\section{Teorema principal: Subsucesión monótona a partir de picos acotados}
+
+Llegamos ahora a nuestro resultado principal. El teorema establece que si una
+sucesión no tiene picos no acotados, entonces debe poseer una subsucesión
+monótona creciente.
+
+\begin{theorem}[\texttt{MonotoneSubseq\_of\_BddPeaks}]
+Sea $a : \mathbb{N} \to X$ una sucesión (donde $X$ es $\mathbb{Q}$ o
+$\mathbb{R}$). Si $a$ no tiene picos no acotados, entonces existe una
+subsucesión $\sigma : \mathbb{N} \to \mathbb{N}$ tal que:
+\begin{itemize}
+  \item $\sigma$ es estrictamente creciente (\texttt{a Subseq}).
+  \item $a \circ \sigma$ es monótona (no decreciente).
+\end{itemize}
+\end{theorem}
+
+\subsection{Visión estratégica de la demostración}
+
+La demostración se desarrolla en varias etapas.
+
+\medskip
+\textbf{Etapa 1: Desempacar la hipótesis.}
+La negación de $\mathrm{UnBddPeaks}(a)$ significa que existe alguna cota $k$
+tal que no hay picos más allá de $k$. Usando \texttt{choose}, extraemos:
+\begin{itemize}
+  \item Una cota $k : \mathbb{N}$.
+  \item Para cada $n > k$, un testigo $\tau(n)$ con $\tau(n) > n$ y
+        $\lnot\mathrm{IsAPeak}(a, \tau(n))$.
+\end{itemize}
+
+\medskip
+\textbf{Etapa 2: Construir una sucesión auxiliar.}
+Definimos $\tau' : \mathbb{N} \to \mathbb{N}$ que crece más rápido que la
+identidad:
+\[
+  \tau'(n) :=
+  \begin{cases}
+    n + 1   & \text{si } n \leq k, \\
+    \tau(n) & \text{si } n > k.
+  \end{cases}
+\]
+El primer caso cubre índices hasta la cota $k$; el segundo usa los testigos
+de no-pico para índices más allá de $k$.
+
+\medskip
+\textbf{Etapa 3: Construir la órbita.}
+Usando la construcción de órbita del capítulo anterior, definimos:
+\[
+  \sigma(n) := (\tau')^{[n]}(k+1).
+\]
+Como $\tau'$ crece más rápido que la identidad, el teorema
+\texttt{Subseq\_of\_Iterate} garantiza que $\sigma$ es estrictamente creciente.
+
+\medskip
+\textbf{Etapa 4: Demostrar la monotonía.}
+La observación clave es que $\sigma(n) > k$ para todo $n$, de modo que
+$\sigma(n)$ nunca es un pico. Como $\sigma(n)$ no es un pico, existe
+$m > \sigma(n)$ con $a(m) > a(\sigma(n))$. Por nuestra construcción,
+$\sigma(n+1) = \tau'(\sigma(n)) > \sigma(n)$ es precisamente ese $m$, lo que
+da $a(\sigma(n)) \leq a(\sigma(n+1))$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean4}
+Statement MonotoneSubseq_of_BddPeaks (a : N -> X)
+    (ha : ¬ UnBddPeaks a)
+    : ∃ σ, Subseq σ ∧ Monotone (a ∘ σ) := by
+  change ¬ (∀ k, ∃ n > k, ∀ m > n, a m ≤ a n) at ha
+  push_neg at ha
+  choose k hk using ha
+  choose τ τ_gt hτ using hk
+  let τ' : N → N := fun n =>
+    if h : n ≤ k then n + 1 else τ n (lt_of_not_ge h)
+  have τ'_eq : ∀ n, τ' n =
+      if h : n ≤ k then n + 1 else τ n (lt_of_not_ge h) := by
+    intro n; rfl
+  have τ'_gt : ∀ n, n < τ' n := by
+    intro n
+    by_cases hn : n ≤ k
+    · rewrite [τ'_eq]; bound
+    · rewrite [τ'_eq]; bound
+  let σ : N → N := fun n ↦ τ'^[n] (k + 1)
+  have σ_eq : ∀ n, σ n = τ'^[n] (k + 1) := by intro n; rfl
+  have hσ : ∀ n, k < σ n := by
+    intro n
+    induction' n with n hn
+    · rewrite [σ_eq]; bound
+    · rewrite [σ_eq]
+      rewrite [← show τ' (τ'^[n] (k + 1)) = τ'^[n + 1] (k + 1)
+        by apply succ_iterate]
+      rewrite [← σ_eq]
+      specialize τ'_gt (σ n)
+      linarith [τ'_gt, hn]
+  use σ
+  split_ands
+  · apply Subseq_of_Iterate
+    apply τ'_gt
+  · apply Monotone_of_succ
+    intro n
+    specialize hσ n
+    specialize hτ (σ n) hσ
+    change a (σ n) ≤ a (σ (n + 1))
+    rewrite [show σ (n + 1) = τ'^[n + 1] (k + 1) by apply σ_eq]
+    rewrite [← show τ' (τ'^[n] (k + 1)) = τ'^[n + 1] (k + 1)
+      by apply succ_iterate]
+    rewrite [← show σ n = τ'^[n] (k + 1) by apply σ_eq]
+    rewrite [τ'_eq]
+    bound
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Supongamos que $a : \mathbb{N} \to X$ no tiene picos no acotados.
+Construiremos una subsucesión estrictamente creciente a lo largo de la cual
+$a$ es monótona.
+
+\medskip
+\textbf{Paso 1: Extraer la cota.}
+Como $\lnot\mathrm{UnBddPeaks}(a)$, la negación de
+$\forall k,\,\exists n>k,\,\mathrm{IsAPeak}(a,n)$ nos proporciona:
+\[
+  \exists k,\;\forall n > k,\;\lnot\mathrm{IsAPeak}(a,n).
+\]
+Por la táctica \texttt{choose}, obtenemos un $k:\mathbb{N}$ específico.
+
+\medskip
+\textbf{Paso 2: Extraer los testigos.}
+Para cada $n > k$, como $\lnot\mathrm{IsAPeak}(a,n)$:
+\[
+  \lnot(\forall m>n,\;a(m)\leq a(n))
+  \;\equiv\;
+  \exists m>n,\;a(m)>a(n).
+\]
+Usando \texttt{choose} nuevamente, obtenemos una función $\tau$ tal que
+$\tau(n)>n$ y $a(\tau(n))>a(n)$ para todo $n>k$.
+
+\medskip
+\textbf{Paso 3: Definir la sucesión auxiliar.}
+Definimos $\tau':\mathbb{N}\to\mathbb{N}$ por:
+\[
+  \tau'(n):=\begin{cases}n+1&\text{si }n\leq k,\\\tau(n)&\text{si }n>k,\end{cases}
+\]
+usando \texttt{lt\_of\_not\_ge} para convertir $\lnot(n\leq k)$ en $k<n$.
+Se verifica que $n < \tau'(n)$ en ambos casos.
+
+\medskip
+\textbf{Paso 4: Construir la órbita.}
+Definimos $\sigma:\mathbb{N}\to\mathbb{N}$ por
+$\sigma(n):=(\tau')^{[n]}(k+1)$.
+Por \texttt{Subseq\_of\_Iterate}, $\sigma$ es estrictamente creciente.
+
+\medskip
+\textbf{Paso 5: Verificar la desigualdad clave.}
+Por inducción, $\sigma(n)>k$ para todo $n$:
+\begin{itemize}
+  \item \textit{Caso base}: $\sigma(0)=k+1>k$.
+  \item \textit{Paso inductivo}: si $\sigma(n)>k$, entonces
+        $\sigma(n+1)=\tau'(\sigma(n))>\sigma(n)>k$.
+\end{itemize}
+
+\medskip
+\textbf{Paso 6: Demostrar la monotonía.}
+Basta mostrar $a(\sigma(n))\leq a(\sigma(n+1))$ para todo $n$
+(por \texttt{Monotone\_of\_succ}). Como $\sigma(n)>k$:
+\begin{align*}
+  &\sigma(n+1)=\tau'(\sigma(n))=\tau(\sigma(n)), \quad \text{y}\quad\\
+  &a(\sigma(n))\leq a(\tau(\sigma(n)))=a(\sigma(n+1)).
+\end{align*}
+
+\textbf{Conclusión:} $\sigma$ es estrictamente creciente y $a\circ\sigma$ es
+monótona. \qed
+\end{proof}
+
+\section{El panorama general}
+
+Este teorema revela una dicotomía fundamental en el comportamiento de las
+sucesiones. Toda sucesión cae en uno de dos grupos:
+
+\begin{enumerate}
+  \item \textbf{Sucesiones con picos no acotados:} tienen una subsucesión
+        no creciente (antítona). (Contenido del ejercicio de tarea.)
+  \item \textbf{Sucesiones con picos acotados:} tienen una subsucesión no
+        decreciente (monótona). (Lo que acabamos de demostrar.)
+\end{enumerate}
+
+Juntos, estos resultados implicarán el \textbf{teorema de Bolzano--Weierstrass}
+para sucesiones: toda sucesión infinita tiene una subsucesión de Cauchy.
+Este resultado es fundamental porque:
+\begin{itemize}
+  \item Combinado con la acotación, garantiza subsucesiones convergentes.
+  \item Provee una herramienta para extraer comportamiento regular de
+        sucesiones aparentemente caóticas.
+  \item Se conecta con la compacidad en espacios métricos.
+  \item Subyace a muchas demostraciones de existencia en análisis.
+\end{itemize}
+
+\subsection{El papel de la construcción \texttt{if-then-else}}
+
+La definición condicional de $\tau'$ es esencial. Necesitábamos una sola
+función que:
+\begin{itemize}
+  \item Crezca más rápido que la identidad en todas partes.
+  \item Coincida con la función testigo $\tau$ para índices más allá de $k$.
+  \item Esté bien definida para todos los índices, incluidos los $\leq k$
+        donde $\tau$ no existe.
+\end{itemize}
+
+La construcción \texttt{if-then-else} maneja ambos casos de forma elegante,
+permitiéndonos ensamblar una función globalmente definida a partir de un
+testigo parcialmente definido. Esta técnica de «parchear» funciones es común
+en el análisis constructivo.
+
+\subsection{Por qué funcionan las órbitas}
+
+La construcción $\sigma(n)=(\tau')^{[n]}(k+1)$ es perfecta aquí porque:
+\begin{enumerate}
+  \item Proporciona automáticamente una sucesión estrictamente creciente
+        (por \texttt{Subseq\_of\_Iterate}).
+  \item Nos mantiene en la región donde $\tau'$ coincide con $\tau$
+        (más allá de $k$).
+  \item Cada iteración nos lleva a un punto con valor estrictamente mayor.
+  \item El punto de partida $k+1$ nos sitúa de inmediato en la región activa.
+\end{enumerate}
+
+Esto demuestra el poder del pensamiento en sistemas dinámicos aplicado al
+análisis: viendo $\tau'$ como un sistema dinámico y estudiando sus órbitas,
+extraemos el comportamiento monótono deseado.
+
+\section{Perspectivas futuras}
+
+En la tarea demostrarán el resultado complementario: las sucesiones con picos
+no acotados tienen subsucesiones antítonas (no crecientes). La estrategia es
+similar, pero involucra elegir los propios picos para formar la subsucesión.
+
+Junto con los resultados sobre sucesiones acotadas, estos teoremas forman la
+base para entender cuándo las sucesiones tienen subsucesiones convergentes,
+pregunta central en el análisis real.
+
+Las técnicas aquí desarrolladas ---usar \texttt{choose} para extraer testigos
+de enunciados de existencia, definiciones condicionales para construir
+funciones, e iteraciones de órbitas para construir subsucesiones--- son
+herramientas fundamentales que utilizarán a lo largo del análisis.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

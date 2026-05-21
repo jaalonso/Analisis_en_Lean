@@ -1,0 +1,490 @@
+\chapter{Teoremas avanzados de límites e inducción}
+
+%----------------------------------------------------------------------
+\section{Introducción: Inducción Matemática}
+%----------------------------------------------------------------------
+
+\textbf{Simplicio:} Oye, Sócrates, he estado pensando en algo que me ha
+estado molestando. Cuando demostramos cosas en matemáticas, normalmente
+probamos un enunciado específico. Pero, ¿qué pasa si quiero demostrar que
+algo es verdad para todos los números naturales? Por ejemplo, ¿cómo
+demuestro un enunciado para $0, 1, 2, 3, 4,$ y así sucesivamente\ldots
+para siempre?
+
+\textbf{Sócrates:} ¡Ah, una excelente pregunta! Tienes razón en que no
+podemos simplemente comprobar cada caso uno por uno—eso llevaría un tiempo
+infinito. Dime, Simplicio, ¿alguna vez has subido una escalera?
+
+\textbf{Simplicio:} ¡Claro que sí! ¿Pero qué tiene eso que ver con esto?
+
+\textbf{Sócrates:} Bueno, imagina una escalera infinitamente alta que
+llega hasta el cielo. Si quisiera convencerte de que puedes subir a
+cualquier peldaño de esta escalera, ¿qué tendría que mostrarte?
+
+\textbf{Simplicio:} Mmm\ldots supongo que tendrías que demostrarme que
+puedo alcanzar el peldaño más bajo, ¿no?
+
+\textbf{Sócrates:} ¡Buen comienzo! ¿Y qué más?
+
+\textbf{Simplicio:} Bueno, si estoy parado en cualquier peldaño
+particular, necesitaría saber que puedo alcanzar el siguiente. Así que, si
+siempre puedo pasar de un peldaño al siguiente\ldots
+
+\textbf{Sócrates:} ¡Exactamente! Entonces, si puedes alcanzar el primer
+peldaño, y siempre puedes pasar del peldaño $k$ al peldaño $k+1$, ¿qué
+puedes concluir?
+
+\textbf{Simplicio:} ¡Oh! ¡Entonces puedo alcanzar cualquier peldaño que
+quiera! Si quiero llegar al peldaño 100, simplemente empiezo en el peldaño
+0, subo al peldaño 1, luego al 2, y sigo subiendo hasta llegar al 100. ¡Y
+lo mismo funciona para cualquier número!
+
+\textbf{Sócrates:} ¡Precisamente! Esta es la esencia de la inducción
+matemática. Para demostrar que algo es verdad para todos los números
+naturales $n$, necesitas exactamente dos cosas:
+
+\begin{itemize}
+  \item \textbf{Caso base:} demuestra que es verdad para $n = 0$.
+  \item \textbf{Paso inductivo:} demuestra que si es verdad para $n = k$,
+        entonces es verdad para $n = k+1$.
+\end{itemize}
+
+\textbf{Simplicio:} Espera, pero en el paso inductivo, ¿no estamos
+asumiendo lo que queremos probar? ¿No es eso un razonamiento circular?
+
+\textbf{Sócrates:} ¡Una observación perspicaz! Pero no, no es circular.
+No estamos asumiendo que el enunciado es verdad para todo $n$. Solo
+estamos asumiendo que es verdad para un valor particular $k$, y usando
+esa suposición para demostrar que es verdad para $k+1$. Estamos probando
+una implicación: ``si $P(k)$ entonces $P(k+1)$''. Combinado con el caso
+base, esto crea una reacción en cadena que alcanza cualquier número
+natural.
+
+\textbf{Simplicio:} Hmm, creo que lo entiendo. Entonces, ¿la suposición
+``es verdad para $k$'' se llama hipótesis inductiva?
+
+\textbf{Sócrates:} ¡Exactamente! Y esa hipótesis es tu herramienta más
+poderosa. Es como tener un punto de apoyo en el peldaño $k$ desde el que
+puedes impulsarte para llegar al peldaño $k+1$.
+
+\textbf{Simplicio:} Pero, ¿por qué funciona esto? Es decir, ¿por qué
+debo creer en este principio?
+
+\textbf{Sócrates:} ¡Ah, una pregunta profunda! Viene de la propia
+definición de los números naturales. ¿Cómo crees que se construyen los
+números naturales?
+
+\textbf{Simplicio:} Bueno\ldots supongo que comenzamos con 0. Y luego
+tenemos 1, que es $0+1$. Y 2 es $1+1$. Así que cada número es el
+``sucesor'' del anterior.
+
+\textbf{Sócrates:} ¡Perfecto! Los números naturales están definidos
+precisamente por este proceso:
+
+\begin{itemize}
+  \item Cero es un número natural.
+  \item Si $k$ es un número natural, entonces $k+1$ también lo es.
+  \item Estos son los únicos números naturales.
+\end{itemize}
+
+¿Ves cómo esto refleja la estructura de la inducción?
+
+\textbf{Simplicio:} ¡Oh! El caso base corresponde a ``cero es un número
+natural'', y el paso inductivo corresponde a ``si $k$ es un número
+natural, entonces $k+1$ también lo es''. ¡La inducción es simplemente la
+construcción de los números naturales convertida en una técnica de
+demostración!
+
+\textbf{Sócrates:} ¡Precisamente! No hay ``huecos'' en los números
+naturales—ningún número que no pueda alcanzarse partiendo de 0 y sumando
+1 repetidamente. Por eso funciona la inducción.
+
+De hecho, esta no es solo una observación filosófica—¡es literalmente
+cómo se implementan los números naturales en Lean! En la teoría de tipos
+de Lean, un número natural se define inductivamente como:
+
+\begin{itemize}
+  \item \mintinline{lean}{zero : ℕ}, el caso base, o
+  \item \mintinline{lean}{succ n : ℕ}, el sucesor de otro número natural
+        $n$.
+\end{itemize}
+
+Así es como se ve esto en el núcleo de Lean:
+
+\begin{minted}{lean}
+inductive Nat where
+  | zero : Nat
+  | succ (n : Nat) : Nat
+\end{minted}
+
+Simplemente declaras la existencia de un número natural llamado
+\texttt{zero}, y luego declaras que, dado cualquier número natural
+$n$, existe otro llamado \texttt{succ n}. (La palabra \texttt{succ} es
+solo un nombre; podríamos haberlo llamado \texttt{Alice n}. Lo importante
+es que estamos dando una manera de construir un nuevo número natural a
+partir de uno ya existente.)
+
+Así, el número 3, por ejemplo, está representado literalmente como
+\mintinline{lean}{succ (succ (succ zero))}. ¡El principio de inducción no
+solo se parece a esta construcción, sino que lo explota directamente!
+Cuando demuestras algo por inducción en Lean, estás trabajando con la
+estructura computacional real de cómo los números naturales existen en el
+sistema.
+
+\textbf{Simplicio:} ¡Es increíble! ¿Entonces la inducción no es solo
+una técnica de demostración, sino que está integrada en el tejido mismo de
+cómo Lean entiende los números?
+
+\textbf{Sócrates:} Exactamente. El principio de inducción matemática es
+un teorema en muchos marcos matemáticos, pero en la teoría de tipos es una
+consecuencia fundamental de cómo están definidos los números naturales.
+
+\textbf{Simplicio:} Bien, estoy convencido de que esta es una técnica de
+demostración legítima. ¿Puedes darme un ejemplo?
+
+\textbf{Sócrates:} Por supuesto.
+
+%----------------------------------------------------------------------
+\section{Jefe Final: Recíprocos de Sucesiones Convergentes}
+%----------------------------------------------------------------------
+
+Uno de los teoremas de límites más importantes concierne a los recíprocos:
+si una sucesión converge a un límite no nulo, entonces la sucesión de
+recíprocos converge al recíproco del límite. Este resultado es crucial para
+demostrar teoremas sobre cocientes y funciones racionales.
+
+Este es un nivel de \emph{Jefe Final}—requiere sintetizar múltiples
+técnicas: trabajar con límites no nulos, manipular expresiones algebraicas
+complejas y elegir cuidadosamente las estrategias con épsilon.
+
+\subsection{El Marco Matemático}
+
+\begin{theorem}
+Sea $a : \mathbb{N} \to \mathbb{R}$ una sucesión que converge a $L$ con
+$L \neq 0$, y sea $b : \mathbb{N} \to \mathbb{R}$ definida por
+$b(n) = 1/a(n)$ para todo $n$. Entonces $b$ converge a $1/L$.
+\end{theorem}
+
+Esta es la demostración técnicamente más desafiante de esta serie de
+conferencias.
+
+\subsection{Nuevas Herramientas}
+
+\textbf{abs\_div:} Para cualesquiera números reales $x$ e $y$ (con
+$y \neq 0$), se tiene $|x/y| = |x|/|y|$.
+
+\textbf{nonzero\_of\_abs\_pos:} Si $0 < |x|$, entonces $x \neq 0$.
+
+\subsection{Enfoque Estratégico}
+
+Los desafíos clave son:
+
+\begin{itemize}
+  \item Asegurar que $a(n) \neq 0$ eventualmente, para que los recíprocos
+        estén bien definidos.
+  \item Acotar $|1/a(n) - 1/L|$ obteniendo un denominador común.
+  \item Elegir el épsilon correcto al aplicar la convergencia de $a$ hacia
+        $L$.
+  \item Usar la cota inferior sobre $|a(n)|$ para controlar los
+        recíprocos.
+\end{itemize}
+
+La percepción crítica es que el ``épsilon correcto'' no es la elección
+obvia. Usamos $\varepsilon \cdot |L|^2 / 2$, que está diseñado
+precisamente para que las desigualdades finales funcionen.
+
+\subsection{Solución en Lean}
+
+\begin{minted}{lean}
+Statement InvLim (a : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
+    (LneZero : L ≠ 0) (b : ℕ → ℝ)
+    (bEqInva : ∀ n, b n = 1 / a n) :
+    SeqLim b (1 / L) := by
+  choose NhalfL hNhalfL using EventuallyGeHalfLimPos a L
+    aToL LneZero
+  intro ε hε
+  have : 0 < |L| := by apply abs_pos_of_nonzero LneZero
+  specialize aToL (ε * |L| * |L| / 2) (by bound)
+  choose Na hNa using aToL
+  use Na + NhalfL
+  intro n hn
+  specialize bEqInva n
+  rewrite [bEqInva]
+  have hnHalfL : NhalfL ≤ n := by bound
+  have hna : Na ≤ n := by bound
+  specialize hNhalfL n hnHalfL
+  specialize hNa n hna
+  have : 0 < |a n| := by bound
+  have : a n ≠ 0 := by apply nonzero_of_abs_pos this
+  have l1 : |1 / a n - 1 / L| = |(L - a n) / (a n * L)| :=
+    by field_simp
+  have l2 : |(L - a n) / (a n * L)| = |L - a n| / |a n * L| :=
+    by apply abs_div
+  have l3 : |L - a n| / |a n * L| = |L - a n| / (|a n| * |L|) :=
+    by bound
+  have l4 : |L - a n| = |-(a n - L)| := by ring_nf
+  have l5 : |-(a n - L)| = |a n - L| := by apply abs_neg
+  have l6 : |a n - L| / (|a n| * |L|) <
+      (ε * |L| * |L| / 2) / (|a n| * |L|) := by
+    field_simp; bound
+  have l10 : |L - a n| / (|a n| * |L|) =
+      |-(a n - L)| / (|a n| * |L|) := by rewrite [l4]; rfl
+  have l11 : |-(a n - L)| / (|a n| * |L|) =
+      |a n - L| / (|a n| * |L|) := by rewrite [l5]; rfl
+  have l13 : ε * |L| * |L| / 2 / (|a n| * |L|) =
+      ε * |L| / 2 / |a n| := by field_simp
+  have l14 : ε * |L| / 2 / |a n| ≤ ε := by
+    field_simp; bound
+  linarith [l1, l2, l3, l10, l11, l6, l13, l14]
+\end{minted}
+
+\subsection{Demostración en Lenguaje Natural}
+
+\begin{proof}
+Supongamos que $a(n) \to L$ con $L \neq 0$, y sea $b(n) = 1/a(n)$.
+Debemos demostrar que $b(n) \to 1/L$.
+
+Primero, usando el teorema \texttt{EventuallyGeHalfLimPos}, existe $N_1$
+tal que para todo $n \geq N_1$ se tiene $|a(n)| \geq |L|/2 > 0$, lo
+que garantiza que $a(n) \neq 0$ y $b(n)$ está bien definida.
+
+Dado $\varepsilon > 0$, como $a(n) \to L$, existe $N_2$ tal que para
+todo $n \geq N_2$:
+\[
+  |a(n) - L| < \frac{\varepsilon |L|^2}{2}.
+\]
+
+Sea $N = N_1 + N_2$. Para cualquier $n \geq N$:
+\begin{align*}
+  |b(n) - 1/L|
+  &= \left|\frac{1}{a(n)} - \frac{1}{L}\right| \\
+  &= \left|\frac{L - a(n)}{a(n) \cdot L}\right| \\
+  &= \frac{|L - a(n)|}{|a(n)| \cdot |L|} \\
+  &= \frac{|a(n) - L|}{|a(n)| \cdot |L|} \\
+  &< \frac{\varepsilon |L|^2 / 2}{|a(n)| \cdot |L|} \\
+  &= \frac{\varepsilon |L|}{2\,|a(n)|} \\
+  &\leq \frac{\varepsilon |L|}{2 \cdot |L|/2} \\
+  &= \varepsilon.
+\end{align*}
+
+Por lo tanto, $b(n) \to 1/L$.
+\end{proof}
+
+\subsection{Aplicaciones y Extensiones}
+
+Con este teorema, ahora disponemos de un conjunto completo de herramientas
+para los límites de funciones racionales. Combinado con los resultados
+sobre sumas y productos, podemos demostrar:
+
+\begin{theorem}[Cociente]
+Si $a(n) \to L$ y $c(n) \to M$ con $M \neq 0$, entonces
+$a(n)/c(n) \to L/M$.
+\end{theorem}
+
+La demostración es directa: primero se muestra que $1/c(n) \to 1/M$
+usando el teorema del recíproco, y luego se aplica el teorema del
+producto para demostrar que $a(n) \cdot (1/c(n)) \to L \cdot (1/M) = L/M$.
+
+Esto completa la aritmética fundamental de los límites: sumas, productos y
+cocientes—los bloques de construcción para analizar polinomios, funciones
+racionales y expresiones complejas a lo largo del cálculo y el análisis.
+
+%----------------------------------------------------------------------
+\section{Por Casos: Análisis de Casos Sin Hipótesis}
+%----------------------------------------------------------------------
+
+Cuando ya tienes una hipótesis \texttt{h : P ∨ Q}, puedes usar
+\texttt{cases'} para dividir el objetivo en dos sub-objetivos. Pero,
+¿cómo divides en casos cuando no tienes una hipótesis de ese tipo? Ahí es
+donde entra la táctica \texttt{by\_cases}.
+
+\subsection{La Táctica \texttt{by\_cases}}
+
+La táctica \texttt{by\_cases} tiene la sintaxis
+\texttt{by\_cases h : hecho}, donde \texttt{h} es el nombre para una
+nueva hipótesis y \texttt{hecho} es el hecho afirmado en ella. Llamar a
+\texttt{by\_cases} crea dos sub-objetivos:
+
+\begin{itemize}
+  \item Uno con la hipótesis adicional \texttt{h : hecho}.
+  \item Otro con la hipótesis \texttt{h : ¬hecho}.
+\end{itemize}
+
+Esto permite realizar un análisis de casos sobre cualquier proposición,
+no solo aquellas que ya tienes como hipótesis.
+
+\subsection{Aplicación: Eventualmente Mayor que la Mitad del Límite}
+
+Podemos usar \texttt{by\_cases} para demostrar una versión más general de
+\texttt{EventuallyGeHalfLimPos} que no requiere la suposición $L \neq 0$.
+
+\begin{theorem}
+Sea $a : \mathbb{N} \to \mathbb{R}$ una sucesión que converge a $L$ (sin
+suponer que $L \neq 0$). Entonces existe $N$ tal que para todo
+$n \geq N$ se tiene $|a(n)| \geq |L|/2$.
+\end{theorem}
+
+\subsection{Solución en Lean}
+
+\begin{minted}{lean}
+Statement EventuallyGeHalfLim (a : ℕ → ℝ) (L : ℝ)
+    (aToL : SeqLim a L) :
+    ∃ N, ∀ n ≥ N, |L| / 2 ≤ |a n| := by
+  by_cases h : L = 0
+  · use 1
+    intro n hn
+    rewrite [h]
+    bound
+  · apply EventuallyGeHalfLimPos a L aToL h
+\end{minted}
+
+\subsection{Demostración en Lenguaje Natural}
+
+\begin{proof}
+Procedemos por casos según si $L = 0$ o no.
+
+\textbf{Caso 1:} Si $L = 0$, entonces $|L|/2 = 0$. Como $|a(n)| \geq 0$
+para todo $n$, podemos tomar $N = 1$ y la desigualdad $|L|/2 \leq |a(n)|$
+se cumple trivialmente para todo $n \geq N$.
+
+\textbf{Caso 2:} Si $L \neq 0$, podemos aplicar el teorema
+\texttt{EventuallyGeHalfLimPos} (que requiere $L \neq 0$ como hipótesis)
+para obtener el $N$ deseado.
+\end{proof}
+
+\subsection{Importancia}
+
+La táctica \texttt{by\_cases} es esencial para manejar proposiciones cuyo
+valor de verdad importa pero no se conoce de antemano. Nos permite:
+
+\begin{itemize}
+  \item Manejar casos límite de manera sistemática.
+  \item Demostrar teoremas con hipótesis más débiles.
+  \item Aplicar distintas estrategias de demostración según el caso.
+\end{itemize}
+
+Esta técnica es omnipresente en el razonamiento matemático, desde el
+análisis hasta el álgebra y la combinatoria.
+
+%----------------------------------------------------------------------
+\section{Inducción Matemática}
+%----------------------------------------------------------------------
+
+La inducción es una de las técnicas de demostración más poderosas para
+enunciados sobre números naturales. Permite demostrar infinitos enunciados
+(uno para cada número natural) usando solo dos pasos: un caso base y un
+paso inductivo.
+
+\subsection{El Principio de Inducción Matemática}
+
+Para demostrar que una propiedad $P(n)$ se cumple para todos los números
+naturales $n$, basta con demostrar:
+
+\begin{enumerate}
+  \item \textbf{Caso Base:} $P(0)$ es verdadero.
+  \item \textbf{Paso Inductivo:} Para todo $k$, si $P(k)$ es verdadero,
+        entonces $P(k+1)$ es verdadero.
+\end{enumerate}
+
+La intuición es como subir una escalera infinita: si puedes alcanzar el
+primer peldaño (caso base), y si estar en cualquier peldaño te permite
+alcanzar el siguiente (paso inductivo), entonces puedes alcanzar todos los
+peldaños.
+
+\subsection{La Táctica \texttt{induction'}}
+
+La sintaxis de la inducción en Lean es:
+\texttt{induction' n with k hk}. Esto significa:
+
+\begin{itemize}
+  \item Aplicar inducción sobre la variable $n$.
+  \item Usar $k$ como nueva variable muda en el paso inductivo.
+  \item Usar \texttt{hk} como hipótesis de inducción sobre $k$.
+\end{itemize}
+
+\subsection{Nueva Herramienta: \texttt{ge\_one\_of\_nonzero}}
+
+Si un número natural $n \neq 0$, entonces $1 \leq n$. Este lema sencillo
+es útil para manejar el caso en que hemos superado el caso base.
+
+\subsection{Ejemplo: Crecimiento Exponencial}
+
+\begin{theorem}
+Para todo número natural $n$, se tiene $n < 2^n$.
+\end{theorem}
+
+Este teorema captura la idea de que las funciones exponenciales crecen
+más rápido que las lineales—un hecho fundamental con aplicaciones en toda
+la matemática y la informática.
+
+\subsection{Solución en Lean}
+
+\begin{minted}{lean}
+Statement (n : ℕ) : n < 2 ^ n := by
+  induction' n with k hk
+  · norm_num
+  · by_cases hk0 : k = 0
+    · rewrite [hk0]
+      norm_num
+    · have : 1 ≤ k := by apply ge_one_of_nonzero hk0
+      have f1 : k + 1 ≤ 2 * k := by bound
+      have f2 : 2 * k < 2 * 2 ^ k := by linarith [hk]
+      have f3 : 2 * 2 ^ k = 2 ^ (k + 1) := by ring_nf
+      linarith [f1, f2, f3]
+\end{minted}
+
+\subsection{Demostración en Lenguaje Natural}
+
+\begin{proof}
+Procedemos por inducción sobre $n$.
+
+\textbf{Caso Base} ($n = 0$): Tenemos $0 < 2^0 = 1$, lo cual es
+verdadero.
+
+\textbf{Paso Inductivo:} Supongamos que $k < 2^k$ (hipótesis de
+inducción). Debemos demostrar que $k + 1 < 2^{k+1}$.
+
+Procedemos por casos según si $k = 0$.
+
+Si $k = 0$, entonces $k + 1 = 1 < 2 = 2^1 = 2^{k+1}$.
+
+Si $k \neq 0$, entonces $k \geq 1$. Por lo tanto:
+\begin{align*}
+  k + 1 &\leq 2k   && \text{(pues } k \geq 1\text{)} \\
+        &< 2 \cdot 2^k && \text{(por hipótesis de inducción)} \\
+        &= 2^{k+1}.
+\end{align*}
+
+Esto completa la inducción.
+\end{proof}
+
+\subsection{Aplicaciones}
+
+La inducción matemática es esencial para demostrar:
+
+\begin{itemize}
+  \item Fórmulas para sumas: $\displaystyle\sum_{i=1}^{n} i =
+        \frac{n(n+1)}{2}$.
+  \item Desigualdades: $n! > 2^n$ para $n$ suficientemente grande.
+  \item Propiedades de divisibilidad: $n^3 - n$ es divisible por 6.
+  \item Definiciones recursivas: números de Fibonacci, factoriales, etc.
+  \item Corrección de algoritmos: demostrar invariantes de bucles.
+\end{itemize}
+
+La combinación de la inducción con otras técnicas de demostración (como el
+análisis de casos) crea un poderoso conjunto de herramientas para las
+matemáticas discretas y la informática.
+
+\subsection{Idea Clave}
+
+Esta demostración ilustra una estrategia importante: dentro de una
+demostración inductiva, puede ser necesario realizar análisis de casos
+adicionales (usando \texttt{by\_cases}). La hipótesis de inducción te da
+ventaja, pero a menudo hay que ser ingenioso en cómo aplicarla,
+especialmente cuando se tratan casos frontera o cuando el álgebra requiere
+restricciones adicionales.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

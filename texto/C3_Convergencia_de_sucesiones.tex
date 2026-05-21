@@ -1,0 +1,472 @@
+\chapter{Convergencia de sucesiones}
+
+\section{Más sobre sucesiones}
+
+En el Tema 2, aprendimos la definición de que una sucesión $a : \mathbb{N} \to \mathbb{R}$ converge a un límite $L$: para cualquier tolerancia $\varepsilon > 0$, existe un momento $N$, de modo que, para cualquier punto posterior a ese momento, $n \ge N$, estamos dentro de la tolerancia, $|a_n - L| < \varepsilon$.
+
+También aprendimos cómo hacer algo completamente trivial con ella, concretamente, demostrar que la sucesión constante converge, con esa constante como su límite. Vamos a subir un peldaño, ¿de acuerdo?
+
+\section{Nivel 1: La propiedad arquimediana}
+
+La llamada propiedad arquimediana (que creo que se debe originalmente a Eudoxo, y aparece ya en los \textit{Elementos} de Euclides, Libro V) es una propiedad fundamental de los números reales que captura la noción intuitiva de que no existen números reales positivos ``infinitamente grandes'' o ``infinitamente pequeños''.
+
+Más precisamente, establece que no importa cuán pequeño sea $\varepsilon > 0$, siempre existe un número natural $N$ de modo que $1/N$ es aún más pequeño que $\varepsilon$ (y, por supuesto, positivo). Equivalentemente, podemos enunciarla como: para cualquier número real positivo $\varepsilon$, existe un número natural $N$ tal que $1/\varepsilon < N$.
+
+\textit{¿Por qué importa esto?} La propiedad arquimediana es una de las propiedades más fundamentales que distinguen a los números reales de otros sistemas numéricos. Sin ella, podríamos tener números positivos ``infinitamente grandes'' o ``infinitamente pequeños'', lo que rompería la mayor parte del cálculo y el análisis.
+
+Nuestro objetivo será demostrar lo siguiente:
+\begin{theorem}[PropArq]
+  Para cualquier $\varepsilon \in \mathbb{R}$ con $0 < \varepsilon$, existe $N \in \mathbb{N}$ tal que $1/\varepsilon < N$.
+\end{theorem}
+
+Esto es matemáticamente ``obvio'' para la mayoría de la gente: si tienes un número positivo $\varepsilon$, por muy pequeño que sea, siempre puedes encontrar un número natural lo suficientemente grande para que $1/\varepsilon$ sea menor que él. Pero, ¿cómo se formaliza esto realmente en Lean?
+
+\subsection{La estrategia de demostración en lenguaje natural}
+
+Primero, pensemos en esto en lenguaje natural. La clave es que necesitamos proporcionar un número natural $N$ específico que funcione.
+
+Una opción natural sería utilizar algo relacionado con la función techo (\textit{ceiling}). La función techo $x \mapsto \lceil x \rceil$ redondea cualquier número real al entero más cercano por arriba. Sin embargo, hay un problema sutil aquí: la función techo estándar devuelve valores en los enteros $\mathbb{Z}$, pero necesitamos valores en $\mathbb{N}$ (los números naturales). ¡¡No son lo mismo!!
+
+Afortunadamente, Lean proporciona la ``función techo de números naturales'', escrita como $x \mapsto \lceil x \rceil_+$, que toma cualquier número real y devuelve un número natural. (Puedes escribir estos símbolos usando \verb|\lceil|, \verb|\rceil| y \verb|\_+|). Para entradas negativas, esta función devuelve 0. Por ejemplo, $\lceil -3.14 \rceil_+ = 0$ y $\lceil 3.14 \rceil_+ = 4$.
+Ahora nuestra estrategia queda clara:
+\begin{itemize}
+    \item \textbf{Elección de N:} Usar $N = \lceil 1 / \varepsilon \rceil_+ + 1$
+    \item \textbf{Por qué funciona:} Tenemos la ``desigualdad clave'': $1 / \varepsilon \le \lceil 1 / \varepsilon \rceil_+$, que se cumple por la definición de la función techo.
+    \item \textbf{Obtener la desigualdad estricta:} Sumar 1 nos da $1 / \varepsilon < \lceil 1 / \varepsilon \rceil_+ + 1$
+\end{itemize}
+
+\subsection{Los desafíos de la implementación en Lean}
+
+En Lean, los dos primeros pasos de nuestra demostración en lenguaje natural funcionan bien, pero luego nos encontramos con el problema de la \textbf{coerción de tipos} (''casting'' entre diferentes tipos de números). Discutiremos esto con más detalle más adelante, pero de nuevo tiene que ver con el hecho de que $\mathbb{N}, \mathbb{Z}, \mathbb{Q}$ y $\mathbb{R}$ son todos tipos de cosas diferentes, y necesitamos poder mover los números hacia arriba en la jerarquía de ``sofisticación'', siendo los naturales los objetos más simples y los reales los más complicados.
+
+Por ejemplo, fíjate en que cuando escribamos nuestra sentencia \texttt{have} para establecer la desigualdad clave:
+\begin{minted}{lean}
+have fact : 1 / ε ≤ ⌈1 / ε⌉₊ := by Demostracion
+\end{minted}
+Lean la registrará como:
+\begin{minted}{lean}
+fact : 1 / ε ≤ ↑ ⌈1 / ε⌉₊
+\end{minted}
+Observa la misteriosa flecha hacia arriba $\uparrow$. Esta representa una función de coerción de los números naturales a los reales:
+\begin{center}
+    $\uparrow : \mathbb{N} \to \mathbb{R}$
+\end{center}
+Esto se debe a que $\mathbb{N}, \mathbb{Z}, \mathbb{Q}$ y $\mathbb{R}$ son todos tipos \textbf{diferentes} en el sistema de tipos de Lean. Aunque pensemos que los naturales están ``contenidos'' en los reales, formalmente son tipos distintos, y Lean necesita funciones de coerción explícitas para convertir entre ellos.
+
+Piénsalo de esta manera: el número natural $3 \in \mathbb{N}$, la fracción $3/1 \in \mathbb{Q}$ y el número real $3.000 \in \mathbb{R}$ son objetos diferentes que simplemente representan el mismo valor matemático.
+
+La táctica \texttt{push\_cast} ayuda a gestionar estas coerciones, de forma similar a \texttt{ring\_nf} pero para conversiones en lugar de operaciones de anillo.
+
+\subsection{Nuevas herramientas que necesitarás}
+
+\begin{itemize}
+    \item $\lceil \cdot \rceil_+$: La función techo de números naturales.
+    \item \texttt{push\_cast}: Táctica que maneja las coerciones entre tipos numéricos.
+    \item \texttt{bound}: Resuelve muchas desigualdades rutinarias una vez que los tipos están correctamente alineados.
+\end{itemize}
+
+\subsection{Demostraciones en Lean}
+
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+variable {ε : ℝ}
+variable (h : 0 < ε)
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea N = ⌈1/ε⌉₊ + 1. Entonces,
+--    1/ε ≤ ⌈1/ε⌉₊
+--        < ⌈1/ε⌉₊ + 1
+--        = N
+-- Por lo tanto, 1/ε < N.
+
+-- 1ª demostración
+-- ===============
+
+example : ∃ (N : ℕ), 1 / ε < N :=
+by
+  -- ⊢ ∃ N, 1 / ε < ↑N
+  use ⌈1 / ε⌉₊ + 1
+  -- ⊢ 1 / ε < ↑(⌈1 / ε⌉₊ + 1)
+  have fact : 1 / ε ≤ ⌈1 / ε⌉₊ := by bound
+  -- fact : 1 / ε ≤ ↑⌈1 / ε⌉₊
+  push_cast
+  -- ⊢ 1 / ε < ↑⌈1 / ε⌉₊ + 1
+  bound
+
+-- 2ª demostración
+-- ===============
+
+example : ∃ (N : ℕ), 1 / ε < N :=
+by
+  -- ⊢ ∃ N, 1 / ε < ↑N
+  use ⌈1 / ε⌉₊ + 1
+  -- ⊢ 1 / ε < ↑(⌈1 / ε⌉₊ + 1)
+  have fact : 1 / ε ≤ ⌈1 / ε⌉₊ := Nat.le_ceil (1 / ε)
+  -- fact : 1 / ε ≤ ↑⌈1 / ε⌉₊
+  push_cast
+  -- ⊢ 1 / ε < ↑⌈1 / ε⌉₊ + 1
+  apply lt_of_le_of_lt fact
+  -- ⊢ ↑⌈1 / ε⌉₊ < ↑⌈1 / ε⌉₊ + 1
+  exact lt_add_one _
+
+-- 3ª demostración
+-- ===============
+
+example : ∃ (N : ℕ), 1 / ε < N :=
+by
+  -- ⊢ ∃ N, 1 / ε < ↑N
+  use ⌈1 / ε⌉₊ + 1
+  -- ⊢ 1 / ε < ↑(⌈1 / ε⌉₊ + 1)
+  push_cast
+  -- ⊢ 1 / ε < ↑⌈1 / ε⌉₊ + 1
+  calc
+    1 / ε ≤ ↑⌈1 / ε⌉₊     := Nat.le_ceil (1 / ε)
+    _     < ↑⌈1 / ε⌉₊ + 1 := lt_add_one _
+
+-- 4ª demostración
+-- ===============
+
+example : ∃ (N : ℕ), 1 / ε < N :=
+by
+  -- ⊢ ∃ N, 1 / ε < ↑N
+  use ⌈1 / ε⌉₊ + 1
+  -- ⊢ 1 / ε < ↑(⌈1 / ε⌉₊ + 1)
+  push_cast
+  -- ⊢ 1 / ε < ↑⌈1 / ε⌉₊ + 1
+  exact lt_of_le_of_lt (Nat.le_ceil (1 / ε)) (lt_add_one _)
+
+-- 5ª demostración
+-- ===============
+
+example : ∃ (N : ℕ), 1 / ε < N :=
+exists_nat_gt (1 / ε)
+
+-- 6ª demostración
+-- ===============
+
+example : ∃ (N : ℕ), 1 / ε < N :=
+by
+  -- ⊢ ∃ N, 1 / ε < ↑N
+  use ⌈1 / ε⌉₊ + 1
+  -- ⊢ 1 / ε < ↑(⌈1 / ε⌉₊ + 1)
+  calc
+    1 / ε ≤ (⌈1 / ε⌉₊ : ℝ)     := Nat.le_ceil (1 / ε)
+    _     < (⌈1 / ε⌉₊ : ℝ) + 1 := lt_add_one _
+    _     = ↑(⌈1 / ε⌉₊ + 1)    := by norm_num
+
+-- Lemas usados
+-- ============
+
+variable (a b c : ℝ)
+#check (Nat.le_ceil a : a ≤ ↑⌈a⌉₊)
+#check (exists_nat_gt (1 / ε) : ∃ n : ℕ, 1 / ε < ↑n)
+#check (lt_add_one a : a < a + 1)
+#check (lt_of_le_of_lt : a ≤ b → b < c → a < c)
+\end{minted}
+
+\subsection{Demostración en lenguaje natural de la propiedad arquimediana}
+
+\begin{theorem}
+  Para cualquier número real positivo $\varepsilon > 0$, existe un número natural $N$ tal que $1/\varepsilon < N$.
+\end{theorem}
+
+\begin{proof}
+Sea $\varepsilon > 0$. Necesitamos encontrar un número natural $N$ tal que $1/\varepsilon <
+N$.
+
+Usamos el valor $N = \lceil 1/\varepsilon \rceil_+ + 1$, donde $\lceil \cdot \rceil_+$ denota la función
+techo de números naturales.
+
+Dado que $\varepsilon > 0$, tenemos $1/\varepsilon > 0$. Por la definición de la función techo de números naturales, sabemos que:
+\[ 1/\varepsilon \le \lceil 1/\varepsilon \rceil_+ \]
+Ahora, como $\lceil 1/\varepsilon \rceil_+$ es un número natural y $N = \lceil 1/\varepsilon \rceil_+ + 1$, tenemos:
+\[ \lceil 1/\varepsilon \rceil_+ < \lceil 1/\varepsilon \rceil_+ + 1 = N \]
+Combinando estas desigualdades, obtenemos:
+\[ 1/\varepsilon \le \lceil 1/\varepsilon \rceil_+ < N \]
+Por lo tanto, $1/\varepsilon < N$, lo que completa la demostración.
+\end{proof}
+
+\textbf{Significado:} La propiedad arquimediana es fundamental para el análisis porque asegura que los números reales no tienen elementos ``infinitos'' o ``infinitesimales''. Garantiza que siempre podemos encontrar números naturales lo suficientemente grandes como para dominar cualquier número real positivo dado cuando tomamos sus recíprocos. Esta propiedad es esencial para muchos procesos de límite y es equivalente a la completitud de los números reales en ciertas formulaciones.
+
+\subsection{Revisión de errores comunes}
+\begin{itemize}
+    \item ¡No uses la función techo regular $\lceil \cdot \rceil$! ¡Devuelve enteros, no naturales!
+    \item \textbf{Cuidado con los problemas de casting}: si \texttt{bound} no funciona, prueba \texttt{push\_cast} primero.
+    \item La suma $\lceil 1/\varepsilon \rceil_+ + 1$ ocurre en $\mathbb{N}$, luego se convierte a $\mathbb{R}$; por eso necesitamos \texttt{push\_cast}.
+\end{itemize}
+
+\textbf{Nota histórica:} Aunque a menudo se atribuye a Arquímedes (287--212 a.C.), esta propiedad probablemente era conocida por Eudoxo (408--355 a.C.) y aparece en los \textit{Elementos} de Euclides. Arquímedes utilizó una versión de este principio en su método de exhaución para calcular áreas y volúmenes.
+
+\section{Nivel 2: Nuestro primer límite real}
+
+¡Enhorabuena! Acabas de demostrar la propiedad arquimediana. Ahora vamos a usarla para demostrar algo realmente interesante: nuestro primer límite no trivial.
+
+\subsection{El objetivo: Demostrar que $1/n \to 0$}
+
+Queremos demostrar que la sucesión $a(n) = 1/n$ converge a 0 cuando $n$ tiende a infinito. Esto es intuitivamente obvio: a medida que $n$ crece, $1/n$ se hace más pequeño y se acerca a 0. Pero, ¿cómo lo hacemos riguroso usando la definición $\varepsilon$-$N$?
+
+\begin{theorem}
+  La sucesión $a(n) = 1/n$ converge a 0.
+\end{theorem}
+
+\subsection{Recordatorio: La definición de convergencia de sucesiones}
+
+Una sucesión $a : \mathbb{N} \to \mathbb{R}$ converge a un límite $L$ (escrito \texttt{LimSuc a L}) si:
+\begin{itemize}
+    \item Para cada $\varepsilon > 0$, existe $N \in \mathbb{N}$ tal que para todo $n \ge N$, $|a(n) - L| < \varepsilon$
+    \item En notación formal: $\forall \varepsilon > 0, \exists N, \forall n \ge N, |a(n) - L| < \varepsilon$
+\end{itemize}
+Para nuestro caso específico con $a(n) = 1/n$ y $L = 0$, esto se convierte en:
+$\forall \varepsilon > 0, \exists N, \forall n \ge N, |1/n - 0| < \varepsilon$.
+
+\subsection{Estrategia de demostración en lenguaje natural}
+
+Así es como lo demostraremos paso a paso:
+\begin{itemize}
+    \item \textbf{Paso 1:} Sea $\varepsilon > 0$ dado. (Esto corresponderá a \texttt{intro $\varepsilon$ h$\varepsilon$}).
+    \item \textbf{Paso 2:} Necesitamos encontrar un $N$ tal que para todo $n \ge N$, tengamos $1/n < \varepsilon$.
+    \item \textbf{Idea clave:} Necesitamos $1/n < \varepsilon$, que es equivalente a $1/\varepsilon < n$ (ya que ambos lados son positivos). Así que necesitamos que $n$ sea mayor que $1/\varepsilon$.
+    \item \textbf{Paso 3:} ¡Para eso desarrollamos la propiedad arquimediana! Nos dice que existe algún número natural $N$ tal que $1/\varepsilon < N$. En lugar de volver a demostrarlo desde cero, podemos simplemente citar este hecho; luego elegiremos tal $N$ y lo usaremos.
+    \item \textbf{Paso 4:} Ahora sea $n \ge N$ dado. Tenemos:
+    \begin{itemize}
+        \item $1/\varepsilon < N$ (por nuestra elección de $N$)
+        \item $N \le n$ (por hipótesis)
+        \item Por lo tanto: $1/\varepsilon < N \le n$, así que $1/\varepsilon < n$
+        \item Tomando recíprocos (y volteando la desigualdad): $1/n < \varepsilon$
+    \end{itemize}
+    \item \textbf{Paso 5:} Como $|1/n - 0| = |1/n| = 1/n < \varepsilon$, ¡hemos terminado!
+\end{itemize}
+
+\subsection{Los desafíos de la implementación en Lean}
+
+\subsubsection{Desafío 1: Multiplicación cruzada de fracciones}
+Nuestro paso clave es mostrar que $1/n < \varepsilon$. En matemáticas de papel, simplemente multiplicaríamos de forma cruzada para obtener $1 < n\varepsilon$. Pero Lean es muy cuidadoso con la división por cero.
+\textbf{Solución:} ¡La táctica \texttt{field\_simp} maneja esto automáticamente! Eliminará denominadores multiplicando de forma cruzada, pero solo después de verificar que todos los denominadores son positivos (o al menos no nulos).
+
+\subsubsection{Desafío 2: Aritmética lineal}
+Una vez eliminadas las fracciones, necesitamos combinar varias desigualdades. La táctica \texttt{bound} no siempre maneja bien estas combinaciones lineales con multiplicación por variables.
+\textbf{Solución:} La táctica \texttt{linarith} está específicamente diseñada para la aritmética lineal. Puede tomar una lista de hipótesis y resolver metas que se sigan de combinaciones lineales de esas hipótesis.
+
+\subsubsection{Desafío 3: Casting explícito de tipos}
+¿Recuerdas las flechas hacia arriba $\uparrow$? ¡Han vuelto! Cuando escribimos $1/n$, Lean lo ve como $1/\uparrow n$ donde $n$ comienza como un número natural pero necesita ser convertido a real.
+\textbf{Solución:} Podemos especificar el casting explícitamente con esta sintaxis: \texttt{(n : $\mathbb{R}$)}. Esto le dice a Lean exactamente a qué tipo queremos convertir $n$.
+
+\subsubsection{Desafío 4: Casting en aplicaciones de tácticas}
+A veces quieres aplicar una táctica pero los tipos no coinciden exactamente.
+\textbf{Solución:} La táctica \texttt{exact\_mod\_cast} es como \texttt{apply}, pero maneja automáticamente las coerciones de tipo por ti.
+
+\subsection{Nuevas herramientas que necesitarás}
+\begin{itemize}
+    \item \texttt{field\_simp}: Elimina denominadores.
+    \item \texttt{linarith}: Potente táctica para desigualdades lineales.
+    \item \texttt{exact\_mod\_cast}: Maneja coerciones automáticamente cuando la meta es exactamente la hipótesis tras el casting.
+\end{itemize}
+
+\subsection{Consejos profesionales para este nivel}
+\begin{enumerate}
+    \item Usa \texttt{change} para convertir \texttt{`LimSuc a 0`} a su definición.
+    \item Aplica la propiedad arquimediana para obtener la existencia de $N$.
+    \item Usa \texttt{choose} para extraer el $N$ de la sentencia existencial.
+    \item Establece la positividad primero antes de usar \texttt{field\_simp}.
+    \item Trabaja paso a paso.
+\end{enumerate}
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+variable (a : ℕ → ℝ)
+
+def LimSuc (a : ℕ → ℝ) (L : ℝ) : Prop :=
+  ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |a n - L| < ε
+
+-- 1ª demostración
+-- ===============
+
+lemma L1
+  {n : ℕ}
+  : 0 ≤ 1 / (n : ℝ) :=
+by
+  -- ⊢ 0 ≤ 1 / ↑n
+  apply div_nonneg
+  · -- ⊢ 0 ≤ 1
+    exact zero_le_one
+  · -- ⊢ 0 ≤ ↑n
+    exact Nat.cast_nonneg n
+
+lemma L2
+  {n : ℕ}
+  : |1 / (n : ℝ)| = 1 / n :=
+by
+  apply abs_of_nonneg
+  -- ⊢ 0 ≤ 1 / ↑n
+  exact L1
+
+variable {ε : ℝ}
+variable {N : ℕ}
+
+lemma L3
+  (hε : ε > 0)
+  (hN : 1 / ε < N)
+  : 0 < (N : ℝ) :=
+by calc
+  (0 : ℝ) < 1 / ε := one_div_pos.mpr hε
+  _       < N     := hN
+
+lemma L4
+  (hε : ε > 0)
+  {n : ℕ}
+  (hN : 1 / ε < N)
+  (hn : n ≥ N)
+  : 1 / (n : ℝ) ≤ 1 / (N : ℝ) :=
+by
+  apply one_div_le_one_div_of_le
+  · -- ⊢ 0 < ↑N
+    exact L3 hε hN
+  · -- ⊢ ↑N ≤ ↑n
+    exact Nat.cast_le.mpr hn
+
+lemma L5
+  (hε : ε > 0)
+  (hN : 1 / ε < N)
+  : 1 / (N : ℝ) < ε :=
+by
+  apply (one_div_lt _ _).mp
+  · -- ⊢ 1 / ε < ↑N
+    exact RCLike.ofReal_lt_ofReal.mp hN
+  · -- ⊢ 0 < ε
+    exact RCLike.ofReal_pos.mp hε
+  · -- ⊢ 0 < ↑N
+    exact L3 hε hN
+
+example
+  (ha : ∀ n, a n = 1 / n)
+  : LimSuc a 0 :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |a n - 0| < ε
+  have h1 : ∃ (N : ℕ), 1 / ε < N := exists_nat_gt (1 / ε)
+  choose N hN using h1
+  -- N : ℕ
+  -- hN : 1 / ε < ↑N
+  use N
+  -- ⊢ ∀ n ≥ N, |a n - 0| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ |a n - 0| < ε
+  calc |a n - 0|
+       = |a n|         := by simp [sub_zero]
+     _ = |1 / (n : ℝ)| := by rw [ha]
+     _ = 1 / n         := L2
+     _ ≤ 1 / N         := L4 hε hN hn
+     _ < ε             := L5 hε hN
+
+-- 2ª demostración
+-- ===============
+
+lemma L2'
+  {n : ℕ}
+  : |1 / (n : ℝ)| = 1 / n :=
+by
+  apply abs_of_nonneg
+  -- ⊢ 0 ≤ 1 / ↑n
+  positivity
+
+lemma L3'
+  (hε : ε > 0)
+  (hN : 1 / ε < N)
+  : 0 < (N : ℝ) :=
+by calc
+  (0 : ℝ) < 1 / ε := by positivity
+  _       < N     := hN
+
+lemma L4'
+  (hε : ε > 0)
+  {n : ℕ}
+  (hN : 1 / ε < N)
+  (hn : n ≥ N)
+  : 1 / (n : ℝ) ≤ 1 / (N : ℝ) :=
+by
+  apply one_div_le_one_div_of_le
+  · -- ⊢ 0 < ↑N
+    exact L3 hε hN
+  · -- ⊢ ↑N ≤ ↑n
+    gcongr
+
+lemma L5'
+  (hε : ε > 0)
+  (hN : 1 / ε < N)
+  : 1 / (N : ℝ) < ε :=
+by
+  apply (one_div_lt _ _).mp
+  · -- ⊢ 1 / ε < ↑N
+    gcongr
+  · -- ⊢ 0 < ε
+    gcongr
+  · -- ⊢ 0 < ↑N
+    exact L3 hε hN
+
+example
+  (ha : ∀ n, a n = 1 / n)
+  : LimSuc a 0 :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |a n - 0| < ε
+  have h1 : ∃ (N : ℕ), 1 / ε < N := exists_nat_gt (1 / ε)
+  choose N hN using h1
+  -- N : ℕ
+  -- hN : 1 / ε < ↑N
+  use N
+  --⊢ ∀ n ≥ N, |a n - 0| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ |a n - 0| < ε
+  calc |a n - 0|
+       = |a n|         := by norm_num
+     _ = |1 / (n : ℝ)| := by rw [ha]
+     _ = 1 / n         := L2'
+     _ ≤ 1 / N         := L4' hε hN hn
+     _ < ε             := L5' hε hN
+
+-- Lemas usados
+-- ============
+
+variable (x y : ℝ)
+variable (m n : ℕ)
+#check (Nat.cast_le : ↑m ≤ ↑n ↔ m ≤ n)
+#check (Nat.cast_nonneg n : 0 ≤ n)
+#check (RCLike.ofReal_lt_ofReal : ↑x < ↑y ↔ x < y)
+#check (abs_of_nonneg : 0 ≤ x → |x| = x)
+#check (div_nonneg : 0 ≤ x -> 0 ≤ y -> 0 ≤ x / y)
+#check (exists_nat_gt x : ∃ n : ℕ, x < n)
+#check (one_div_le_one_div_of_le : 0 < x → x ≤ y → 1 / y ≤ 1 / x)
+#check (one_div_lt : 0 < x → 0 < y → (1 / x < y ↔ 1 / y < x))
+#check (one_div_pos : 0 < 1 / x ↔ 0 < x)
+#check (zero_le_one : 0 ≤ 1)
+\end{minted}
+
+\subsection{Lo que acabamos de lograr}
+Esta demostración demuestra varios conceptos clave:
+\begin{enumerate}
+    \item El poder de la propiedad arquimediana.
+    \item La definición $\varepsilon$-$N$ en acción.
+    \item Manipulación rigurosa de desigualdades.
+    \item El puente entre la intuición y la formalidad.
+\end{enumerate}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

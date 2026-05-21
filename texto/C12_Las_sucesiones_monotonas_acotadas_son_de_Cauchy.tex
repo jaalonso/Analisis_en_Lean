@@ -1,0 +1,678 @@
+\chapter{Las sucesiones monótonas acotadas son de Cauchy}
+
+\section{Subsucesiones iteradas y órbitas}
+
+Comencemos esta lectura con un ejercicio fundamental que iluminará la
+profunda conexión entre la iteración y el crecimiento monótono.
+
+Supongamos que tenemos una sucesión de números naturales,
+$\sigma : \mathbb{N} \to \mathbb{N}$, y lo único que sabemos de ella es
+que siempre supera a la función identidad:
+\[
+  h_\sigma : \forall n,\; n < \sigma(n)
+\]
+
+Esto no significa que $\sigma(n)$ sea en sí misma estrictamente creciente
+(lo que llamamos \emph{Subsucc}). La sucesión puede saltar de un lado a
+otro, siempre que su gráfica permanezca por encima de la recta $y = x$.
+
+Pero debería ser ``intuitivamente claro'' a partir de $h_\sigma$ que
+$\sigma$ acaba creciendo indefinidamente, haciéndose cada vez más grande,
+aunque no de manera monótona. Es decir, debería existir alguna forma de
+``acelerar'' $\sigma$ para convertirla en una Subsucc. El único problema
+es: ¿cómo se hace esto en la práctica?
+
+\subsection{La idea clave: órbitas}
+
+La idea clave es la de una \emph{órbita}. En astronomía, podemos imaginar
+que observamos el cielo noche tras noche e intentamos rastrear la posición
+de, por ejemplo, Júpiter frente a las estrellas ``fijas'' (la esfera
+celeste). Iniciamos nuestras observaciones con Júpiter teniendo cierto
+estado en el ``espacio de fases'' (posición, velocidad) $x_0$; sea $T$ la
+función que aplica la dinámica newtoniana durante un día, de modo que
+$T(x_0)$ es el nuevo estado de Júpiter mañana, moviéndose según las leyes
+de Newton y la gravedad. Entonces $T(T(x_0))$ es el estado después de dos
+días, y así sucesivamente. La órbita completa de Júpiter en el tiempo es
+la sucesión:
+\[
+  x_0,\; T(x_0),\; T(T(x_0)),\; T(T(T(x_0))),\; \ldots
+\]
+
+En matemáticas, si tenemos cualquier función $f : X \to X$ que va de un
+espacio abstracto $X$ a sí mismo, y empezamos con algún punto base
+$x_0 : X$, escribiremos $f^{[n]}(x_0)$ para denotar $f$ iterada $n$ veces
+aplicada a $x_0$. La sucesión $n \mapsto f^{[n]}(x_0)$ se denomina
+\emph{órbita de $x_0$ bajo la acción de $f$}.
+
+\subsection{Aplicación a nuestro problema}
+
+¿Cómo nos ayuda esto en nuestra situación actual? Podríamos empezar con
+cualquier punto base $n_0 : \mathbb{N}$, y sabemos por $h_\sigma$
+especializado a $n = n_0$ que $n_0 < \sigma(n_0)$, pero no tenemos idea
+de cuán grande es $\sigma(n_0)$; podría ser enorme. Entonces, ¿cómo
+garantizamos que el siguiente término supere a $\sigma(n_0)$? (¿Quiere
+pensarlo un momento antes de seguir leyendo?)
+
+Dado lo que discutimos antes, esperamos que se vea de inmediato que: si
+especializamos $h_\sigma$ a $n = \sigma(n_0)$, obtenemos:
+$\sigma(n_0) < \sigma(\sigma(n_0))$. Así queda claro: la manera de
+obtener términos cada vez más grandes de la sucesión $\sigma$ es
+\emph{tomar la órbita}.
+
+\subsection{Nuevas herramientas}
+
+\subsubsection{Iteración de funciones: \texttt{succ\_iterate}}
+
+Aunque $\sigma^{[k]}(\sigma(n)) = \sigma^{[k+1]}(n)$ es verdad por
+definición, se requiere un argumento por inducción para mostrar que si en
+lugar de añadir una $\sigma$ a la derecha la añadimos a la izquierda:
+\[
+  \sigma(\sigma^{[k]}(n)) = \sigma^{[k+1]}(n)
+\]
+Omitiremos la demostración de ese argumento y les proporcionamos el
+teorema \texttt{succ\_iterate}.
+
+\subsubsection{Subsucesión a partir del sucesor: \texttt{subseq\_of\_succ}}
+
+Para demostrar que $\sigma$ es una Subsucc, cuya definición habla de todos
+los $i < j$, basta hacerlo paso a paso. El teorema \texttt{subseq\_of\_succ}
+dice que es suficiente mostrar que $\sigma(n) < \sigma(n+1)$ se cumple
+para todo $n$ para concluir que $\sigma$ es una Subsucc. Se puede aplicar
+este hecho para reducir la demostración a mostrar que $\sigma$ crece de
+$n$ a $n+1$.
+
+\subsubsection{Táctica: \texttt{show}}
+
+La táctica \texttt{show} tiene la sintaxis \texttt{show hecho by prueba}.
+Por ejemplo, si se desea reescribir usando el hecho de que
+$\sigma(\sigma^{[n]}(n_0)) = \sigma^{[n+1]}(n_0)$ sin una declaración
+\texttt{have} separada, se puede escribir:
+
+\begin{minted}{lean4}
+rewrite [ show σ (σ^[ n ] n₀) = σ^[ n+1] n₀ by apply succ_iterate ]
+\end{minted}
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[Subsucc del Iterado]
+Si una sucesión $\sigma : \mathbb{N} \to \mathbb{N}$ crece más rápido que
+la identidad, $n < \sigma(n)$, entonces la órbita de cualquier punto base
+$n_0 : \mathbb{N}$ bajo $\sigma$ --- es decir, la sucesión
+$n_0, \sigma(n_0), \sigma^{[2]}(n_0), \ldots$ --- es una Subsucc, esto
+es, es estrictamente creciente.
+\end{theorem}
+
+\subsection{Estrategia de la demostración}
+
+La demostración usa el teorema \texttt{subseq\_of\_succ} para reducir el
+problema a mostrar que los términos consecutivos en la órbita están
+estrictamente ordenados. Específicamente, necesitamos mostrar:
+\[
+  \sigma^{[n]}(n_0) < \sigma^{[n+1]}(n_0)
+\]
+La idea clave es que $\sigma^{[n+1]}(n_0) = \sigma(\sigma^{[n]}(n_0))$
+por el teorema \texttt{succ\_iterate}, y podemos aplicar la hipótesis
+$h_\sigma$ al punto $\sigma^{[n]}(n_0)$ para obtener la desigualdad
+deseada.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean4}
+Statement Subseq_of_Iterate (σ : ℕ → ℕ) (hσ : ∀ n, n < σ n) (n₀ : ℕ) :
+    Subseq (fun n ↦ σ^[n] n₀) := by
+  apply subseq_of_succ
+  intro n
+  specialize hσ (σ^[n] n₀)
+  have f : σ (σ^[n] n₀) = σ^[n+1] n₀ := by apply succ_iterate
+  rewrite [f] at hσ
+  apply hσ
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Usamos el teorema \texttt{subseq\_of\_succ}, que reduce demostrar que una
+sucesión es estrictamente creciente a mostrar que los términos consecutivos
+satisfacen $f(n) < f(n+1)$.
+
+Para la sucesión de órbita $n \mapsto \sigma^{[n]}(n_0)$, necesitamos
+mostrar:
+\[
+  \sigma^{[n]}(n_0) < \sigma^{[n+1]}(n_0)
+\]
+
+Por el teorema \texttt{succ\_iterate}:
+\[
+  \sigma^{[n+1]}(n_0) = \sigma(\sigma^{[n]}(n_0))
+\]
+
+Ahora aplicamos la hipótesis $h_\sigma$ al punto $\sigma^{[n]}(n_0)$:
+\begin{align*}
+  \sigma^{[n]}(n_0) &< \sigma(\sigma^{[n]}(n_0)) \\
+               &= \sigma^{[n+1]}(n_0)
+\end{align*}
+
+Esto completa la demostración.
+\end{proof}
+
+\subsection{Por qué esto importa}
+
+Este resultado establece que incluso las sucesiones no monótonas pueden
+tener subsucesiones monótonas cuando satisfacen ciertas condiciones de
+crecimiento. La construcción de la órbita proporciona una manera canónica
+de extraer comportamiento monótono de sucesiones que crecen más rápido que
+la identidad. Esta técnica será crucial para el teorema principal sobre
+sucesiones monótonas acotadas.
+
+\section{Elección mejorada: de la existencia a la estructura}
+
+¿Conoce la ``conjetura de los primos gemelos''? Un número $n : \mathbb{N}$
+se llama \emph{Primo Gemelo} si tanto $n$ como $n+2$ son números primos.
+Llamemos a esta propiedad $p : \mathbb{N} \to \mathsf{Prop}$.
+
+Así, $p$ es una función que toma un número natural $n$ y devuelve
+$p(n) = \text{Sí}/\text{No}$, dependiendo de si $n$ es un primo gemelo.
+
+La conjetura de los primos gemelos afirma que hay infinitos primos gemelos;
+es decir, para cualquier cota $N$, por grande que sea, siempre existe al
+menos un $n > N$ para el cual $p(n)$ se cumple. Enunciaríamos la conjetura
+así:
+\[
+  h : \forall N,\; \exists\, n > N,\; p(n)
+\]
+
+Supongamos ahora que tenemos una hipótesis como esta, para alguna propiedad
+abstracta $p$ (si se prefiere, puede seguir pensando en $p(n)$ como la
+prueba de si $n$ es un primo gemelo). Dado que existen $n$'s
+arbitrariamente grandes para los cuales $p(n)$ se cumple, ¿cómo obtenemos
+una subsucesión $\sigma : \mathbb{N} \to \mathbb{N}$, tal que a lo largo de
+la subsucesión, $p(\sigma(n))$ se cumpla para todo $n$?
+
+\subsection{Interpretar la existencia como funciones}
+
+La idea es que debería interpretarse $h$ como una colección de funciones.
+Dado un número natural $N$, la hipótesis $h$ nos producirá un $n$, pero
+ese $n$ es función de $N$, así que deberíamos escribir $n = n(N)$. ¡Pero
+eso no es todo! La hipótesis $h$ también contiene una demostración de que
+$n(N) > N$ para todo $N$. ¿Se ve por qué el enunciado de $h$ implica la
+existencia de tal función? Y por último, $h$ también nos da una
+demostración del hecho de que, para todo $N$, $p(n(N))$ se cumple. ¡Así
+que $n(N)$ es (casi) nuestra sucesión buscada! (Como resulta extraño
+escribir $n(N)$, renombramos $n$ como $\tau$, para poder escribir
+$\tau(N)$.)
+
+La forma de pasar de $h$ a estas sucesiones en Lean es invocar una táctica
+familiar: \texttt{choose}. Si se escribe:
+
+\begin{minted}{lean4}
+choose τ hτBnd hτP using h
+\end{minted}
+
+entonces Lean añadirá al estado del objetivo:
+
+\begin{minted}{lean4}
+τ : ℕ → ℕ
+hτBnd : ∀ N, τ N > N
+hτP  : ∀ N, p (τ N)
+\end{minted}
+
+¿No es sorprendente? Ahora debería poderse usar la idea de la sección
+anterior para construir la subsucesión $\sigma$ deseada, aunque habrá que
+pensar cuidadosamente en cómo hacerlo exactamente\ldots
+
+\subsection{De la existencia a las subsucesiones}
+
+Dado este contexto, nuestro objetivo es construir una subsucesión
+$\sigma : \mathbb{N} \to \mathbb{N}$ que sea estrictamente creciente y
+preserve la propiedad $p$. Es decir, queremos:
+\begin{itemize}[nosep]
+  \item $\sigma$ es una Subsucc (estrictamente creciente)
+  \item $p(\sigma(n))$ se cumple para todo $n$
+\end{itemize}
+
+El desafío es que la función $\tau$ extraída por \texttt{choose} satisface
+la propiedad pero puede no ser monótona. Sin embargo, podemos aplicar la
+construcción de la órbita de la sección anterior para imponer estructura
+monótona.
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[Elección mejorada]
+Para cualquier propiedad $p : \mathbb{N} \to \mathsf{Prop}$, si existen
+números naturales arbitrariamente grandes que satisfacen $p$, entonces
+existe una subsucesión estrictamente creciente a lo largo de la cual $p$
+siempre se cumple.
+
+Formalmente: si $\forall N,\, \exists\, n > N,\, p(n)$, entonces
+$\exists\, \sigma,\; \mathit{Subsucc}(\sigma) \land \forall n,\, p(\sigma(n))$.
+\end{theorem}
+
+\subsection{Estrategia de la demostración}
+
+El desafío es que la función $\tau$ extraída por \texttt{choose} satisface
+la propiedad pero puede no ser monótona. Sin embargo, podemos aplicar la
+construcción de la órbita de la sección anterior para imponer estructura
+monótona.
+
+La demostración sigue un proceso natural en dos pasos:
+
+\textbf{Paso 1: Extraer la función oculta.} Usar \texttt{choose} para
+convertir el enunciado de existencia en funciones concretas como se mostró
+arriba.
+
+\textbf{Paso 2: Aplicar la construcción de la órbita.} Definir
+$\sigma(n) = \tau^{[n]}(\tau(0))$. La construcción de la órbita garantiza
+que $\sigma$ es estrictamente creciente (por el resultado de la Sección
+1), mientras que la elección del punto inicial $\tau(0)$ y la iteración
+preservan la propiedad $p$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean4}
+Statement (p : ℕ → Prop) (h : ∀ N, ∃ n > N, p n) :
+    ∃ σ, Subseq σ ∧ ∀ n, p (σ n) := by
+  choose τ hτBnd hτP using h
+  let σ : ℕ → ℕ := fun n ↦ τ^[n] (τ 0)
+  use σ
+  split_ands
+  · apply Subseq_of_Iterate τ hτBnd (τ 0)
+  · intro n
+    change p (τ^[n] (τ 0))
+    rewrite [← show τ (τ^[n-1] (τ 0)) = τ^[n] (τ 0) by apply succ_iterate]
+    apply hτP (τ^[n-1] (τ 0))
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Extraemos de la hipótesis $h$ una función $\tau : \mathbb{N} \to \mathbb{N}$
+junto con demostraciones de que $\tau(N) > N$ y $p(\tau(N))$ para todo $N$.
+
+A continuación, definimos nuestra subsucesión deseada como
+$\sigma(n) = \tau^{[n]}(\tau(0))$, la órbita de $\tau$ comenzando desde
+el punto $\tau(0)$.
+
+Para verificar que $\sigma$ es una subsucesión, aplicamos el resultado de
+la Sección 1: como $\tau(N) > N$ para todo $N$, la órbita
+$n \mapsto \tau^{[n]}(\tau(0))$ es estrictamente creciente.
+
+Para verificar que $p(\sigma(n))$ se cumple para todo $n$, usamos el
+hecho de que $\sigma(n) = \tau^{[n]}(\tau(0))$. Por el teorema
+\texttt{succ\_iterate}, esto es igual a $\tau(\tau^{[n-1]}(\tau(0)))$
+cuando $n > 0$. Como $p(\tau(M))$ se cumple para cualquier $M$, y
+$\tau^{[n-1]}(\tau(0))$ es tal $M$, tenemos $p(\sigma(n))$ según se
+requería. Para $n = 0$, tenemos $\sigma(0) = \tau(0)$, y $p(\tau(0))$ se
+cumple por nuestra extracción.
+\end{proof}
+
+\subsection{Por qué este puente importa}
+
+Este resultado demuestra el patrón fundamental de transformar enunciados
+de existencia abstractos en objetos concretos y estructurados. La técnica
+de usar \texttt{choose} para extraer funciones ocultas y luego aplicar
+métodos de construcción para imponer estructura adicional aparece a lo
+largo de las matemáticas formales.
+
+Más específicamente, este resultado proporciona exactamente la herramienta
+que necesitamos para el teorema principal. Cuando suponemos que una
+sucesión monótona acotada no es de Cauchy, obtenemos un enunciado de
+existencia sobre brechas persistentes. Este resultado intermedio muestra
+cómo extraer de tales enunciados las subsucesiones concretas necesarias
+para nuestro argumento de contradicción.
+
+La combinación fluida de intuición de teoría de números (conjetura de los
+primos gemelos) con técnicas analíticas (construcción de órbitas) ilustra
+cómo diferentes áreas de las matemáticas se refuerzan y enriquecen
+mutuamente.
+
+\section{Las sucesiones monótonas y acotadas son de Cauchy}
+
+El teorema fundamental que conecta monotonicidad, acotamiento y
+convergencia establece que toda sucesión monótona acotada es de Cauchy (y
+por lo tanto convergente). Este resultado es central en el análisis real y
+proporciona una poderosa herramienta para establecer la convergencia sin
+encontrar explícitamente el límite.
+
+La intuición puede parecer clara: una sucesión monótona que está acotada
+no puede tener brechas persistentes, porque tales brechas acabarían
+haciendo que la sucesión superara su cota. Pero hacer que los detalles
+sean correctos requerirá algo de trabajo. Posponemos a la siguiente
+sección la demostración de un ``lema auxiliar'' y pasamos directamente al
+argumento principal.
+
+\subsection{Abstracción y generalidad}
+
+Sea $a : \mathbb{N} \to X$ una sucesión. Un momento, ¿qué es $X$ aquí?
+Bueno, estamos trabajando hacia la construcción de los números reales, así
+que es mejor no presuponer su existencia; quizás $X$ debería ser los
+racionales. Por otro lado, una vez que demostremos el hecho de que las
+sucesiones monótonas acotadas son de Cauchy, quizás querramos usar ese
+hecho para sucesiones de valores reales. ¿Así que necesitaríamos demostrar
+el teorema dos veces? Por supuesto que no; ¡esa es la belleza de la
+abstracción!
+
+Estableceremos $X$ como un ``Tipo'' abstracto, pero supondremos cosas
+sobre él como que existe un orden lineal (para poder decir $x \leq y$),
+y una norma (para poder decir $|x|$), y que podemos sumar, restar,
+multiplicar y dividir elementos de $X$ obteniendo elementos de $X$ (que
+$X$ es un ``campo''). Haremos solo las suposiciones suficientes para que
+la demostración funcione. Y luego, si queremos aplicar este teorema
+general a una sucesión racional $a : \mathbb{N} \to \mathbb{Q}$ o una
+sucesión real $a : \mathbb{N} \to \mathbb{R}$, Lean inferirá
+automáticamente que todas las condiciones necesarias sobre $X$ se
+satisfacen en esos casos.
+
+\subsection{Nuevas herramientas}
+
+\subsubsection{Definición: monótona}
+
+Una sucesión $a : \mathbb{N} \to X$ (donde $X$ es un tipo ordenado) se
+dice que es \emph{monótona} si $a(n) \leq a(m)$ siempre que $n \leq m$.
+
+\subsubsection{Teorema: monotonía del sucesor}
+
+Para demostrar la monotonicidad, basta hacerlo paso a paso; es decir, si
+$a(m) \leq a(m+1)$ se cumple para todo $m$, entonces $a$ es monótona.
+
+\subsubsection{Táctica: \texttt{push\_neg}}
+
+La negación de $\forall$ es $\exists$, y viceversa. Para propagar una
+cadena de negaciones, se escribe \texttt{push\_neg}.
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[\texttt{IsCauchyOfMonotoneBdd}]
+Sea $a : \mathbb{N} \to X$ una sucesión monótona acotada superiormente por
+algún $M : X$. Entonces $a$ es de Cauchy.
+\end{theorem}
+
+\subsection{Estrategia de la demostración}
+
+¿Qué podría salir mal? Supongamos (por contradicción) que la sucesión $a$
+no es de Cauchy. Esto significará que existen ``brechas'' de tamaño
+$\varepsilon$ arbitrariamente tardías en la sucesión. El teorema de la
+brecha iterada (véase la siguiente sección) muestra entonces que estas
+brechas se acumulan sin límite, contradiciendo el supuesto de acotamiento.
+
+Los pasos iniciales ``obvios'' son los siguientes:
+
+\begin{enumerate}
+  \item Suponer por contradicción la hipótesis $h$ de que $a$ no es de
+    Cauchy. Entonces existe algún $\varepsilon > 0$ tal que para cualquier
+    $N$, podemos encontrar $m \geq n \geq N$ con
+    $|a(m) - a(n)| \geq \varepsilon$. (La táctica \texttt{push\_neg}
+    resultará útil aquí, y quizás se quiera usar \texttt{change at h}
+    para que Lean vea a través de la definición de \texttt{IsCauchy}.)
+
+  \item Una vez que se elige este $\varepsilon$, se tiene el enunciado:
+    $h : \forall N,\, \exists\, n \geq N,\, m \geq N,\, |a(m) - a(n)| \geq \varepsilon$.
+    Piénsese detenidamente: $n$ es en realidad una función de $N$, es
+    decir, $n = n(N)$; lo mismo con $m = m(N)$. Y dado un $N$, también se
+    obtiene una prueba de que $n(N) \geq N$, una prueba de que
+    $m(N) \geq n(N)$, y una prueba de que
+    $|a(m(N)) - a(n(N))| \geq \varepsilon$.
+
+  \item Ahora podemos usar \texttt{choose} con $h$ para extraer estas
+    aplicaciones $n(N)$ y $m(N)$, excepto que la situación queda más
+    clara si las renombramos como $\tau(N)$ y $\sigma(N)$. El hecho de
+    que $\tau(N) \geq N$ puede llamarse \texttt{hτ} y el hecho de que
+    $\sigma(N) \geq \tau(N)$ es \texttt{hσ}. El hecho de que
+    $|a(\sigma(N)) - a(\tau(N))| \geq \varepsilon$ podemos llamarlo
+    \texttt{hgap}.
+\end{enumerate}
+
+¿Y ahora qué? La intuición debería ser al menos algo clara: la sucesión
+$a$ crece al menos en $\varepsilon$ de vez en cuando, y es creciente, así
+que después de suficientes esos ``saltos'' hacia arriba de $\varepsilon$,
+superaremos la cota superior declarada $M$. Pero, ¿cómo lo implementamos
+en la práctica?
+
+Bueno, empecemos con $N = 0$. Entonces obtenemos algún valor
+$0 \leq \tau(0) \leq \sigma(0)$ para el cual
+$|a(\sigma(0)) - a(\tau(0))| \geq \varepsilon$. Por supuesto podemos
+eliminar los valores absolutos, dado que $a$ es monótona. ¿Cómo
+continuamos?
+
+\subsection{Lema auxiliar pospuesto}
+
+Una vez que obtenemos cierta cantidad $\varepsilon$ de crecimiento,
+necesitamos iterarlo para obtener $k \cdot \varepsilon$ de crecimiento,
+para cualquier $k$:
+
+\begin{theorem}[\texttt{IterateGap}]
+Dados $(a : \mathbb{N} \to X)$, $(ha : \mathit{Monotone}\, a)$,
+$(\varepsilon : X)$, $(\varepsilon_{\mathit{pos}} : \varepsilon > 0)$,
+$(\tau : \mathbb{N} \to \mathbb{N})$,
+$(h_\tau : \forall n,\, \tau(n) \geq n)$,
+$(\sigma : \mathbb{N} \to \mathbb{N})$,
+$(h_\sigma : \forall n,\, \sigma(n) \geq \tau(n))$,
+$(h_{\mathit{gap}} : \forall n,\, \varepsilon \leq |a(\sigma(n)) - a(\tau(n))|)$:
+\[
+  \forall k,\quad k \cdot \varepsilon \leq a(\sigma^{[k]}(0)) - a(0)
+\]
+
+Es decir, la órbita $\sigma^{[k]}(0)$ es exactamente la subsucesión a lo
+largo de la cual se garantiza que $a$ crezca al menos $k \times
+\varepsilon$.
+\end{theorem}
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean4}
+Statement IsCauchyOfMonotoneBdd {X : Type*}
+    [NormedField X] [LinearOrder X] [IsStrictOrderedRing X]
+    [FloorSemiring X] (a : ℕ → X) (M : X)
+    (hM : ∀ n, a n ≤ M) (ha : Monotone a)
+    : IsCauchy a := by
+  intro ε hε
+  by_contra h
+  push_neg at h
+  choose τ hτ σ hσ hgap using h
+  have f1 : ∀ k, k * ε ≤ a (σ^[k] 0) - a 0 :=
+    IterateGap a ha ε hε τ hτ σ hσ hgap
+  let k : ℕ := ⌈(M - a 0) / ε⌉₊ + 1
+  have hk' : (M - a 0) / ε ≤ ⌈(M - a 0) / ε⌉₊ := by bound
+  have hk : (M - a 0) / ε < k := by
+    change (M - a 0) / ε < (⌈(M - a 0) / ε⌉₊ + 1 : ℕ)
+    push_cast; linarith [hk']
+  specialize f1 k
+  specialize hM (σ^[k] 0)
+  have f2 : (M - a 0) < k * ε := by
+    field_simp at hk
+    rewrite [show k * ε = ε * k by ring_nf]
+    apply hk
+  linarith [f1, f2, hM]
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Procedemos por contradicción. Supongamos que $a$ no es de Cauchy. Entonces
+existe algún $\varepsilon > 0$ tal que para todo $N \in \mathbb{N}$,
+podemos encontrar índices $m \geq n \geq N$ con
+$|a(m) - a(n)| \geq \varepsilon$.
+
+Eso significa que podemos construir funciones $\tau, \sigma : \mathbb{N}
+\to \mathbb{N}$ tales que:
+\begin{itemize}[nosep]
+  \item $\tau(k) \geq k$ para todo $k$
+  \item $\sigma(k) \geq \tau(k)$ para todo $k$
+  \item $|a(\sigma(k)) - a(\tau(k))| \geq \varepsilon$ para todo $k$
+\end{itemize}
+
+Por la monotonicidad de $a$ y el orden $\tau(k) \leq \sigma(k)$, tenemos
+$a(\tau(k)) \leq a(\sigma(k))$, luego:
+\[
+  \varepsilon \leq |a(\sigma(k)) - a(\tau(k))| = a(\sigma(k)) - a(\tau(k))
+\]
+
+Ahora aplicamos el teorema \texttt{IterateGap} para concluir:
+\[
+  \forall k \in \mathbb{N},\quad k \cdot \varepsilon \leq a(\sigma^{[k]}(0)) - a(0)
+\]
+
+Tomemos $k = \lceil(M - a(0))/\varepsilon\rceil_+ + 1$. Entonces:
+\[
+  k > \frac{M - a(0)}{\varepsilon}
+\]
+lo que implica:
+\[
+  k \cdot \varepsilon > M - a(0)
+\]
+
+De nuestro resultado de acumulación de brechas:
+\[
+  k \cdot \varepsilon \leq a(\sigma^{[k]}(0)) - a(0)
+\]
+
+Por tanto:
+\[
+  M - a(0) < k \cdot \varepsilon \leq a(\sigma^{[k]}(0)) - a(0)
+\]
+
+Esto nos da $M < a(\sigma^{[k]}(0))$, contradiciendo nuestra hipótesis de
+que $a(n) \leq M$ para todo $n$.
+
+Por lo tanto, $a$ debe ser de Cauchy.
+\end{proof}
+
+\section{Brechas iteradas: el lema auxiliar}
+
+Ahora demostramos el resultado pendiente de la sección anterior. Este
+lema técnico captura el mecanismo preciso por el cual las brechas
+persistentes en una sucesión monótona se acumulan bajo iteración.
+
+Recordemos nuestro contexto: tenemos una sucesión monótona
+$a : \mathbb{N} \to X$ y dos subsucesiones $\sigma, \tau : \mathbb{N} \to
+\mathbb{N}$ con las siguientes propiedades:
+\begin{itemize}[nosep]
+  \item $\sigma$ crece más rápido que $\tau$: $\sigma(n) \geq \tau(n)$
+    para todo $n$
+  \item $\tau$ crece más rápido que la función identidad: $\tau(n) \geq n$
+    para todo $n$
+  \item Existe algún $\varepsilon > 0$ tal que:
+    $\varepsilon \leq |a(\sigma(n)) - a(\tau(n))|$
+\end{itemize}
+
+Nuestro objetivo es mostrar que si iteramos $\sigma$ exactamente $k$
+veces --- escrito en Lean como $\sigma^{[k]}$ --- entonces acumularemos al
+menos $k \cdot \varepsilon$ de crecimiento desde el valor inicial.
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[\texttt{IterateGap}]
+Dada una sucesión monótona $a : \mathbb{N} \to X$ y subsucesiones
+$\tau, \sigma : \mathbb{N} \to \mathbb{N}$ que satisfacen las condiciones
+anteriores, se tiene:
+\[
+  \forall k \in \mathbb{N},\quad k \cdot \varepsilon \leq a(\sigma^{[k]}(0)) - a(0)
+\]
+\end{theorem}
+
+\subsection{Estrategia de la demostración}
+
+La demostración procede por inducción sobre $k$. La idea clave es que
+cada iteración de $\sigma$ introduce al menos una brecha adicional de
+tamaño $\varepsilon$, y la monotonicidad garantiza que estas brechas se
+acumulan de manera aditiva.
+
+Para el caso base $k = 0$, el enunciado se convierte en
+$0 \leq a(0) - a(0) = 0$, que es trivial.
+
+Para el paso inductivo, usamos la condición de brecha en el punto
+$\sigma^{[k]}(0)$ para establecer que el movimiento de $\sigma^{[k]}(0)$
+a $\sigma^{[k+1]}(0)$ crea una brecha adicional de al menos $\varepsilon$,
+que se combina con la hipótesis inductiva.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean4}
+Statement {X : Type*} [NormedField X] [LinearOrder X]
+    [IsStrictOrderedRing X] (a : ℕ → X) (ha : Monotone a)
+    (ε : X) (εpos : ε > 0) (τ : ℕ → ℕ) (hτ : ∀ n, τ n ≥ n)
+    (σ : ℕ → ℕ) (hσ : ∀ n, σ n ≥ τ n)
+    (hgap : ∀ n, ε ≤ |a (σ n) - a (τ n)|)
+    : ∀ (k : ℕ), k * ε ≤ a (σ^[k] 0) - a 0 := by
+  intro k
+  induction' k with k hk
+  · norm_num
+  · specialize hgap (σ^[k] 0)
+    rewrite [show |a (σ (σ^[k] 0)) - a (τ (σ^[k] 0))|
+               = a (σ (σ^[k] 0)) - a (τ (σ^[k] 0))
+             by apply abs_of_nonneg (by bound)] at hgap
+    rewrite [show σ (σ^[k] 0) = σ^[k+1] 0 by apply succ_iterate] at hgap
+    have f1 : 0 ≤ a (τ (σ^[k] 0)) - a (σ^[k] 0) := by bound
+    push_cast
+    linarith [f1, hk, hgap]
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Procedemos por inducción sobre $k$.
+
+\textbf{Caso base:} Cuando $k = 0$, necesitamos mostrar
+$0 \cdot \varepsilon \leq a(\sigma^{[0]}(0)) - a(0)$. Como
+$\sigma^{[0]}(0) = 0$, esto se convierte en $0 \leq a(0) - a(0) = 0$, que
+es inmediato.
+
+\textbf{Paso inductivo:} Supongamos que el resultado se cumple para algún
+$k \geq 0$, es decir,
+$k \cdot \varepsilon \leq a(\sigma^{[k]}(0)) - a(0)$.
+Debemos mostrar $(k+1) \cdot \varepsilon \leq a(\sigma^{[k+1]}(0)) - a(0)$.
+
+Por la hipótesis de brecha aplicada en $n = \sigma^{[k]}(0)$:
+\[
+  \varepsilon \leq |a(\sigma(\sigma^{[k]}(0))) - a(\tau(\sigma^{[k]}(0)))|
+\]
+
+Como $\sigma^{[k]}(0) \geq 0$ y $h_\tau$ implica
+$\tau(\sigma^{[k]}(0)) \geq \sigma^{[k]}(0)$, y $h_\sigma$ implica
+$\sigma(\sigma^{[k]}(0)) \geq \tau(\sigma^{[k]}(0))$, la monotonicidad
+nos da:
+\[
+  a(\sigma^{[k]}(0)) \leq a(\tau(\sigma^{[k]}(0))) \leq a(\sigma(\sigma^{[k]}(0)))
+\]
+
+Por lo tanto, el valor absoluto es igual a la diferencia:
+\[
+  \varepsilon \leq a(\sigma(\sigma^{[k]}(0))) - a(\tau(\sigma^{[k]}(0)))
+\]
+
+Usando \texttt{succ\_iterate}, tenemos
+$\sigma(\sigma^{[k]}(0)) = \sigma^{[k+1]}(0)$.
+Además, por monotonicidad:
+\[
+  a(\tau(\sigma^{[k]}(0))) - a(\sigma^{[k]}(0)) \geq 0
+\]
+
+Combinando estas desigualdades:
+\begin{align*}
+  a(\sigma^{[k+1]}(0)) - a(0)
+    &= a(\sigma^{[k+1]}(0)) - a(\sigma^{[k]}(0)) + a(\sigma^{[k]}(0)) - a(0) \\
+    &\geq a(\sigma^{[k+1]}(0)) - a(\tau(\sigma^{[k]}(0))) + a(\sigma^{[k]}(0)) - a(0) \\
+    &\geq \varepsilon + k \cdot \varepsilon \\
+    &= (k+1) \cdot \varepsilon
+\end{align*}
+
+Esto completa la inducción.
+\end{proof}
+
+\subsection{Por qué este lema técnico importa}
+
+Este teorema captura el mecanismo preciso por el cual las sucesiones
+monótonas con brechas persistentes eventualmente violan cualquier cota
+superior propuesta. La iteración de subsucesiones, combinada con la
+acumulación aditiva de brechas, proporciona la herramienta cuantitativa
+necesaria para hacer riguroso el argumento intuitivo.
+
+El resultado demuestra un principio fundamental: en sistemas monótonos,
+los patrones de crecimiento local (representados por la condición de
+brecha) escalan linealmente bajo iteración. Esta propiedad de escala es
+lo que nos permite construir una contradicción con el acotamiento en el
+teorema principal.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

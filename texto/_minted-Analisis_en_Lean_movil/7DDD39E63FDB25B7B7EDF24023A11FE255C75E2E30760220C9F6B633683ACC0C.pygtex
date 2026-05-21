@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{succ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{succ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{succ}\PYG{+w}{ }\PYG{n}{zero}\PYG{o}{))}
+\end{Verbatim}

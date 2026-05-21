@@ -1,0 +1,316 @@
+\chapter{Acotación de sucesiones convergentes}
+
+% ============================================================
+\section{Sumas Finitas: Cada Término Acotado por el Total}
+% ============================================================
+
+Al trabajar con sumas finitas de cantidades no negativas, emerge una
+propiedad fundamental: ningún término individual puede superar la suma
+total. Para sucesiones de números reales, esto se traduce en que el
+valor absoluto de cualquier término está acotado por la suma de todos
+los valores absolutos hasta ese punto.
+
+Este resultado es especialmente útil cuando necesitamos controlar
+términos individuales usando información global sobre sumas. La
+demostración emplea inducción matemática, lo cual es natural dado que
+trabajamos con sumas sobre rangos finitos.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Nuevas Herramientas}
+% ────────────────────────────────────────────────────────────
+
+\subsubsection{Notación de suma: \texttt{range}}
+
+La notación $\sum_{k \in \mathrm{range}\, N}$ significa sumar con $k$
+yendo de $0$ a $N-1$ (lo que da $N$ términos en total). Esta es la
+forma estándar de expresar sumas finitas en matemática formal.
+
+\subsubsection{Sucesor del rango de suma: \texttt{sum\_range\_succ}}
+
+Para una función $f : \N \to \R$ y un número natural $N$, se tiene:
+\[
+  \sum_{n \in \mathrm{range}(N+1)} f(n)
+  \;=\;
+  \sum_{n \in \mathrm{range}\, N} f(n) + f(N).
+\]
+Esto permite separar el último término de una suma, lo cual es
+esencial en las demostraciones por inducción.
+
+\subsubsection{No negatividad de sumas: \texttt{sum\_nonneg}}
+
+Si una función es no negativa en todas partes, entonces su suma
+finita también es no negativa. Más precisamente, si $f(k) \ge 0$
+para todo $k$ en el rango, entonces $\sum_k f(k) \ge 0$.
+
+\subsubsection{Prueba por contradicción: \texttt{contradiction}}
+
+Si las hipótesis conducen a una contradicción lógica (por ejemplo, si
+una hipótesis afirma $n < 0$ siendo $n : \N$ un número natural),
+entonces la táctica \texttt{contradiction} cierra el objetivo
+automáticamente.
+
+% ────────────────────────────────────────────────────────────
+\subsection{El Enunciado Matemático}
+% ────────────────────────────────────────────────────────────
+
+\begin{theorem}[\texttt{TermLeSum}]
+  Sea $a : \N \to \R$ una sucesión y $N$ un número natural. Entonces,
+  para todo $n < N$:
+  \[
+    \abs{a(n)} \;\le\; \sum_{k=0}^{N-1} \abs{a(k)}.
+  \]
+\end{theorem}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Enfoque Estratégico}
+% ────────────────────────────────────────────────────────────
+
+La idea clave es usar inducción sobre $N$ desde el principio, en
+lugar de introducir $n$ primero. Esto puede parecer contraintuitivo
+dado que el enunciado comienza con $\forall n < N$, pero la
+estructura inductiva hace la demostración mucho más limpia.
+
+Para el \textbf{caso base} $N = 0$, no existe ningún número natural
+$n < 0$, por lo que el enunciado es vacuamente verdadero (lo que
+conduce a una contradicción al intentar suponer que tal $n$ existe).
+
+Para el \textbf{paso inductivo}, suponiendo que el resultado vale
+para $N$, lo probamos para $N + 1$ distinguiendo dos casos: o bien
+$n < N$ (donde usamos la hipótesis inductiva), o bien $n = N$ (donde
+usamos la no negatividad de las sumas).
+
+% ────────────────────────────────────────────────────────────
+\subsection{Solución en Lean}
+% ────────────────────────────────────────────────────────────
+
+\begin{minted}{lean}
+Statement TermLeSum (a : N → R) (N : N) :
+    ∀ n < N, |a n| ≤ ∑ k ∈ range N, |a k| := by
+  induction' N with N hN
+  · intro n hn
+    contradiction
+  · intro n hn
+    have f1 : ∑ k ∈ range (N + 1), |a k| =
+              (∑ k ∈ range N, |a k|) + |a N| := by
+      apply sum_range_succ
+    rewrite [f1]
+    by_cases hn' : n < N
+    · specialize hN n hn'
+      have f1' : 0 ≤ |a N| := by bound
+      linarith [f1', hN]
+    · have f2 : n = N := by bound
+      rewrite [f2]
+      have f3 : ∀ k ∈ range N, 0 ≤ |a k| := by bound
+      have f4 : 0 ≤ ∑ k ∈ range N, |a k| := by
+        apply sum_nonneg f3
+      linarith [f4]
+\end{minted}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Demostración en Lenguaje Natural}
+% ────────────────────────────────────────────────────────────
+
+\begin{proof}
+Procedemos por inducción sobre $N$.
+
+\medskip
+\noindent\textbf{Caso base.} Si $N = 0$, no existe ningún número
+natural $n < 0$, por lo que el enunciado es vacuamente verdadero.
+
+\medskip
+\noindent\textbf{Paso inductivo.} Supongamos que el resultado vale
+para algún $N \ge 0$, y sea $n < N + 1$. Observamos primero que:
+\[
+  \sum_{k=0}^{N} \abs{a(k)}
+  = \sum_{k=0}^{N-1} \abs{a(k)} + \abs{a(N)}.
+\]
+Distinguimos dos casos:
+
+\medskip
+\noindent\textit{Caso 1: $n < N$.} Por la hipótesis inductiva,
+$\abs{a(n)} \le \sum_{k=0}^{N-1} \abs{a(k)}$.
+Como $\abs{a(N)} \ge 0$, obtenemos:
+\[
+  \abs{a(n)}
+  \;\le\; \sum_{k=0}^{N-1} \abs{a(k)}
+  \;\le\; \sum_{k=0}^{N-1} \abs{a(k)} + \abs{a(N)}
+  = \sum_{k=0}^{N} \abs{a(k)}.
+\]
+
+\noindent\textit{Caso 2: $n \not< N$ pero $n < N+1$, luego $n = N$.}
+Debemos mostrar que $\abs{a(N)} \le \sum_{k=0}^{N} \abs{a(k)}$.
+Como $\abs{a(k)} \ge 0$ para todo $k \in \{0,\ldots,N-1\}$, tenemos
+$\sum_{k=0}^{N-1} \abs{a(k)} \ge 0$, y por tanto:
+\[
+  \abs{a(N)}
+  \;\le\; \sum_{k=0}^{N-1} \abs{a(k)} + \abs{a(N)}
+  = \sum_{k=0}^{N} \abs{a(k)}.
+\]
+Esto completa la inducción.
+\end{proof}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Por Qué Importa Este Resultado}
+% ────────────────────────────────────────────────────────────
+
+Este resultado ilustra un principio fundamental: los términos
+individuales quedan controlados por las sumas agregadas. Esto es
+crucial cuando necesitamos acotar términos específicos usando
+información global sobre la sucesión. El teorema se aplicará
+inmediatamente para demostrar que las sucesiones convergentes son
+acotadas.
+
+% ============================================================
+\section{Acotamiento de Sucesiones Convergentes}
+% ============================================================
+
+Una de las propiedades más importantes de las sucesiones convergentes
+es que deben ser acotadas. Intuitivamente, esto tiene sentido: si una
+sucesión se aproxima a algún límite finito, no puede alejarse hasta el
+infinito. Los términos deben permanecer a una distancia fija del
+límite.
+
+Este teorema tiene implicaciones profundas. Nos dice que la
+convergencia impone restricciones fuertes sobre una sucesión: las
+sucesiones convergentes no pueden exhibir comportamientos salvajes e
+ilimitados. Esto se usa extensamente en análisis para descartar ciertos
+casos patológicos.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Nuevas Herramientas}
+% ────────────────────────────────────────────────────────────
+
+\subsubsection{Definición: \texttt{SeqBdd}}
+
+Una sucesión $a : \N \to \R$ es \emph{acotada} (denotado
+$\mathrm{SeqBdd}(a)$) si existe algún número real positivo $M$ tal
+que $\abs{a(n)} \le M$ para todo $n \in \N$. Formalmente:
+\[
+  \mathrm{SeqBdd}(a)
+  \;\Longleftrightarrow\;
+  \exists M > 0,\; \forall n \in \N,\; \abs{a(n)} \le M.
+\]
+
+% ────────────────────────────────────────────────────────────
+\subsection{El Enunciado Matemático}
+% ────────────────────────────────────────────────────────────
+
+\begin{theorem}[\texttt{BddOfConvNonzero}]
+  Si $a : \N \to \R$ converge a $L$ con $L \ne 0$, entonces $a$ es
+  acotada.
+\end{theorem}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Enfoque Estratégico}
+% ────────────────────────────────────────────────────────────
+
+La estrategia de demostración consta de dos partes:
+
+\begin{enumerate}
+  \item \textbf{Eventualmente acotada.} Usamos la convergencia para
+    mostrar que, eventualmente (para $n \ge N$), todos los términos
+    permanecen a distancia $\abs{L}$ de $L$, y por tanto
+    $\abs{a(n)} \le 2\abs{L}$ para $n$ grande.
+
+  \item \textbf{Inicialmente acotada.} Para los finitos términos
+    anteriores a $N$, usamos el Teorema \texttt{TermLeSum} para
+    acotar cada uno por la suma $\sum_{k=0}^{N-1} \abs{a(k)}$.
+
+  \item \textbf{Cota global.} Combinamos ambas cotas para obtener:
+    \[
+      M = 2\abs{L} + \sum_{k=0}^{N-1} \abs{a(k)}.
+    \]
+\end{enumerate}
+
+Esta cota funciona para todos los términos: los términos iniciales
+quedan cubiertos por la suma finita, y los términos tardíos quedan
+cubiertos por $2\abs{L}$.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Solución en Lean}
+% ────────────────────────────────────────────────────────────
+
+\begin{minted}{lean}
+Statement BddOfConvNonzero (a : N → R) (L : R)
+    (ha : SeqLim a L) (hL : L ≠ 0) :
+    SeqBdd a := by
+  choose N hN using EventuallyBdd_of_SeqConv a L ha hL
+  use 2 * |L| + ∑ k ∈ range N, |a k|
+  have absL : 0 < |L| := by apply abs_pos_of_nonzero hL
+  have f1 : ∀ k ∈ range N, 0 ≤ |a k| := by bound
+  have f2 : 0 ≤ ∑ k ∈ range N, |a k| := by apply sum_nonneg f1
+  split_ands
+  · linarith [f2, absL]
+  · intro n
+    by_cases hn : N ≤ n
+    · specialize hN n hn
+      linarith [hN, f2]
+    · have hn' : n < N := by bound
+      have f3 : |a n| ≤ ∑ k ∈ range N, |a k| := by
+        apply TermLeSum a N n hn'
+      linarith [f3, absL]
+\end{minted}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Demostración en Lenguaje Natural}
+% ────────────────────────────────────────────────────────────
+
+\begin{proof}
+Como $a(n) \to L$ y $L \ne 0$, por el teorema
+\texttt{EventuallyBdd\_of\_SeqConv}, existe $N$ tal que
+$\abs{a(n)} \le 2\abs{L}$ para todo $n \ge N$.
+
+Definimos:
+\[
+  M := 2\abs{L} + \sum_{k=0}^{N-1} \abs{a(k)}.
+\]
+
+Primero verificamos que $M > 0$. Como $L \ne 0$, tenemos $\abs{L} > 0$,
+luego $2\abs{L} > 0$. Además, como $\abs{a(k)} \ge 0$ para cada $k$,
+tenemos $\sum_{k=0}^{N-1} \abs{a(k)} \ge 0$. Por tanto $M > 0$.
+
+Ahora mostramos que $\abs{a(n)} \le M$ para todo $n \in \N$.
+Consideramos dos casos:
+
+\medskip
+\noindent\textit{Caso 1: $n \ge N$.}
+Por nuestra elección de $N$:
+\[
+  \abs{a(n)} \;\le\; 2\abs{L}
+  \;\le\; 2\abs{L} + \sum_{k=0}^{N-1} \abs{a(k)} = M.
+\]
+
+\noindent\textit{Caso 2: $n < N$.}
+Por el Teorema \texttt{TermLeSum}:
+\[
+  \abs{a(n)} \;\le\; \sum_{k=0}^{N-1} \abs{a(k)}
+  \;<\; 2\abs{L} + \sum_{k=0}^{N-1} \abs{a(k)} = M.
+\]
+
+Por tanto, $a$ es acotada.
+\end{proof}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Importancia del Acotamiento}
+% ────────────────────────────────────────────────────────────
+
+El acotamiento de las sucesiones convergentes es fundamental en
+análisis. Se utiliza para demostrar:
+
+\begin{itemize}
+  \item El teorema de Bolzano-Weierstrass (toda sucesión acotada tiene
+    una subsucesión convergente).
+  \item Diversos resultados de compacidad.
+  \item Teoremas de convergencia uniforme.
+  \item Propiedades de funciones continuas en conjuntos compactos.
+\end{itemize}
+
+Este teorema también contribuye a desarrollar la intuición: converger
+hacia un límite finito implica que la sucesión no puede escapar al
+infinito. Debe permanecer atrapada en una región acotada de la recta
+real.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

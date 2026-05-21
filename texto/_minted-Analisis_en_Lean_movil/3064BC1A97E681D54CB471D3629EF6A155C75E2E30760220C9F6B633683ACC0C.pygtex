@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Statement}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZca{}}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{induction\PYGZsq{}}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{k}{with}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{n}{hk}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{n}{norm\PYGZus{}num}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{n}{by\PYGZus{}cases}\PYG{+w}{ }\PYG{n}{hk0}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{l+m+mi}{0}
+\PYG{+w}{    }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hk0}\PYG{o}{]}
+\PYG{+w}{      }\PYG{n}{norm\PYGZus{}num}
+\PYG{+w}{    }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{k}{have}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{ge\PYGZus{}one\PYGZus{}of\PYGZus{}nonzero}\PYG{+w}{ }\PYG{n}{hk0}
+\PYG{+w}{      }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{bound}
+\PYG{+w}{      }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZca{}}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hk}\PYG{o}{]}
+\PYG{+w}{      }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f3}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZca{}}\PYG{+w}{ }\PYG{n}{k}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZca{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{k}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{ring\PYGZus{}nf}
+\PYG{+w}{      }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{f1}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{f2}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{f3}\PYG{o}{]}
+\end{Verbatim}

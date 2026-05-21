@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{theorem}\PYG{+w}{ }\PYG{n}{AbsLim}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{aToL}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{b}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{bEqAbsa}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{n+nb+bp}{|}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{aToL}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{choose}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{using}\PYG{+w}{ }\PYG{n}{aToL}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{N}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{bEqAbsa}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{bEqAbsa}\PYG{o}{]}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{o}{(}\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{n+nb+bp}{|}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{|}\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{o}{)}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{abs\PYGZus{}Lipschitz}
+\PYG{+w}{  }\PYG{n}{bound}
+\end{Verbatim}

@@ -1,0 +1,39 @@
+% preambulo_base.tex
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{mathtools}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% --- FUENTES ---
+\usepackage{unicode-math}
+\usepackage{libertinus-otf} % Carga Libertinus Serif, Sans y Math automáticamente
+
+% Fuente para código Lean (JuliaMono)
+\setmonofont{JuliaMono-Regular.ttf}[
+    Path = /home/jalonso/.local/share/fonts/juliamono/,
+    Scale = MatchLowercase,
+    BoldFont = JuliaMono-Bold.ttf,
+    ItalicFont = JuliaMono-RegularItalic.ttf,
+    BoldItalicFont = JuliaMono-BoldItalic.ttf
+]
+
+% --- CONFIGURACIÓN DE MINTED (Lean) ---
+\usepackage{minted}
+\renewcommand{\MintedPygmentize}{/home/jalonso/.local/bin/pygmentize}
+\usemintedstyle{emacs}
+\setminted{
+    breaklines=true,
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1,
+    linenos=false
+}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: t
+%%% End:

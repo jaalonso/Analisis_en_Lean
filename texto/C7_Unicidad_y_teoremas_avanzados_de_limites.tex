@@ -1,0 +1,432 @@
+\chapter{Unicidad y teoremas avanzados de límites}
+
+\section{Unicidad de límites}
+
+Una de las propiedades fundamentales de las sucesiones convergentes es que
+convergen a un límite único. Esto puede parecer obvio a primera vista: ¿cómo
+podría una sucesión acercarse arbitrariamente a dos números distintos? Sin
+embargo, como ocurre con muchos hechos intuitivos en análisis, la prueba
+rigurosa requiere un razonamiento cuidadoso con nuestras definiciones
+épsilon-$N$.
+
+La clave para demostrar la unicidad es la \emph{prueba por contradicción}.
+Asumiremos que una sucesión converge a dos límites distintos $L$ y $M$, y
+mostraremos que esto lleva a una imposibilidad. La estrategia consiste en
+elegir épsilon igual a la mitad de la distancia entre $L$ y $M$, y luego
+demostrar que la sucesión no puede permanecer tan cerca de ambos límites
+simultáneamente.
+
+\subsection{Nuevas herramientas}
+
+\subsubsection{Prueba por contradicción: \texttt{by\_contra}}
+
+La táctica \texttt{by\_contra} nos permite probar un enunciado asumiendo su
+negación y derivando una contradicción. La sintaxis es
+\mintinline{lean}{by_contra h}, que añade una hipótesis \texttt{h} con la
+negación del objetivo actual y cambia el objetivo a \texttt{False}.
+
+\subsubsection{Positividad del valor absoluto: \texttt{abs\_pos\_of\_nonzero}}
+
+El teorema \texttt{abs\_pos\_of\_nonzero} establece que si $x \neq 0$,
+entonces $0 < |x|$. Esto es esencial para trabajar con distancias entre
+puntos distintos.
+
+\subsection{Enunciado matemático}
+
+\begin{theorem}[Unicidad del límite]
+Si una sucesión $a : \mathbb{N} \to \mathbb{R}$ converge tanto a $L$ como a
+$M$, entonces $L = M$.
+\end{theorem}
+
+\subsection{Demostración en Lean}
+
+\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
+theorem LimUnique (a : ℕ → ℝ) (L M : ℝ)
+    (aToL : SeqLim a L) (aToM : SeqLim a M) :
+    L = M := by
+  by_contra h
+  have f0 : L - M ≠ 0 := by bound
+  have f1 : 0 < |L - M| := by apply abs_pos_of_nonzero f0
+  have f2 : 0 < |L - M| / 2 := by bound
+  specialize aToL (|L - M| / 2) f2
+  specialize aToM (|L - M| / 2) f2
+  choose N1 hN1 using aToL
+  choose N2 hN2 using aToM
+  have f3 : N1 ≤ N1 + N2 := by bound
+  have f4 : N2 ≤ N1 + N2 := by bound
+  specialize hN1 (N1 + N2) f3
+  specialize hN2 (N1 + N2) f4
+  have f5 : |L - M| =
+    |(L - a (N1 + N2)) + (a (N1 + N2) - M)| := by ring_nf
+  have f6 : |(L - a (N1 + N2)) + (a (N1 + N2) - M)| ≤
+    |(L - a (N1 + N2))| + |(a (N1 + N2) - M)| := by apply abs_add
+  have f7 : |(L - a (N1 + N2))| =
+    |-(a (N1 + N2) - L)| := by ring_nf
+  have f8 : |-(a (N1 + N2) - L)| =
+    |(a (N1 + N2) - L)| := by apply abs_neg
+  linarith [f5, f6, f7, f8, hN1, hN2]
+\end{minted}
+
+\subsection{Prueba en lenguaje natural}
+
+\begin{proof}
+Supongamos, por contradicción, que $L \neq M$. Entonces $L - M \neq 0$, por
+lo que $|L - M| > 0$, y por tanto $\varepsilon := |L - M|/2 > 0$.
+
+Como $a(n) \to L$, existe $N_1$ tal que $|a(n) - L| < \varepsilon$ para todo
+$n \geq N_1$. Como $a(n) \to M$, existe $N_2$ tal que $|a(n) - M| <
+\varepsilon$ para todo $n \geq N_2$.
+
+Sea $N = N_1 + N_2$. Para $n = N$ tenemos simultáneamente $|a(N) - L| <
+\varepsilon$ y $|a(N) - M| < \varepsilon$. Observemos que:
+\[
+  |L - M| = |(L - a(N)) + (a(N) - M)|.
+\]
+Por la desigualdad triangular:
+\[
+  |L - M| \leq |L - a(N)| + |a(N) - M|
+           = |a(N) - L| + |a(N) - M|
+           < \varepsilon + \varepsilon = |L - M|.
+\]
+Esto nos da $|L - M| < |L - M|$, lo cual es una contradicción. Por tanto,
+$L = M$.
+\end{proof}
+
+\subsection{Por qué importa la unicidad}
+
+La unicidad de los límites es fundamental para todo el edificio del análisis.
+Nos permite hablar de \emph{el} límite de una sucesión en lugar de \emph{un}
+límite, y garantiza que nuestra noción de convergencia está bien definida. Sin
+la unicidad, muchos teoremas y técnicas estándar fallarían o requerirían
+modificaciones sustanciales.
+
+\section{Eventualmente: Las sucesiones convergentes permanecen cerca de su límite}
+
+Cuando una sucesión converge a un límite distinto de cero, no solo se acerca
+arbitrariamente a ese límite, sino que \emph{eventualmente} también se aleja
+de cero. Esta propiedad de «estar eventualmente acotada lejos de cero» es
+crucial para muchos teoremas que involucran cocientes y recíprocos.
+
+La intuición es sencilla: si una sucesión converge a algún valor no nulo $L$,
+entonces en algún momento los términos de la sucesión deben tener valor
+absoluto al menos la mitad del de $L$. No pueden simultáneamente acercarse a
+$L$ y reducirse hacia cero.
+
+\subsection{Enunciado matemático}
+
+\begin{theorem}
+Si $a : \mathbb{N} \to \mathbb{R}$ converge a $L$ con $L \neq 0$, entonces
+existe $N$ tal que para todo $n \geq N$ se tiene $|a(n)| \geq |L|/2$.
+\end{theorem}
+
+\subsection{Enfoque estratégico}
+
+La clave está en usar la condición de convergencia con $\varepsilon = |L|/2$.
+Como $L \neq 0$, tenemos $|L| > 0$, por lo que este épsilon es positivo. La
+condición de convergencia nos dice entonces que eventualmente
+$|a(n) - L| < |L|/2$, lo que por la desigualdad triangular inversa implica
+que $|a(n)|$ es al menos $|L|/2$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
+theorem EventuallyGeHalfLim (a : ℕ → ℝ) (L : ℝ)
+    (aToL : SeqLim a L) (LneZero : L ≠ 0) :
+    ∃ N, ∀ n ≥ N, |L| / 2 ≤ |a n| := by
+  specialize aToL (|L| / 2)
+  have : 0 < |L| := by apply abs_pos_of_nonzero LneZero
+  have : 0 < |L| / 2 := by bound
+  specialize aToL this
+  choose N hN using aToL
+  use N
+  intro n hn
+  specialize hN n hn
+  have l1 : |L| = |a n + (L - a n)| := by ring_nf
+  have l2 : |a n + (L - a n)| ≤ |a n| + |L - a n| := by
+    apply abs_add
+  have l3 : |L - a n| = |-(a n - L)| := by ring_nf
+  have l4 : |-(a n - L)| = |(a n - L)| := by apply abs_neg
+  linarith [l1, l2, l3, l4, hN]
+\end{minted}
+
+\subsection{Prueba en lenguaje natural}
+
+\begin{proof}
+Como $L \neq 0$, tenemos $|L| > 0$, y por tanto $\varepsilon := |L|/2 > 0$.
+
+Por la convergencia de $a$ hacia $L$, existe $N$ tal que
+$|a(n) - L| < |L|/2$ para todo $n \geq N$.
+
+Para cualquier $n \geq N$ tenemos:
+\[
+  |L| = |a(n) + (L - a(n))| \leq |a(n)| + |L - a(n)|
+      = |a(n)| + |a(n) - L| < |a(n)| + \frac{|L|}{2}.
+\]
+Reordenando:
+\[
+  |L| - \frac{|L|}{2} < |a(n)|,
+\]
+por lo que $|a(n)| > |L|/2$, lo que implica $|a(n)| \geq |L|/2$.
+\end{proof}
+
+\subsection{Aplicaciones}
+
+Este resultado es esencial para demostrar que el recíproco de una sucesión
+convergente (con límite no nulo) es a su vez convergente. Garantiza que los
+denominadores no se aproximan a cero, lo que haría que los recíprocos
+divergieran.
+
+\section{Continuidad del valor absoluto: Sucesiones de valores absolutos}
+
+La función valor absoluto se comporta de manera muy natural respecto a los
+límites: si una sucesión converge, la sucesión de los valores absolutos
+converge al valor absoluto del límite. Esto es una manifestación de la
+continuidad de la función valor absoluto.
+
+La propiedad clave que usaremos es que el valor absoluto es Lipschitz
+continuo con constante~1, es decir, $\big||x| - |y|\big| \leq |x - y|$ para
+todo $x, y \in \mathbb{R}$. Esta desigualdad captura la idea de que el valor
+absoluto no aumenta las distancias.
+
+\subsection{Nuevas herramientas}
+
+\subsubsection{Propiedad de Lipschitz: \texttt{abs\_Lipschitz}}
+
+El teorema \texttt{abs\_Lipschitz} establece que para cualesquiera $x, y
+\in \mathbb{R}$ se tiene $\big||x| - |y|\big| \leq |x - y|$. A veces se
+denomina \emph{desigualdad triangular inversa} para valores absolutos.
+
+\subsection{Enunciado matemático}
+
+\begin{theorem}
+Si $a : \mathbb{N} \to \mathbb{R}$ converge a $L$, y $b : \mathbb{N} \to
+\mathbb{R}$ se define por $b(n) = |a(n)|$ para todo $n$, entonces $b$
+converge a $|L|$.
+\end{theorem}
+
+\subsection{Demostración en Lean}
+
+\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
+theorem AbsLim (a : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
+    (b : ℕ → ℝ) (bEqAbsa : ∀ n, b n = |a n|) :
+    SeqLim b |L| := by
+  intro ε hε
+  specialize aToL ε hε
+  choose N hN using aToL
+  use N
+  intro n hn
+  specialize hN n hn
+  specialize bEqAbsa n
+  rewrite [bEqAbsa]
+  have : |(|a n|) - (|L|)| ≤ |a n - L| := by apply abs_Lipschitz
+  bound
+\end{minted}
+
+\subsection{Prueba en lenguaje natural}
+
+\begin{proof}
+Sea $\varepsilon > 0$ dado. Como $a(n) \to L$, existe $N$ tal que
+$|a(n) - L| < \varepsilon$ para todo $n \geq N$.
+
+Para cualquier $n \geq N$:
+\[
+  |b(n) - |L|| = \big||a(n)| - |L|\big| \leq |a(n) - L| < \varepsilon,
+\]
+donde hemos usado la propiedad de Lipschitz del valor absoluto. Por tanto
+$b(n) \to |L|$.
+\end{proof}
+
+\subsection{Por qué importa este resultado}
+
+Este teorema es un caso especial de un principio mucho más general: las
+\emph{funciones continuas preservan los límites}. La función valor absoluto
+es continua en todas partes, por lo que transforma sucesiones convergentes en
+sucesiones convergentes. Este principio se extiende a todas las funciones
+continuas y es fundamental en el análisis matemático.
+
+\section{Recíprocos de sucesiones convergentes}
+
+Uno de los teoremas de límites más importantes concierne a los recíprocos: si
+una sucesión converge a un límite no nulo, entonces la sucesión de los
+recíprocos converge al recíproco del límite. Este resultado es crucial para
+demostrar teoremas sobre cocientes y funciones racionales.
+
+La prueba combina varias técnicas que hemos desarrollado: demostrar que la
+sucesión permanece acotada lejos de cero (de modo que los recíprocos no
+divergen), manipular cuidadosamente expresiones algebraicas con fracciones, y
+usar la desigualdad triangular para controlar los términos de error.
+
+\subsection{Nuevas herramientas}
+
+\subsubsection{Valor absoluto de cocientes: \texttt{abs\_div}}
+
+Para cualesquiera $x, y \in \mathbb{R}$ (con $y \neq 0$) se tiene
+$|x/y| = |x|/|y|$. Esto permite separar los valores absolutos a través de
+una división.
+
+\subsubsection{No nulo a partir de valor absoluto positivo: \texttt{nonzero\_of\_abs\_pos}}
+
+Si $0 < |x|$, entonces $x \neq 0$. Esto es útil para verificar que la
+división es válida.
+
+\subsection{Enunciado matemático}
+
+\begin{theorem}
+Si $a : \mathbb{N} \to \mathbb{R}$ converge a $L$ con $L \neq 0$, y $b :
+\mathbb{N} \to \mathbb{R}$ se define por $b(n) = 1/a(n)$, entonces $b$
+converge a $1/L$.
+\end{theorem}
+
+\subsection{Enfoque estratégico}
+
+El reto es que la expresión $|1/a(n) - 1/L|$ involucra recíprocos, que
+pueden ser difíciles de acotar directamente. Los pasos clave son:
+
+\begin{enumerate}
+  \item Usar el teorema \texttt{EventuallyGeHalfLim} para garantizar que
+    $|a(n)| \geq |L|/2$ eventualmente.
+  \item Elegir épsilon cuidadosamente: usar $\varepsilon \cdot |L|^2/2$ al
+    aplicar la convergencia de $a$ hacia $L$.
+  \item Simplificar algebraicamente:
+    $|1/a(n) - 1/L| = |(L - a(n))/(a(n) \cdot L)|$.
+  \item Separar el valor absoluto usando \texttt{abs\_div}.
+  \item Acotar el denominador usando nuestra cota inferior de $|a(n)|$.
+  \item Usar desigualdades encadenadas para mostrar que el resultado es
+    menor que $\varepsilon$.
+\end{enumerate}
+
+\subsection{Demostración en Lean}
+
+\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
+theorem InvLim (a : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
+    (LneZero : L ≠ 0) (b : ℕ → ℝ)
+    (bEqInva : ∀ n, b n = 1 / a n) :
+    SeqLim b (1 / L) := by
+  choose NhalfL hNhalfL using
+    EventuallyGeHalfLim a L aToL LneZero
+  intro ε hε
+  have : 0 < |L| := by apply abs_pos_of_nonzero LneZero
+  specialize aToL (ε * |L| * |L| / 2) (by bound)
+  choose Na hNa using aToL
+  use Na + NhalfL
+  intro n hn
+  specialize bEqInva n
+  rewrite [bEqInva]
+  have hnHalfL : NhalfL ≤ n := by bound
+  have hna    : Na ≤ n      := by bound
+  specialize hNhalfL n hnHalfL
+  specialize hNa     n hna
+  have : 0 < |a n|  := by bound
+  have : a n ≠ 0    := by apply nonzero_of_abs_pos this
+  have l1 : |1 / a n - 1 / L| =
+      |(L - a n) / (a n * L)| := by field_simp
+  have l2 : |(L - a n) / (a n * L)| =
+      |L - a n| / |a n * L| := by apply abs_div
+  have l3 : |L - a n| / |a n * L| =
+      |L - a n| / (|a n| * |L|) := by bound
+  have l4 : |L - a n| = |-(a n - L)| := by ring_nf
+  have l5 : |-(a n - L)| = |a n - L| := by apply abs_neg
+  have l6 : |a n - L| / (|a n| * |L|) <
+      (ε * |L| * |L| / 2) / (|a n| * |L|) := by
+        field_simp; nlinarith
+  have l10 : |L - a n| / (|a n| * |L|) =
+      |-(a n - L)| / (|a n| * |L|) := by rw [l4]
+  have l11 : |-(a n - L)| / (|a n| * |L|) =
+      |a n - L| / (|a n| * |L|) := by rw [l5]
+  have l13 : ε * |L| * |L| / 2 / (|a n| * |L|) =
+      ε * |L| / 2 / |a n| := by field_simp
+  have l14 : ε * |L| / 2 / |a n| ≤ ε := by
+        field_simp; bound
+  linarith [l1, l2, l3, l10, l11, l6, l13, l14]
+\end{minted}
+
+\subsection{Prueba en lenguaje natural}
+
+\begin{proof}
+Sea $\varepsilon > 0$ dado. Como $L \neq 0$, por el teorema
+\texttt{EventuallyGeHalfLim}, existe $N_1$ tal que $|a(n)| \geq |L|/2$ para
+todo $n \geq N_1$.
+
+Como $|L| > 0$, tenemos $\varepsilon \cdot |L|^2/2 > 0$. Por la convergencia
+de $a$ hacia $L$, existe $N_2$ tal que $|a(n) - L| < \varepsilon |L|^2/2$
+para todo $n \geq N_2$.
+
+Sea $N = N_1 + N_2$. Para cualquier $n \geq N$ se tiene $|a(n)| \geq |L|/2
+> 0$, así que $a(n) \neq 0$ y $b(n) = 1/a(n)$ está bien definido. Entonces:
+\begin{align*}
+  |b(n) - 1/L| &= |1/a(n) - 1/L|
+    = \left|\frac{L - a(n)}{a(n) \cdot L}\right|
+    = \frac{|L - a(n)|}{|a(n)| \cdot |L|}
+    = \frac{|a(n) - L|}{|a(n)| \cdot |L|} \\
+    &< \frac{\varepsilon |L|^2/2}{|a(n)| \cdot |L|}
+    \leq \frac{\varepsilon |L|^2/2}{(|L|/2) \cdot |L|}
+    = \frac{\varepsilon |L|^2/2}{|L|^2/2}
+    = \varepsilon.
+\end{align*}
+Por tanto $b(n) \to 1/L$.
+\end{proof}
+
+\subsection{Prueba conseguida}
+
+Acabas de completar una de las pruebas más desafiantes del análisis
+elemental. El teorema del límite del recíproco es un hito importante: has
+demostrado que los recíprocos preservan la convergencia (cuando el límite es
+no nulo).
+
+% ----
+\subsection{Lo que lograste}
+
+Esta prueba requirió orquestar múltiples técnicas sofisticadas:
+
+\begin{itemize}
+  \item Usar \texttt{EventuallyGeHalfLim} para garantizar que los
+    denominadores permanezcan acotados lejos de cero.
+  \item Elegir un épsilon cuidadosamente calibrado ($\varepsilon \cdot
+    |L|^2/2$) para que el álgebra funcione.
+  \item Manipular expresiones fraccionarias complejas con denominador común.
+  \item Aplicar \texttt{abs\_div} para separar los valores absolutos a
+    través de la división.
+  \item Encadenar una secuencia de desigualdades para alcanzar la cota
+    final.
+\end{itemize}
+
+Cada paso se apoyó en los anteriores, mostrando cómo las pruebas matemáticas
+se construyen a partir de bloques cuidadosamente ensamblados.
+
+\subsection{Aplicaciones y extensiones}
+
+Con este teorema en mano, ya disponemos de un conjunto completo de
+herramientas para los límites de funciones racionales. Combinado con los
+resultados anteriores sobre sumas y productos, ahora podemos demostrar:
+
+\begin{quote}
+  Si $a(n) \to L$ y $c(n) \to M$ con $M \neq 0$, entonces
+  $a(n)/c(n) \to L/M$.
+\end{quote}
+
+La prueba es directa: primero se muestra que $1/c(n) \to 1/M$ usando el
+teorema del recíproco que acabamos de probar, y luego se usa el teorema del
+producto para mostrar que $a(n) \cdot (1/c(n)) \to L \cdot (1/M) = L/M$.
+
+Esto completa la aritmética fundamental de los límites: sumas, productos y
+cocientes. Estos son los bloques de construcción para analizar límites de
+polinomios, funciones racionales y expresiones mucho más complejas a lo largo
+del cálculo y el análisis.
+
+\subsection{Dominio de la técnica}
+
+El teorema del recíproco ilustra una lección crucial en la demostración
+matemática: a veces el épsilon «correcto» no es la elección obvia. La
+expresión $\varepsilon \cdot |L|^2/2$ puede parecer misteriosa al principio,
+pero está precisamente diseñada para que las desigualdades finales resulten
+correctas. Este tipo de pensamiento estratégico —trabajar hacia atrás desde
+lo que necesitas para saber qué debes asumir— está en el corazón de la
+resolución de problemas matemáticos.
+
+Ya dominas las técnicas esenciales para demostrar teoremas de límites.
+¡Bien hecho!
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

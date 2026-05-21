@@ -1,0 +1,512 @@
+\chapter{Álgebra de límites y propiedades de orden}
+
+\section{Producto de Sucesiones}
+
+Habiendo establecido el teorema del límite algebraico para sumas y múltiplos
+escalares, ahora abordamos el producto de sucesiones convergentes. Este resultado,
+combinado con el trabajo anterior, completa la estructura algebraica de los límites:
+podemos sumar, multiplicar por constantes, multiplicar sucesiones entre sí e incluso
+dividir (siempre que el límite sea no nulo).
+
+La estrategia de demostración refleja la regla del producto del cálculo, donde
+$(fg)' = f'g + g'f$. Introducimos artificialmente términos que nos permiten separar
+las contribuciones de cada sucesión.
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[ProdLimNeNe]
+  Si $a, b : \mathbb{N} \to \mathbb{R}$ son sucesiones con $a(n) \to L$ y
+  $b(n) \to M$, donde $L \neq 0$ y $M \neq 0$, y $c(n) = a(n) \cdot b(n)$
+  para todo $n$, entonces:
+  \[
+    c(n) \to L \cdot M
+  \]
+\end{theorem}
+
+\subsection{Enfoque estratégico}
+
+La idea clave es escribir:
+\[
+  a(n) \cdot b(n) - L \cdot M
+  = \bigl(a(n) - L\bigr) \cdot b(n) + L \cdot \bigl(b(n) - M\bigr)
+\]
+
+Esta descomposición separa el error en dos partes:
+\begin{itemize}
+  \item $\bigl(a(n)-L\bigr)\cdot b(n)$: el error en $a$ multiplicado por el valor de $b$.
+  \item $L\cdot\bigl(b(n)-M\bigr)$: el límite $L$ multiplicado por el error en $b$.
+\end{itemize}
+
+Para acotar el primer término usamos que $b$ es convergente y por tanto acotada
+(por algún $K>0$). Entonces $|a(n)-L|$ puede hacerse menor que $\varepsilon/(2K)$,
+lo que nos da control sobre ese término.
+
+Para el segundo término usamos directamente que $b(n)\to M$, haciendo
+$|b(n)-M|$ menor que $\varepsilon/(2|L|)$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean}
+Statement ProdLimNeNe (a b c : N → R) (L M : R) (hL : L ≠ 0) (hM : M ≠ 0)
+    (ha : SeqLim a L) (hb : SeqLim b M) (hc : ∀ n, c n = a n * b n) :
+    SeqLim c (L * M) := by
+  intro ε hε
+  choose K hK using BddOfConvNonzero b M hb hM
+  have ε1 : 0 < ε / (2 * K) := by bound
+  have absL : 0 < |L| := by apply abs_pos_of_nonzero hL
+  have ε2 : 0 < ε / (2 * |L|) := by bound
+  specialize ha (ε / (2 * K)) ε1
+  specialize hb (ε / (2 * |L|)) ε2
+  choose N1 hN1 using ha
+  choose N2 hN2 using hb
+  use N1 + N2
+  intro n hn
+  have hn1 : N1 ≤ n := by bound
+  have hn2 : N2 ≤ n := by bound
+  specialize hN1 n hn1
+  specialize hN2 n hn2
+  specialize hc n
+  rewrite [hc]
+  have f1 : |a n * b n - L * M| = |(a n - L) * b n + (L * (b n - M))| := by
+    ring_nf
+  have f2 : |(a n - L) * b n + (L * (b n - M))| ≤
+      |(a n - L) * b n| + |(L * (b n - M))| := by apply abs_add
+  have f3 : |(a n - L) * b n| = |(a n - L)| * |b n| := by apply abs_mul
+  have bnBnd : |b n| ≤ K := by apply hK.2 n
+  have f5 : |(a n - L)| * |b n| ≤ ε / (2 * K) * K := by bound
+  have Kpos : 0 < K := by apply hK.1
+  have f6 : ε / (2 * K) * K = ε / 2 := by field_simp
+  have f7 : |(L * (b n - M))| = |L| * |b n - M| := by apply abs_mul
+  have f8 : |L| * |b n - M| < |L| * (ε / (2 * |L|)) := by bound
+  have f9 : |L| * (ε / (2 * |L|)) = ε / 2 := by field_simp
+  linarith [f1, f2, f3, f5, f6, f7, f8, f9]
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+  Sea $\varepsilon > 0$ dado. Como $b(n) \to M$ con $M \neq 0$, por
+  \texttt{BddOfConvNonzero} existe $K > 0$ tal que $|b(n)| \leq K$ para todo $n$.
+
+  Definamos:
+  \[
+    \varepsilon_1 := \frac{\varepsilon}{2K}, \qquad
+    \varepsilon_2 := \frac{\varepsilon}{2|L|}
+  \]
+
+  Nótese que $\varepsilon_1 > 0$ (pues $K > 0$) y $\varepsilon_2 > 0$
+  (pues $L \neq 0$ implica $|L| > 0$).
+
+  Como $a(n) \to L$, existe $N_1$ tal que para todo $n \geq N_1$:
+  \[
+    |a(n) - L| < \varepsilon_1 = \frac{\varepsilon}{2K}
+  \]
+
+  Como $b(n) \to M$, existe $N_2$ tal que para todo $n \geq N_2$:
+  \[
+    |b(n) - M| < \varepsilon_2 = \frac{\varepsilon}{2|L|}
+  \]
+
+  Sea $N := N_1 + N_2$. Para cualquier $n \geq N$ tenemos $n \geq N_1$ y
+  $n \geq N_2$.
+
+  Usando la identidad algebraica
+  $a(n)\cdot b(n) - L\cdot M = (a(n)-L)\cdot b(n) + L\cdot(b(n)-M)$
+  y aplicando la desigualdad triangular:
+  \begin{align*}
+    |c(n) - L\cdot M|
+    &= |(a(n)-L)\cdot b(n) + L\cdot(b(n)-M)| \\
+    &\leq |(a(n)-L)\cdot b(n)| + |L\cdot(b(n)-M)| \\
+    &= |a(n)-L|\cdot|b(n)| + |L|\cdot|b(n)-M|
+  \end{align*}
+
+  Para el primer término, como $|b(n)| \leq K$ y $|a(n)-L| < \varepsilon/(2K)$:
+  \[
+    |a(n)-L|\cdot|b(n)| < \frac{\varepsilon}{2K}\cdot K = \frac{\varepsilon}{2}
+  \]
+
+  Para el segundo término, como $|b(n)-M| < \varepsilon/(2|L|)$:
+  \[
+    |L|\cdot|b(n)-M| < |L|\cdot\frac{\varepsilon}{2|L|} = \frac{\varepsilon}{2}
+  \]
+
+  Por tanto:
+  \[
+    |c(n) - L\cdot M| < \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon
+  \]
+  \hfill$\square$
+
+\subsection{Conexión con el cálculo: ¿por qué sumar y restar \texorpdfstring{$b(n)\cdot L$}{b(n)·L}?}
+
+La técnica de la demostración refleja la regla del producto del cálculo:
+$(fg)' = f'g + g'f$. Para entender por qué sumamos y restamos $b(n)\cdot L$,
+pensemos geométricamente en el área de un rectángulo (al fin y al cabo, la
+multiplicación es rectángulos).
+
+Cuando $a(n)$ y $b(n)$ están cerca de sus límites $L$ y $M$, el producto
+$a(n)\cdot b(n)$ representa el área de un rectángulo de lados $a(n)$ y $b(n)$,
+mientras que $L\cdot M$ es el área del rectángulo límite de lados $L$ y $M$.
+
+La diferencia de áreas satisface:
+\[
+  a(n)\cdot b(n) - L\cdot M
+  = L\cdot(b(n)-M) + M\cdot(a(n)-L) + (a(n)-L)\cdot(b(n)-M)
+\]
+
+La clave es reemplazar $M$ por $b(n)$ en el término central (sumando y restando
+$b(n)\cdot L$) para obtener:
+\[
+  a(n)\cdot b(n) - L\cdot M
+  = (a(n)-L)\cdot b(n) + L\cdot(b(n)-M)
+\]
+
+¿Por qué es mejor esto? Porque ahora cada término aísla una fuente de error:
+\begin{itemize}
+  \item $(a(n)-L)\cdot b(n)$: error pequeño en $a$ por la cantidad acotada $b(n)$.
+  \item $L\cdot(b(n)-M)$: la constante fija $L$ por el error pequeño en $b$.
+\end{itemize}
+
+\subsection{Completando el teorema del límite algebraico}
+
+Este resultado completa el teorema del límite algebraico. Combinado con los
+resultados anteriores sobre sumas, múltiplos escalares y recíprocos de sucesiones
+con límite no nulo, podemos calcular el límite de cualquier combinación algebraica
+de sucesiones convergentes.
+
+Por ejemplo, si $a(n)\to L$ y $b(n)\to M$, el límite de
+\[
+  \frac{a(n)^2 + 2a(n) + b(n)}{3b(n) + 2 - a(n)^2}
+\]
+es, siempre que el límite del denominador sea no nulo:
+\[
+  \frac{L^2 + 2L + M}{3M + 2 - L^2}
+\]
+
+\section{Paso al límite en desigualdades}
+
+El paso al límite en desigualdades establece una relación fundamental entre
+desigualdades y límites: si una sucesión está acotada superiormente (o
+inferiormente) por una constante, entonces su límite también lo está. Este
+resultado respeta la estructura de orden de los números reales.
+
+\subsection{Nuevas herramientas}
+
+\begin{definicion}[SeqBddBy]
+  Una sucesión $a : \mathbb{N} \to \mathbb{R}$ está \emph{acotada por $M$}
+  (denotado $\mathrm{SeqBddBy}(a, M)$) si $a(n) \leq M$ para todo
+  $n \in \mathbb{N}$:
+  \[
+    \mathrm{SeqBddBy}(a,M) \iff \forall n\in\mathbb{N},\; a(n)\leq M
+  \]
+
+  Nótese la diferencia entre $\mathrm{SeqBdd}$ (acotada: $|a(n)|\leq M$) y
+  $\mathrm{SeqBddBy}$ (acotada superiormente: $a(n)\leq M$).
+\end{definicion}
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[OrderLimLe]
+  Si $a:\mathbb{N}\to\mathbb{R}$ converge a $L$ y $a(n)\leq K$ para todo $n$,
+  entonces $L\leq K$.
+\end{theorem}
+
+\subsection{Enfoque estratégico}
+
+Lo demostramos por contradicción. Supongamos $L > K$. Entonces $L-K>0$, y
+podemos usar esta cantidad positiva como $\varepsilon$ en la definición de
+convergencia.
+
+Por convergencia, existe $N$ tal que para todo $n\geq N$:
+\[
+  |a(n)-L| < L-K
+\]
+Esto implica $a(n) > K$, lo que contradice la hipótesis $a(n)\leq K$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean}
+Statement OrderLimLe (a : N → R) (L : R) (ha : SeqLim a L)
+    (K : R) (hK : SeqBddBy a K) :
+    L ≤ K := by
+  by_contra hL
+  have hL' : K < L := by bound
+  have hLK : 0 < (L - K) := by linarith [hL']
+  choose N hN using ha (L - K) hLK
+  specialize hN N (by bound)
+  rewrite [abs_lt] at hN
+  have f1 : L - (L - K) < a N := by linarith [hN.1]
+  have f2 : K ≤ L - (L - K) := by linarith [hL']
+  specialize hK N
+  linarith [f2, hK, f1]
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+  Procedemos por contradicción. Supongamos $L > K$.
+
+  Entonces $L-K > 0$. Como $a(n)\to L$, por la definición de convergencia con
+  $\varepsilon = L-K > 0$, existe $N$ tal que para todo $n\geq N$:
+  \[
+    |a(n)-L| < L-K
+  \]
+
+  En particular, tomando $n=N$:
+  \[
+    |a(N)-L| < L-K \implies -(L-K) < a(N)-L < L-K
+  \]
+
+  De la desigualdad izquierda:
+  \[
+    a(N) > L - (L-K) = K
+  \]
+
+  Pero por hipótesis $a(N)\leq K$, lo que es una contradicción.
+
+  Por tanto, $L > K$ es falso, y concluimos $L\leq K$. \hfill$\square$
+
+\subsection{Importancia de la preservación del orden}
+
+Este teorema establece que los límites preservan las desigualdades débiles.
+Nótese que las desigualdades estrictas no se preservan necesariamente: si
+$a(n)<K$ para todo $n$, solo podemos concluir $L\leq K$, no $L<K$.
+
+Por ejemplo, la sucesión $a(n)=1/n$ satisface $a(n)>0$ para todo $n$, pero
+$\lim_{n\to\infty}a(n)=0$, que no es estrictamente positivo.
+
+El paso al límite en desigualdades se usa para demostrar:
+\begin{itemize}
+  \item El teorema del emparedado.
+  \item El teorema de convergencia monótona.
+  \item Diversos criterios de comparación para series.
+  \item Propiedades del supremo e ínfimo de sucesiones.
+\end{itemize}
+
+\section{Subsucesiones}
+
+Una subsucesión se forma seleccionando términos de una sucesión preservando
+su orden. Hay dos perspectivas equivalentes. La mayoría de los autores llaman
+$a_{\sigma(n)}$ «subsucesión de $a$», viéndola como una nueva sucesión extraída
+de la original. Sin embargo, preferimos llamar $\sigma$ la subsucesión: es la
+función estrictamente creciente $\sigma:\mathbb{N}\to\mathbb{N}$ que indica qué
+términos conservar. La subsucesión de $a$ determinada por $\sigma$ es entonces
+la composición $a\circ\sigma$.
+
+Geométricamente, imagine la gráfica de la sucesión original $a(n)$. Para
+formar una subsucesión se eliminan algunos términos y se reindexan los
+restantes. Si conservamos solo los términos en las posiciones $0, 2, 5, 7, 11,\ldots$,
+los reetiquetamos como $0, 1, 2, 3, 4,\ldots$ La función $\sigma$ codifica
+este reetiquetado: $\sigma(0)=0$, $\sigma(1)=2$, $\sigma(2)=5$, etc.
+
+El resultado fundamental es que si una sucesión converge, toda subsucesión
+converge al mismo límite.
+
+\subsection{Nuevas herramientas}
+
+\begin{definicion}[Subseq]
+  Una función $\sigma:\mathbb{N}\to\mathbb{N}$ es una \emph{subsucesión}
+  (denotado $\mathrm{Subseq}(\sigma)$) si es estrictamente creciente:
+  \[
+    \mathrm{Subseq}(\sigma) \iff \forall\, i,j\in\mathbb{N},\;
+    i < j \implies \sigma(i) < \sigma(j)
+  \]
+
+  La subsucesión de $a$ determinada por $\sigma$ es la composición
+  $a\circ\sigma:\mathbb{N}\to\mathbb{R}$, donde $(a\circ\sigma)(n)=a(\sigma(n))$.
+\end{definicion}
+
+\begin{lemma}[SubseqGe]
+  Si $\sigma$ es una subsucesión, entonces $n\leq\sigma(n)$ para todo $n$.
+  Esto puede demostrarse por inducción y captura la intuición de que estamos
+  «expandiendo» los índices.
+\end{lemma}
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}[SubseqConv]
+  Si $a:\mathbb{N}\to\mathbb{R}$ converge a $L$ y $\sigma:\mathbb{N}\to\mathbb{N}$
+  es una subsucesión, entonces $a\circ\sigma$ también converge a $L$.
+\end{theorem}
+
+\subsection{Enfoque estratégico}
+
+La demostración es notablemente sencilla. Dado $\varepsilon>0$, usamos la
+convergencia de $a$ para encontrar $N$ tal que $|a(m)-L|<\varepsilon$ para
+todo $m\geq N$.
+
+Para cualquier $n\geq N$, necesitamos $|(a\circ\sigma)(n)-L|<\varepsilon$.
+La observación clave es que $\sigma(n)\geq n\geq N$ (usando el lema
+$n\leq\sigma(n)$), de modo que $\sigma(n)\geq N$ y por tanto
+$|a(\sigma(n))-L|<\varepsilon$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean}
+Statement SubseqConv (a : N → R) (L : R) (ha : SeqLim a L)
+    (σ : N → N) (hσ : Subseq σ) :
+    SeqLim (a ∘ σ) L := by
+  intro ε hε
+  choose N hN using ha ε hε
+  use N
+  intro n hn
+  have f1 : n ≤ σ n := by apply SubseqGe hσ n
+  have f2 : N ≤ σ n := by linarith [f1, hn]
+  specialize hN (σ n) f2
+  apply hN
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+  Sea $\varepsilon>0$ dado. Como $a(n)\to L$, existe $N$ tal que para todo
+  $m\geq N$:
+  \[
+    |a(m)-L| < \varepsilon
+  \]
+
+  Afirmamos que este mismo $N$ sirve para la subsucesión $a\circ\sigma$. Es
+  decir, para todo $n\geq N$:
+  \[
+    |(a\circ\sigma)(n)-L| < \varepsilon
+  \]
+
+  Sea $n\geq N$. Por el lema \texttt{SubseqGe}, $n\leq\sigma(n)$, luego:
+  \[
+    \sigma(n)\geq n\geq N
+  \]
+
+  Como $\sigma(n)\geq N$:
+  \[
+    |(a\circ\sigma)(n)-L| = |a(\sigma(n))-L| < \varepsilon
+  \]
+  \hfill$\square$
+
+\subsection{Por qué importa}
+
+El teorema de la subsucesión tiene varias consecuencias importantes:
+\begin{itemize}
+  \item Si una sucesión tiene dos subsucesiones que convergen a límites
+        distintos, la sucesión no converge. Esto proporciona una herramienta
+        poderosa para probar divergencia.
+  \item En el teorema de Bolzano-Weierstrass, toda sucesión acotada tiene
+        una subsucesión convergente.
+  \item Las subsucesiones se usan para extraer comportamiento «interesante»,
+        como $\liminf$ y $\limsup$.
+  \item El concepto se generaliza a espacios métricos y topológicos, donde
+        juega un papel crucial en los argumentos de compacidad.
+\end{itemize}
+
+\section{Ejemplo de subsucesión: sucesiones oscilantes}
+
+Aplicamos el teorema de la subsucesión a un ejemplo concreto: la sucesión
+$a(n)=(-1)^n$, que oscila entre $-1$ y $1$. Esta sucesión no converge, pero
+tiene subsucesiones convergentes.
+
+Extrayendo los términos de índice par obtenemos una subsucesión constante que
+converge a $1$. Análogamente, los términos de índice impar convergen a $-1$.
+
+\subsection{Nuevas herramientas}
+
+\paragraph{La táctica \texttt{let}.}
+La táctica \texttt{let} es similar a \texttt{have}, pero crea un nuevo término
+o función con nombre en lugar de solo demostrar una proposición. Para crear una
+función en Lean se usa la palabra clave \texttt{fun}:
+\begin{minted}{lean}
+fun x ↦ expresion
+\end{minted}
+lo que define una función que toma la entrada $x$ y devuelve \texttt{expresión}.
+Por ejemplo, \texttt{fun x ↦ x\^{}2} es la función cuadrática.
+
+En el ejemplo de la subsucesión escribimos:
+
+\begin{minted}{lean}
+let σ : N → N := fun n ↦ 2 * n
+\end{minted}
+que define $\sigma(n)=2n$, seleccionando los términos de índice par.
+
+\subsection{El enunciado matemático}
+
+\begin{theorem}
+  Si $a:\mathbb{N}\to\mathbb{R}$ está definida por $a(n)=(-1)^n$, entonces existe
+  una subsucesión $\sigma$ y un límite $L$ tales que $\sigma$ es estrictamente
+  creciente y $a\circ\sigma$ converge a $L$.
+\end{theorem}
+
+\subsection{Enfoque estratégico}
+
+Definimos $\sigma(n)=2n$, que selecciona los índices pares: $0,2,4,6,\ldots$
+
+Primero verificamos que $\sigma$ es estrictamente creciente: si $i<j$,
+entonces $2i<2j$.
+
+Luego calculamos $(a\circ\sigma)(n)=a(2n)=(-1)^{2n}=1$ para todo $n$.
+
+Finalmente, esta sucesión constante converge trivialmente a $1$: para cualquier
+$\varepsilon>0$, $|1-1|=0<\varepsilon$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean}
+Statement (a : N → R) (ha : ∀ n, a n = (-1) ^ n) :
+    ∃ σ L, Subseq σ ∧ SeqLim (a ∘ σ) L := by
+  let σ : N → N := fun n ↦ 2 * n
+  use σ, 1
+  split_ands
+  · intro i j hij
+    change 2 * i < 2 * j
+    linarith [hij]
+  · intro ε hε
+    use 0
+    intro n hn
+    change |a (2 * n) - 1| < ε
+    specialize ha (2 * n)
+    rewrite [ha]
+    have f1 : (-1 : R) ^ (2 * n) = 1 := by bound
+    rewrite [f1]
+    norm_num
+    apply hε
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+  \textbf{Paso 1: $\sigma$ es una subsucesión.}
+
+  Sean $i,j\in\mathbb{N}$ con $i<j$. Entonces:
+  \[
+    \sigma(i) = 2i < 2j = \sigma(j)
+  \]
+  Por tanto $\sigma$ es estrictamente creciente, y en consecuencia es una
+  subsucesión.
+
+  \medskip
+  \textbf{Paso 2: $a\circ\sigma$ converge a $1$.}
+
+  Sea $\varepsilon>0$ dado. Para todo $n\geq 0$:
+    \begin{align*}
+      (a\circ\sigma)(n) &= a(\sigma(n)) \\
+               &= a(2n)   \\
+               &= (-1)^{2n} \\
+               &= \bigl((-1)^2\bigr)^n \\
+               &= 1^n \\
+               &= 1
+    \end{align*}
+  Por tanto:
+    \begin{align*}
+      |(a\circ\sigma)(n)-1| &= |1-1| \\
+                   &= 0 \\
+                   &< \varepsilon
+    \end{align*}
+  \hfill$\square$
+
+\subsection{Implicaciones para la divergencia}
+
+Este ejemplo demuestra que $a(n)=(-1)^n$ no converge. Podemos extraer
+subsucesiones que convergen a $1$ (índices pares) y a $-1$ (índices impares).
+Como una sucesión convergente debe tener todas sus subsucesiones convergiendo
+al mismo límite, y hemos encontrado dos con límites distintos, la sucesión $a$
+no puede converger.
+
+Esta técnica —mostrar la divergencia exhibiendo dos subsucesiones con límites
+distintos— es una herramienta poderosa en el análisis.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{have}\PYG{+w}{ }\PYG{n}{NuevoHecho}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{Algo}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{OtraCosa}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{=}
+\PYG{+w}{    }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{Algo}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{OtraCosa}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{  }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{abs\PYGZus{}mul}
+\end{Verbatim}

@@ -1,0 +1,476 @@
+\chapter{El teorema de Bolzano-Weierstrass}
+
+\section{Introducción: una piedra angular del análisis}
+
+El teorema de Bolzano-Weierstrass es uno de los resultados más célebres
+del análisis real. Establece que toda sucesión acotada tiene una
+subsucesión convergente. Más precisamente, en el marco que hemos
+desarrollado:
+
+\begin{quote}
+  \itshape
+  Toda sucesión acotada tiene una subsucesión de Cauchy.
+\end{quote}
+
+Este teorema es notable porque garantiza la existencia de comportamiento
+convergente incluso en sucesiones que pueden parecer caóticas u
+oscilatorias. Constituye el fundamento para:
+
+\begin{itemize}
+  \item Demostrar que las funciones continuas en intervalos cerrados
+        alcanzan sus extremos.
+  \item Establecer la compacidad de los subconjuntos cerrados y acotados
+        de $\mathbb{R}^n$.
+  \item Argumentos de compacidad secuencial a lo largo del análisis.
+  \item Pruebas de existencia en optimización y ecuaciones diferenciales.
+\end{itemize}
+
+En esta capítulo demostraremos el Teorema de Bolzano-Weierstrass
+combinando todas las herramientas desarrolladas: el teorema de la
+subsucesión monótona del capítulo~13, el resultado de que las
+sucesiones monótonas acotadas son de Cauchy del capítulo~12, y el
+resultado correspondiente para sucesiones antótonas de las relaciones de
+problemas 12 y~13.
+
+\section{Nuevos teoremas}
+
+\subsection{\texttt{abs\_le}: El complemento de \texttt{abs\_lt}}
+
+Previamente hemos visto \texttt{abs\_lt}, que caracteriza cuándo
+$|x| < y$. Ahora necesitamos su complemento para desigualdades no
+estrictas.
+
+\begin{theorem}[\texttt{abs\_le}]
+  Para números reales o racionales $x, y$ con $y \geq 0$:
+  \[
+    |x| \leq y \iff -y \leq x \leq y.
+  \]
+\end{theorem}
+
+Esta bicondicional nos permite separar las desigualdades de valor
+absoluto en cotas simultáneas. En la dirección directa, $|x| \leq y$
+implica tanto $x \leq y$ como $-x \leq y$, lo que es equivalente a
+$-y \leq x$. En la dirección inversa, si $-y \leq x \leq y$, entonces
+tanto $x$ como $-x$ están acotados por $y$, de modo que $|x| \leq y$.
+
+\subsection{\texttt{IsCauchyOfAntitoneBdd}: El dual de nuestro resultado anterior}
+
+En el capítulo~12 demostramos que las sucesiones monótonas
+(no decrecientes) acotadas son de Cauchy. El resultado dual trata las
+sucesiones no crecientes.
+
+\begin{theorem}[\texttt{IsCauchyOfAntitoneBdd}]
+  Si una sucesión $a : \mathbb{N} \to X$ (donde $X$ es $\mathbb{Q}$ o
+  $\mathbb{R}$) es antótona (no creciente) y está acotada inferiormente
+  por algún $M$, entonces $a$ es de Cauchy.
+\end{theorem}
+
+La técnica de demostración es elegante: se niega la sucesión para
+convertir el problema antótono en uno monótono. Si $a$ es antótona y
+acotada inferiormente por $M$, entonces $b = -a$ es monótona y acotada
+superiormente por $-M$. Por nuestro teorema anterior, $b$ es de Cauchy.
+Entonces $a = -b$ también es de Cauchy (las sucesiones de Cauchy son
+cerradas bajo la negación).
+
+Este fue el contenido de la relación de problemas~12, y lo usaremos como
+una caja negra aquí.
+
+\subsection{\texttt{AntitoneSubseq\_of\_UnBddPeaks}: La mitad faltante}
+
+En el capítulo~13, demostramos que las sucesiones sin picos no
+acotados tienen subsucesiones monótonas. El resultado complementario
+trata el caso opuesto.
+
+\begin{theorem}[\texttt{AntitoneSubseq\_of\_UnBddPeaks}]
+  Si una sucesión $a : \mathbb{N} \to X$ tiene picos no acotados,
+  entonces existe una subsucesión $\sigma : \mathbb{N} \to \mathbb{N}$
+  tal que:
+  \begin{itemize}
+    \item $\sigma$ es estrictamente creciente (es un \texttt{Subseq}).
+    \item $a \circ \sigma$ es antótona (no creciente).
+  \end{itemize}
+\end{theorem}
+
+La intuición es sencilla: si hay picos arbitrariamente grandes, podemos
+elegir una subsucesión formada únicamente por picos. Dado que cada pico
+domina todos los valores futuros, y nuestra subsucesión consiste en
+picos ordenados por sus índices, los valores de la sucesión a lo largo
+de esta subsucesión deben ser no crecientes.
+
+Este es el contenido de la relación de problemas~13, y lo usaremos como
+una caja negra en nuestra demostración.
+
+\section{El teorema principal: Bolzano-Weierstrass}
+
+Ahora estamos listos para enunciar y demostrar el resultado principal.
+
+\begin{theorem}[\texttt{BolzanoWeierstrass}]
+  Si una sucesión $a : \mathbb{N} \to X$ (donde $X$ es $\mathbb{Q}$ o
+  $\mathbb{R}$) es acotada, entonces existe una subsucesión
+  $\sigma : \mathbb{N} \to \mathbb{N}$ tal que:
+  \begin{itemize}
+    \item $\sigma$ es estrictamente creciente (es un \texttt{Subseq}).
+    \item $a \circ \sigma$ es de Cauchy.
+  \end{itemize}
+\end{theorem}
+
+\subsection{Visión estratégica}
+
+La demostración se apoya en la dicotomía establecida en la
+Capítulo~13: toda sucesión tiene picos no acotados o no los tiene.
+Trataremos cada caso por separado:
+
+\medskip
+\noindent\textbf{Caso 1: La sucesión tiene picos no acotados.}
+\begin{enumerate}
+  \item Por \texttt{AntitoneSubseq\_of\_UnBddPeaks}, se extrae una
+        subsucesión antótona $\sigma$.
+  \item La acotación de $a$ nos da cotas sobre $a \circ \sigma$.
+  \item Por \texttt{IsCauchyOfAntitoneBdd}, se concluye que
+        $a \circ \sigma$ es de Cauchy.
+\end{enumerate}
+
+\medskip
+\noindent\textbf{Caso 2: La sucesión no tiene picos no acotados.}
+\begin{enumerate}
+  \item Por \texttt{MonotoneSubseq\_of\_BddPeaks} del capítulo~13,
+        se extrae una subsucesión monótona $\sigma$.
+  \item La acotación de $a$ nos da cotas sobre $a \circ \sigma$.
+  \item Por \texttt{IsCauchyOfMonotoneBdd} del capítulo~12, se
+        concluye que $a \circ \sigma$ es de Cauchy.
+\end{enumerate}
+
+La idea clave es que en ambos casos obtenemos una subsucesión monótona
+(o antótona) acotada, y ambos tipos están garantizados como de Cauchy
+por nuestros teoremas anteriores.
+
+\subsection{Comprendiendo la acotación}
+
+Cuando decimos que una sucesión $a$ es acotada (\texttt{SeqBdd} $a$),
+queremos decir que existe algún $M > 0$ tal que $|a(n)| \leq M$ para
+todo $n$.
+
+Usando \texttt{abs\_le}, podemos descomponer esto en dos cotas
+separadas:
+\begin{align*}
+  &\text{Cota superior: } a(n) \leq M \text{ para todo } n,\\
+  &\text{Cota inferior: } {-M} \leq a(n) \text{ para todo } n.
+\end{align*}
+
+Estas cotas se preservan al pasar a subsucesiones: si $|a(n)| \leq M$
+para todo $n$, entonces $|a(\sigma(n))| \leq M$ para todo $n$ y
+cualquier subsucesión $\sigma$.
+
+\subsection{Demostración en Lean}
+
+\begin{minted}{lean4}
+Statement BolzanoWeierstrass ( a : N → X )
+    ( ha : SeqBdd a )
+    : ∃ σ, Subseq σ ∧ IsCauchy ( a ◦ σ) := by
+  choose M Mpos hM using ha
+  have aBddAbove : ∀ n , a n ≤ M := by
+    intro n ;
+    specialize hM n ;
+    rewrite [ abs_le ] at hM ;
+    apply hM .2
+  have aBddBelow : ∀ n , -M ≤ a n := by
+    intro n ;
+    specialize hM n ;
+    rewrite [ abs_le ] at hM ;
+    apply hM .1
+  by_cases hPeaks : UnBddPeaks a
+  · choose σ σsubseq σanti using
+        AntitoneSubseq_of_UnBddPeaks a hPeaks
+    use σ
+    split_ands
+    · exact σsubseq
+    · apply IsCauchyOfAntitoneBdd ( a ◦ σ) ( - M )
+      · intro n
+        change -M ≤ a (σ n )
+        apply aBddBelow
+      · apply σanti
+  · choose σ σsubseq σmono using
+        MonotoneSubseq_of_BddPeaks a hPeaks
+    use σ
+    split_ands
+    · apply σsubseq
+    · apply IsCauchyOfMonotoneBdd ( a ◦ σ) M
+      · intro n
+        change a (σ n ) ≤ M
+        apply aBddAbove
+      · apply σmono
+\end{minted}
+
+\subsection{Demostración en lenguaje natural}
+
+\begin{proof}
+Sea $a : \mathbb{N} \to X$ una sucesión acotada. Por la definición de
+\texttt{SeqBdd}, existe $M > 0$ tal que $|a(n)| \leq M$ para todo $n$.
+
+\medskip
+\noindent\textbf{Extracción de las cotas.}
+Usando \texttt{abs\_le}, reescribimos $|a(n)| \leq M$ como la
+conjunción
+\[
+  -M \leq a(n) \leq M,
+\]
+lo que nos da:
+\begin{itemize}
+  \item Cota superior: $a(n) \leq M$ para todo $n$.
+  \item Cota inferior: $-M \leq a(n)$ para todo $n$.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Análisis por casos.}
+Por el principio del tercio excluido, o bien \texttt{UnBddPeaks}$(a)$
+se cumple o no. Trataremos cada caso por separado.
+
+\medskip
+\noindent\textit{Caso 1: $a$ tiene picos no acotados.}
+Supongamos que \texttt{UnBddPeaks}$(a)$ se cumple.
+
+Por el teorema \texttt{AntitoneSubseq\_of\_UnBddPeaks}, existe una
+subsucesión $\sigma : \mathbb{N} \to \mathbb{N}$ tal que $\sigma$ es
+estrictamente creciente y $a \circ \sigma$ es antótona.
+
+La subsucesión $a \circ \sigma$ hereda la cota inferior de $a$: para
+todo $n$, $-M \leq a(\sigma(n))$.
+
+Por lo tanto, $a \circ \sigma$ es antótona y acotada inferiormente por
+$-M$. Por el teorema \texttt{IsCauchyOfAntitoneBdd}, concluimos que
+$a \circ \sigma$ es de Cauchy. Así, $\sigma$ satisface las dos
+propiedades requeridas.
+
+\medskip
+\noindent\textit{Caso 2: $a$ no tiene picos no acotados.}
+Supongamos que $\neg$\,\texttt{UnBddPeaks}$(a)$ se cumple.
+
+Por el teorema \texttt{MonotoneSubseq\_of\_BddPeaks} de la
+Capítulo~13, existe una subsucesión $\sigma : \mathbb{N} \to
+\mathbb{N}$ tal que $\sigma$ es estrictamente creciente y $a \circ
+\sigma$ es monótona.
+
+La subsucesión $a \circ \sigma$ hereda la cota superior de $a$: para
+todo $n$, $a(\sigma(n)) \leq M$.
+
+Por lo tanto, $a \circ \sigma$ es monótona y acotada superiormente por
+$M$. Por el teorema \texttt{IsCauchyOfMonotoneBdd} de la
+Capítulo~12, concluimos que $a \circ \sigma$ es de Cauchy. Así,
+$\sigma$ satisface las dos propiedades requeridas.
+
+\medskip
+\noindent\textbf{Conclusión.}
+En ambos casos hemos construido una subsucesión $\sigma$ estrictamente
+creciente tal que $a \circ \sigma$ es de Cauchy. Esto completa la
+demostración.
+\end{proof}
+
+\section{La arquitectura de la demostración}
+
+Demos un paso atrás y apreciemos la estructura elegante de este
+argumento. El Teorema de Bolzano-Weierstrass es la cúpula de un
+edificio cuidadosamente construido.
+
+\subsection{La cimentación: sucesiones monótonas}
+
+En la base tenemos el hecho fundamental de que las sucesiones monótonas
+acotadas son de Cauchy. Esto se demostró en el capítulo~12 mediante
+un ingenioso argumento de contradicción: si una sucesión monótona
+acotada no fuera de Cauchy, podríamos construir una sucesión infinita
+de brechas que eventualmente forzarían a la sucesión a superar su cota.
+
+El resultado dual para sucesiones antótonas se sigue mediante un
+sencillo argumento de negación.
+
+\subsection{La dicotomía: picos y valles}
+
+El siguiente nivel introduce el concepto de picos y establece una
+dicotomía: toda sucesión tiene picos no acotados o no los tiene.
+
+\begin{itemize}
+  \item \textbf{Picos no acotados:} La sucesión regresa continuamente a
+        nuevos máximos locales de los que nunca se recupera.
+  \item \textbf{Picos acotados:} A partir de cierto punto, la sucesión
+        no tiene más picos; debe empezar a subir eventualmente.
+\end{itemize}
+
+\subsection{La extracción: de la dicotomía a la monotonía}
+
+El Capítulo~13 mostró que las sucesiones sin picos no acotados
+tienen subsucesiones monótonas. La demostración usó la hermosa
+construcción de la órbita: iterando una función cuidadosamente
+elegida, se extrajo una subsucesión que automáticamente evitaba todos
+los picos y, por tanto, se veía forzada a ser monótona.
+
+La relación de problemas~13 estableció el resultado dual: las sucesiones
+con picos no acotados tienen subsucesiones antótonas. La demostración es
+más sencilla aquí: basta elegir los propios picos como la subsucesión.
+
+\subsection{La síntesis: Bolzano-Weierstrass}
+
+Finalmente, combinamos todos estos resultados. Toda sucesión acotada cae
+en uno de los dos casos de nuestra dicotomía. En ambos casos podemos
+extraer una subsucesión monótona (o antótona), y dicha subsucesión
+permanece acotada. Por nuestros resultados fundamentales, toda sucesión
+monótona acotada es de Cauchy.
+
+El teorema no surge de un único argumento ingenioso, sino del ensamblaje
+cuidadoso de múltiples resultados, cada uno construido sobre el anterior.
+
+\section{Por qué esto importa}
+
+El Teorema de Bolzano-Weierstrass es fundamental para el análisis por
+varias razones.
+
+\subsection{Compacidad}
+
+En topología, se dice que un espacio es \emph{secuencialmente compacto}
+si toda sucesión tiene una subsucesión convergente. El Teorema de
+Bolzano-Weierstrass muestra que los subconjuntos cerrados y acotados de
+$\mathbb{R}$ son secuencialmente compactos. Este es un paso clave para
+demostrar el Teorema de Heine-Borel, que caracteriza los subconjuntos
+compactos del espacio euclídeo.
+
+\subsection{Pruebas de existencia}
+
+Muchos resultados de existencia en análisis dependen del Teorema de
+Bolzano-Weierstrass. Por ejemplo:
+
+\begin{itemize}
+  \item \textbf{Teorema del Valor Extremo:} Una función continua en un
+        intervalo cerrado alcanza su máximo y su mínimo.
+  \item \textbf{Teorema de Bolzano:} Una función continua que cambia de
+        signo debe tener un cero.
+  \item \textbf{Optimización:} Las funciones continuas en conjuntos
+        compactos alcanzan sus valores óptimos.
+\end{itemize}
+
+\subsection{Aproximación}
+
+En el análisis numérico y las matemáticas aplicadas, el Teorema de
+Bolzano-Weierstrass garantiza que las sucesiones acotadas de
+aproximaciones tienen subsucesiones convergentes, proporcionando una
+base para los métodos iterativos.
+
+\subsection{Análisis funcional}
+
+El teorema se extiende a espacios de dimensión infinita (con las
+modificaciones apropiadas), constituyendo la base para comprender la
+convergencia débil y débil$^*$ en espacios de Banach.
+
+\section{Contexto histórico}
+
+El teorema lleva el nombre de Bernard Bolzano (1781--1848) y Karl
+Weierstrass (1815--1897), dos pioneros del análisis riguroso.
+
+El trabajo de Bolzano en los primeros años del siglo~XIX fue
+notablemente moderno, anticipando muchas ideas que solo se generalizarían
+más tarde. Comprendió la importancia de demostrar rigurosamente los
+resultados de existencia y reconoció que la intuición sobre continuidad
+y límites necesitaba una formalización cuidadosa.
+
+Weierstrass, trabajando varias décadas después, suele recibir el crédito
+de haber puesto el análisis sobre una base rigurosa. Insistió en las
+definiciones $\varepsilon$-$\delta$ y construyó famosos contraejemplos
+(como una función continua en ningún punto diferenciable) que mostraron
+las limitaciones de la intuición geométrica.
+
+El Teorema de Bolzano-Weierstrass representa su perspicacia compartida:
+acotación más elección infinita fuerza acumulación. Si se tienen
+infinitos valores confinados en una región acotada, deben agruparse en
+algún lugar.
+
+\section{Extensiones y variantes}
+
+El Teorema de Bolzano-Weierstrass tiene muchas generalizaciones.
+
+\subsection{Dimensiones superiores}
+
+En $\mathbb{R}^n$, toda sucesión acotada tiene una subsucesión
+convergente. La demostración sigue el mismo patrón: se extraen
+subsucesiones monótonas en cada coordenada, usando un argumento diagonal
+para garantizar que converjan simultáneamente.
+
+\subsection{Espacios métricos}
+
+En espacios métricos completos, un conjunto $K$ es compacto si y solo si
+toda sucesión en $K$ tiene una subsucesión convergente (cuyo límite está
+en $K$). Esta caracterización de la compacidad es una de las más útiles
+en el análisis.
+
+\subsection{Convergencia débil}
+
+En espacios de Banach de dimensión infinita, las sucesiones acotadas
+pueden no tener subsucesiones norm-convergentes (la bola unitaria podría
+no ser compacta). Sin embargo, por el Teorema de Banach-Alaoglu, las
+sucesiones acotadas en el espacio dual tienen subsucesiones
+débil$^*$-convergentes.
+
+\subsection{Espacios topológicos}
+
+El marco más general son los espacios topológicos arbitrarios, donde la
+compacidad se puede definir sin referencia a sucesiones. La relación
+entre compacidad secuencial y compacidad depende de la topología (son
+equivalentes para espacios métricos).
+
+\section{Técnicas de demostración: Lo que aprendimos}
+
+Esta demostración exhibe varias técnicas matemáticas importantes.
+
+\subsection{Análisis por casos con \texttt{by\_cases}}
+
+La táctica \texttt{by\_cases} nos permite dividir una demostración según
+si una proposición se cumple o no. Esto es la formalización de la
+demostración por casos, permitiéndonos aprovechar el principio del
+tercio excluido.
+
+\subsection{Descomposición de valores absolutos}
+
+El teorema \texttt{abs\_le} muestra cómo trabajar con desigualdades de
+valor absoluto separándolas en cotas unilaterales simultáneas. Esta
+técnica es omnipresente en el análisis.
+
+\subsection{Argumentos de dualidad}
+
+La demostración de \texttt{IsCauchyOfAntitoneBdd} ejemplifica una
+poderosa técnica: convertir un problema sobre sucesiones antótonas en
+uno sobre sucesiones monótonas mediante la negación. Esto reduce el
+número de teoremas que necesitamos demostrar desde cero.
+
+\subsection{Aprovechamiento de resultados previos}
+
+La demostración de Bolzano-Weierstrass es breve precisamente porque
+hemos construido la maquinaria necesaria en capítulos anteriores.
+Esto demuestra la importancia de:
+
+\begin{itemize}
+  \item Descomponer demostraciones complejas en lemas.
+  \item Identificar y demostrar resultados generales útiles.
+  \item Estructurar una teoría para que los teoremas principales sean
+        consecuencias naturales.
+\end{itemize}
+
+\section{Mirando hacia adelante}
+
+Con el teorema de Bolzano-Weierstrass en mano, estamos ahora equipados
+para demostrar muchos resultados clásicos del análisis:
+
+\begin{itemize}
+  \item \textbf{Teorema del valor extremo:} las funciones continuas en
+        intervalos cerrados son acotadas y alcanzan sus cotas.
+  \item \textbf{Teorema del valor intermedio:} las funciones continuas
+        en intervalos toman todos los valores intermedios.
+  \item \textbf{Teorema de Heine-Borel:} caracterización de los
+        subconjuntos compactos del espacio euclídeo.
+  \item Resultados de continuidad uniforme en conjuntos compactos.
+  \item Teoremas de punto fijo.
+\end{itemize}
+
+Cada uno de estos resultados se apoya en la perspicacia fundamental
+capturada por Bolzano-Weierstrass: en el reino de lo acotado, siempre
+hay convergencia escondida en algún lugar, esperando ser extraída.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:
