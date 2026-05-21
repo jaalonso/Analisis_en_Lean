@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.1.30)  2 MAR 2026 18:54
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.1.30)  11 MAY 2026 21:10
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1825,7 +1825,12 @@ runsystem(rm Analisis_en_Lean_movil.aex)...executed.
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
 
-(./C1-La_historia_del_analisis_real.aux) (./C2-El_calculo_de_pi.aux))
+(./C1_La_historia_del_analisis_real.aux) (./C2_El_calculo_de_pi.aux)
+(./C3_Convergencia_de_sucesiones.aux) (./C4_No_convergencia.aux)
+(./C5_Duplicar_una_sucesion_convergente.aux)
+(./C6$_{}$Tecnicas_avanzadas_de_demostracion_y_el_teorema_del_emparedado.aux)
+(./C7_Unicidad_y_teoremas_avanzados_de_limites.aux)
+(./C8_Teoremas_avanzados_de_limites_e_induccion.aux))
 \openout1 = `Analisis_en_Lean_movil.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
@@ -2128,16 +2133,179 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `JuliaMono-Regular.ttf' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+ [1
+
+]
+Overfull \hbox (14.84337pt too wide) in paragraph at lines 25--25
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 El objetivo: Demostrar que $[][][] []
+ 
+ []
+
+
+Overfull \hbox (3.57375pt too wide) in paragraph at lines 29--29
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Desafío 1: Multiplica- 
+ []
+
+
+Overfull \hbox (4.27776pt too wide) in paragraph at lines 31--31
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Desafío 3: Casting ex- 
+ []
+
+
+Overfull \hbox (2.95775pt too wide) in paragraph at lines 32--32
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Desafío 4: Casting en 
+ []
+
+
+Overfull \hbox (0.69075pt too wide) in paragraph at lines 32--32
+ \TU/LibertinusSerif(0)/m/n/12 aplicaciones de tácti- 
+ []
+
+LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
+(Font)              scaled to size 10.95pt on input line 33.
+Requested font "[LibertinusSans-Regular.otf]/OT:script=latn;language=dflt;+tnum
+;+lnum;mapping=tex-text;" at 10.95pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSans-Regular.otf
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `LibertinusSans' (encoding: TU).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Info: Redefining \. on input line 33.
+LaTeX Info: Redefining \% on input line 33.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[2]
+Overfull \hbox (1.81468pt too wide) in paragraph at lines 34--34
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Consejos profesionales para es- 
+ []
+
+
+Overfull \hbox (2.47368pt too wide) in paragraph at lines 46--46
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Idea Clave: Escalado Inverso de 
+ []
+
+LaTeX Info: Redefining \. on input line 49.
+LaTeX Info: Redefining \% on input line 49.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[3]
+Overfull \hbox (4.86674pt too wide) in paragraph at lines 59--59
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Prueba por contradic- 
+ []
+
+
+Overfull \hbox (37.46559pt too wide) in paragraph at lines 60--60
+ \TU/LibertinusSerif(0)/m/n/12 absoluto: \TU/JuliaMono-Regular.ttf(0)/m/n/12 ab
+s_pos_of_nonzero[][] [][]  
+ []
+
+
+Overfull \hbox (1.00172pt too wide) in paragraph at lines 65--65
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Eventualmente: Las sucesiones conver-
+ 
+ []
+
+LaTeX Info: Redefining \. on input line 68.
+LaTeX Info: Redefining \% on input line 68.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[4]
+Overfull \hbox (12.57076pt too wide) in paragraph at lines 73--73
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Propiedad de Lipschitz: 
+ []
+
+
+Overfull \hbox (14.9176pt too wide) in paragraph at lines 81--81
+ \TU/LibertinusSerif(0)/m/n/12 tivo: \TU/JuliaMono-Regular.ttf(0)/m/n/12 nonzer
+o_of_abs_pos[][] [][]  
+ []
+
+LaTeX Info: Redefining \. on input line 86.
+LaTeX Info: Redefining \% on input line 86.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[5]
+Overfull \hbox (3.10269pt too wide) in paragraph at lines 90--90
+ [] [][][]\TU/LibertinusSerif(0)/b/n/12 Teoremas avanzados de límites e inducci
+ón[][] []  
+ []
+
+
+Overfull \hbox (10.07771pt too wide) in paragraph at lines 92--92
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Jefe Final: Recíprocos de Sucesiones 
+Con- 
+ []
+
+
+Overfull \hbox (3.11769pt too wide) in paragraph at lines 101--101
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Aplicación: Eventualmente Ma- 
+ []
+
+LaTeX Info: Redefining \. on input line 104.
+LaTeX Info: Redefining \% on input line 104.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[6]
+Overfull \hbox (37.04155pt too wide) in paragraph at lines 108--108
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Nueva Herramienta: \TU/JuliaMono-Regu
+lar.ttf(0)/m/n/12 ge_one_of_nonzero[][] [][]  
+ []
+
+
+Overfull \hbox (5.62569pt too wide) in paragraph at lines 109--109
+ [][] [][][]\TU/LibertinusSerif(0)/m/n/12 Ejemplo: Crecimiento Exponen- 
+ []
+
 )
 \tf@toc=\write6
 \openout6 = `Analisis_en_Lean_movil.toc'.
 
- [1
+LaTeX Info: Redefining \. on input line 19.
+LaTeX Info: Redefining \% on input line 19.
 
-]
-\openout2 = `C1-La_historia_del_analisis_real.aux'.
 
- (./C1-La_historia_del_analisis_real.tex
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[7]
+\openout2 = `C1_La_historia_del_analisis_real.aux'.
+
+ (./C1_La_historia_del_analisis_real.tex
 Capítulo 1.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 17.28pt on input line 3.
@@ -2177,23 +2345,13 @@ m;+lnum;" at 7.2pt
 inusSerif-Regular.otf
 File: fig/Derivada.png Graphic file (type bmp)
 <fig/Derivada.png>
-[2
+[8
 
 
 
 ]
 File: fig/Integral.png Graphic file (type bmp)
 <fig/Integral.png>
-LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
-(Font)              scaled to size 10.95pt on input line 54.
-Requested font "[LibertinusSans-Regular.otf]/OT:script=latn;language=dflt;+tnum
-;+lnum;mapping=tex-text;" at 10.95pt
- -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
-inusSans-Regular.otf
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `LibertinusSans' (encoding: TU).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
 LaTeX Info: Redefining \. on input line 54.
 LaTeX Info: Redefining \% on input line 54.
 
@@ -2205,7 +2363,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[3]
+[9]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
 (Font)              scaled to size 12.0pt on input line 56.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
@@ -2230,7 +2388,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[4]
+[10]
 File: fig/Cauchy.png Graphic file (type bmp)
 <fig/Cauchy.png>
 LaTeX Info: Redefining \. on input line 109.
@@ -2244,7 +2402,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[5]
+[11]
 File: fig/Fourier.png Graphic file (type bmp)
 <fig/Fourier.png>
 File: fig/FamiliaDePolinomios.png Graphic file (type bmp)
@@ -2260,7 +2418,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[6]
+[12]
 File: fig/NumerosReales.png Graphic file (type bmp)
 <fig/NumerosReales.png>
 LaTeX Info: Redefining \. on input line 163.
@@ -2274,7 +2432,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[7]
+[13]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
 (Font)              scaled to size 14.4pt on input line 191.
 Requested font "[LibertinusSerif-Bold.otf]/OT:script=latn;language=dflt;+tnum;+
@@ -2292,7 +2450,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[8]
+[14]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
  (./_minted-Analisis_en_Lean_movil/emacs.pygstyle)
@@ -2331,7 +2489,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[9]
+[15]
 LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
 (Font)              scaled to size 13.47836pt on input line 231.
 Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
@@ -2358,7 +2516,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[10]
+[16]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2375,7 +2533,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[11])
+[17])
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2392,7 +2550,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[12]
+[18]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2479,7 +2637,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[13]
+[19]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2501,7 +2659,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[14]
+[20]
 LaTeX Info: Redefining \. on input line 52.
 LaTeX Info: Redefining \% on input line 52.
 
@@ -2513,7 +2671,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[15])
+[21])
 LaTeX Info: Redefining \. on input line 478.
 LaTeX Info: Redefining \% on input line 478.
 
@@ -2525,7 +2683,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[16]
+[22]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2542,7 +2700,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[17]
+[23]
 LaTeX Info: Redefining \. on input line 59.
 LaTeX Info: Redefining \% on input line 59.
 
@@ -2554,7 +2712,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[18])
+[24])
 Overfull \hbox (0.81262pt too wide) in paragraph at lines 572--577
 \TU/LibertinusSerif(0)/m/n/12 genuinamente sofisticado. Usar un demostrador de 
 teo-
@@ -2572,10 +2730,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[19]
-\openout2 = `C2-El_calculo_de_pi.aux'.
+[25]
+\openout2 = `C2_El_calculo_de_pi.aux'.
 
- (./C2-El_calculo_de_pi.tex
+ (./C2_El_calculo_de_pi.tex
 Capítulo 2.
 
 Overfull \hbox (2.65318pt too wide) in paragraph at lines 3--3
@@ -2588,7 +2746,7 @@ Overfull \hbox (0.20764pt too wide) in paragraph at lines 12--18
 mientras
  []
 
-[20
+[26
 
 
 
@@ -2607,7 +2765,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[21]
+[27]
 Overfull \hbox (2.51067pt too wide) in paragraph at lines 55--57
 \TU/LibertinusSerif(0)/m/n/12 ocurre alguna forma de dar sentido a esta fórmula
  cuan-
@@ -2623,7 +2781,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[22]
+[28]
 LaTeX Info: Redefining \. on input line 100.
 LaTeX Info: Redefining \% on input line 100.
 
@@ -2635,7 +2793,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[23]
+[29]
 LaTeX Info: Redefining \. on input line 130.
 LaTeX Info: Redefining \% on input line 130.
 
@@ -2647,7 +2805,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[24]
+[30]
 File: fig/Triangulo_de_Pascal_arriba.png Graphic file (type bmp)
 <fig/Triangulo_de_Pascal_arriba.png>
 
@@ -2668,7 +2826,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[25]
+[31]
 Overfull \hbox (8.4296pt too wide) in paragraph at lines 155--159
 \TU/LibertinusSerif(0)/m/n/12 justo debajo? Pero probemos algo aún más exótico.
  ¿Pue-
@@ -2684,7 +2842,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[26]
+[32]
 LaTeX Info: Redefining \. on input line 208.
 LaTeX Info: Redefining \% on input line 208.
 
@@ -2696,7 +2854,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[27]
+[33]
 Overfull \hbox (2.71562pt too wide) in paragraph at lines 212--220
 \TU/LibertinusSerif(0)/m/n/12 Pero espera, ¡¿ahora tenemos otra fila entera en 
 el trián-
@@ -2714,7 +2872,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[28]
+[34]
 Overfull \hbox (65.52774pt too wide) detected at line 256
 [] [] [] []
  []
@@ -2729,7 +2887,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[29]
+[35]
 Overfull \hbox (18.90791pt too wide) detected at line 283
 [] [] [] [] [][][][][][] [] [][][][][][][] [] [][][][][][][] [] [][][][][][][] 
 [] []
@@ -2747,7 +2905,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[30]
+[36]
 Overfull \hbox (29.95753pt too wide) detected at line 297
 [] [] [][] [] [][] [] [][] [] [][]
  []
@@ -2768,7 +2926,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[31]
+[37]
 File: fig/Circulo_sector_y_triangulo.png Graphic file (type bmp)
 <fig/Circulo_sector_y_triangulo.png>
 LaTeX Info: Redefining \. on input line 342.
@@ -2782,7 +2940,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[32]
+[38]
 Overfull \hbox (8.96265pt too wide) in paragraph at lines 360--362
 []\TU/LibertinusSerif(0)/m/n/12 ¿Qué significa que una sucesión de números real
 es
@@ -2798,7 +2956,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[33]
+[39]
 Overfull \hbox (43.9189pt too wide) detected at line 369
 [][][][] [] [][][] [] [][][][] [] [] [][][] [] [] [][][][] [] [] [][][][][] [] 
 [] [][][][][][] [] []
@@ -2814,7 +2972,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[34]
+[40]
 LaTeX Info: Redefining \. on input line 418.
 LaTeX Info: Redefining \% on input line 418.
 
@@ -2826,7 +2984,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[35]
+[41]
 LaTeX Info: Redefining \. on input line 452.
 LaTeX Info: Redefining \% on input line 452.
 
@@ -2838,7 +2996,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[36]
+[42]
 File: fig/Convergencia.png Graphic file (type bmp)
 <fig/Convergencia.png>
 
@@ -2857,7 +3015,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[37]
+[43]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2874,7 +3032,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[38]
+[44]
 \openout3 = `Analisis_en_Lean_movil.pyg'.
 
 
@@ -2923,7 +3081,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[39]
+[45]
 LaTeX Info: Redefining \. on input line 46.
 LaTeX Info: Redefining \% on input line 46.
 
@@ -2935,7 +3093,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[40]
+[46]
 LaTeX Info: Redefining \. on input line 85.
 LaTeX Info: Redefining \% on input line 85.
 
@@ -2947,7 +3105,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[41]
+[47]
 LaTeX Info: Redefining \. on input line 125.
 LaTeX Info: Redefining \% on input line 125.
 
@@ -2959,7 +3117,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[42])
+[48])
 LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
 (Font)              scaled to size 9.35999pt on input line 673.
 Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
@@ -2976,7 +3134,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[43]
+[49]
 Overfull \hbox (6.13962pt too wide) in paragraph at lines 686--688
 []\TU/LibertinusSerif(0)/m/n/12 Después, la normalización numérica dio que
  []
@@ -3003,7 +3161,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[44])
+[50])
 LaTeX Info: Redefining \. on input line 22.
 LaTeX Info: Redefining \% on input line 22.
 
@@ -3015,24 +3173,1383 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[45] (./Analisis_en_Lean_movil.aux
+[51]
+\openout2 = `C3_Convergencia_de_sucesiones.aux'.
+
+ (./C3_Convergencia_de_sucesiones.tex
+Capítulo 3.
+
+Overfull \hbox (5.97667pt too wide) in paragraph at lines 1--1
+|[]\TU/LibertinusSerif(0)/b/n/24.88 Convergencia de suce-
+ []
+
+[52
+
+
+
+
+]
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[53]
+Overfull \hbox (1.56564pt too wide) in paragraph at lines 34--35
+[]\TU/LibertinusSerif(0)/b/n/12 Por qué funciona: \TU/LibertinusSerif(0)/m/n/12
+ Tenemos la “desigualdad cla-
+ []
+
+
+Overfull \hbox (4.51459pt too wide) in paragraph at lines 38--38
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Los desafíos de la implementación
+ []
+
+LaTeX Info: Redefining \. on input line 41.
+LaTeX Info: Redefining \% on input line 41.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[54]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/27ED091E334BF683387657769720D7CA55C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/80BF1C5D9AD20F1CFBBCC4FEAC45C12A55C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+LaTeX Info: Redefining \. on input line 57.
+LaTeX Info: Redefining \% on input line 57.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[55]
+Overfull \hbox (1.03758pt too wide) in paragraph at lines 64--65
+[]\TU/JuliaMono-Regular.ttf(0)/m/n/12 push_cast\TU/LibertinusSerif(0)/m/n/12 : 
+Táctica que maneja las coerciones en-
+ []
+
+
+Overfull \hbox (3.79361pt too wide) in paragraph at lines 65--66
+[]\TU/JuliaMono-Regular.ttf(0)/m/n/12 bound\TU/LibertinusSerif(0)/m/n/12 : Resu
+elve muchas desigualdades rutinarias
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/83CD91E0447DB815D0A4BD9F6E1179E155C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 13.
+LaTeX Info: Redefining \% on input line 13.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[56]
+LaTeX Info: Redefining \. on input line 53.
+LaTeX Info: Redefining \% on input line 53.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[57]
+LaTeX Info: Redefining \. on input line 92.
+LaTeX Info: Redefining \% on input line 92.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[58])
+Overfull \hbox (3.41057pt too wide) in paragraph at lines 171--171
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Demostración en lenguaje natural
+ []
+
+
+Overfull \hbox (10.15663pt too wide) in paragraph at lines 185--187
+\TU/LibertinusSerif(0)/m/n/12 Ahora, como $[][][][][][]$ es un número natural y
+ $[] [] [][][][][][] []
+ []
+
+LaTeX Info: Redefining \. on input line 191.
+LaTeX Info: Redefining \% on input line 191.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[59]
+Overfull \hbox (1.13766pt too wide) in paragraph at lines 193--194
+[]\TU/LibertinusSerif(0)/b/n/12 Significado: \TU/LibertinusSerif(0)/m/n/12 La p
+ropiedad arquimediana es fundamen-
+ []
+
+
+Overfull \hbox (9.87761pt too wide) in paragraph at lines 198--199
+[]\TU/LibertinusSerif(0)/b/n/12 Cuidado con los problemas de casting\TU/Liberti
+nusSerif(0)/m/n/12 : si \TU/JuliaMono-Regular.ttf(0)/m/n/12 bound
+ []
+
+LaTeX Info: Redefining \. on input line 203.
+LaTeX Info: Redefining \% on input line 203.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[60]
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
+(Font)              scaled to size 14.4pt on input line 208.
+Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
+m;+lnum;" at 14.4pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-Regular.otf
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
+(Font)              scaled to size 10.0pt on input line 208.
+Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
+m;+lnum;" at 10.0pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-Regular.otf
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
+(Font)              scaled to size 7.0pt on input line 208.
+Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
+m;+lnum;" at 7.0pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-Regular.otf
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 208.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\to' on input line 208.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 208.
+
+
+Overfull \hbox (6.39017pt too wide) in paragraph at lines 216--216
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Recordatorio: La definición de con-
+ []
+
+LaTeX Info: Redefining \. on input line 221.
+LaTeX Info: Redefining \% on input line 221.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[61]
+Overfull \hbox (3.17537pt too wide) in paragraph at lines 226--226
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Estrategia de demostración en len-
+ []
+
+LaTeX Info: Redefining \. on input line 236.
+LaTeX Info: Redefining \% on input line 236.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[62]
+Overfull \hbox (4.51459pt too wide) in paragraph at lines 244--244
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Los desafíos de la implementación
+ []
+
+
+Overfull \hbox (4.74966pt too wide) in paragraph at lines 246--246
+|[]\TU/LibertinusSerif(0)/b/n/12 Desafío 1: Multiplicación cruzada de frac-
+ []
+
+LaTeX Info: Redefining \. on input line 253.
+LaTeX Info: Redefining \% on input line 253.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[63]
+Overfull \hbox (8.19962pt too wide) in paragraph at lines 255--257
+[]\TU/LibertinusSerif(0)/m/n/12 ¿Recuerdas las flechas hacia arriba $[]$? ¡Han 
+vuelto! Cuan-
+ []
+
+
+Overfull \hbox (0.90567pt too wide) in paragraph at lines 258--258
+|[]\TU/LibertinusSerif(0)/b/n/12 Desafío 4: Casting en aplicaciones de tác-
+ []
+
+
+Overfull \hbox (32.2595pt too wide) in paragraph at lines 259--261
+\TU/LibertinusSerif(0)/m/n/12 coinciden exactamente. \TU/LibertinusSerif(0)/b/n
+/12 Solución: \TU/LibertinusSerif(0)/m/n/12 La táctica \TU/JuliaMono-Regular.tt
+f(0)/m/n/12 exact_mod_cast
+ []
+
+LaTeX Info: Redefining \. on input line 265.
+LaTeX Info: Redefining \% on input line 265.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[64]
+Overfull \hbox (0.19754pt too wide) in paragraph at lines 266--267
+[]\TU/JuliaMono-Regular.ttf(0)/m/n/12 exact_mod_cast\TU/LibertinusSerif(0)/m/n/
+12 : Maneja coerciones automática-
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/FD6168CC1F94221250304A12BF48757855C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 5.
+LaTeX Info: Redefining \% on input line 5.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[65]
+LaTeX Info: Redefining \. on input line 40.
+LaTeX Info: Redefining \% on input line 40.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[66]
+LaTeX Info: Redefining \. on input line 79.
+LaTeX Info: Redefining \% on input line 79.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[67]
+LaTeX Info: Redefining \. on input line 118.
+LaTeX Info: Redefining \% on input line 118.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[68]
+LaTeX Info: Redefining \. on input line 157.
+LaTeX Info: Redefining \% on input line 157.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[69])
+LaTeX Info: Redefining \. on input line 467.
+LaTeX Info: Redefining \% on input line 467.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[70])
+LaTeX Info: Redefining \. on input line 23.
+LaTeX Info: Redefining \% on input line 23.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[71]
+\openout2 = `C4_No_convergencia.aux'.
+
+ (./C4_No_convergencia.tex
+Capítulo 4.
+[72
+
+
+
+
+]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/712664953A23A75A01B2348C9E274E0552FC79AFBC3F8
+401FE7C18E071135406.pygtex)
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
+(Font)              scaled to size 9.6pt on input line 43.
+Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
+m;+lnum;mapping=tex-text;" at 9.6pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-Regular.otf
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
+(Font)              scaled to size 7.2pt on input line 43.
+Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
+m;+lnum;mapping=tex-text;" at 7.2pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-Regular.otf
+Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.t
+tf]/OT:script=latn;language=dflt;" at 7.48799pt
+ -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.ttf
+Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.t
+tf]/OT:script=latn;language=dflt;" at 5.61598pt
+ -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.ttf
+
+Overfull \hbox (1.00667pt too wide) in paragraph at lines 51--53
+\TU/LibertinusSerif(0)/m/n/12 te hablarías así: si eso ocurriera, obtendríamos 
+una con-
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/CB4CF7CDB7EEA9AF50C2312FC9D2E66A52FC79AFBC3F8
+401FE7C18E071135406.pygtex)
+LaTeX Info: Redefining \. on input line 61.
+LaTeX Info: Redefining \% on input line 61.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[73]
+Overfull \hbox (5.19867pt too wide) in paragraph at lines 66--71
+\TU/LibertinusSerif(0)/m/n/12 nifica necesariamente que entiendas qué está ocu-
+
+ []
+
+
+Overfull \hbox (3.40364pt too wide) in paragraph at lines 66--71
+\TU/LibertinusSerif(0)/m/n/12 simplemente funcione, sino que \TU/LibertinusSeri
+f(0)/b/n/12 entiendas exac-
+ []
+
+LaTeX Info: Redefining \. on input line 93.
+LaTeX Info: Redefining \% on input line 93.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[74]
+LaTeX Info: Redefining \. on input line 128.
+LaTeX Info: Redefining \% on input line 128.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[75]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/16CD8969A9A84AB43F2612741BE689B152FC79AFBC3F8
+401FE7C18E071135406.pygtex)
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/BA1AAFFBF4F7D9F4886864557D990C4552FC79AFBC3F8
+401FE7C18E071135406.pygtex
+LaTeX Info: Redefining \. on input line 3.
+LaTeX Info: Redefining \% on input line 3.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[76])
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/1D3AFA2F9EBE4E9D1DF771222D986FC652FC79AFBC3F8
+401FE7C18E071135406.pygtex
+LaTeX Info: Redefining \. on input line 24.
+LaTeX Info: Redefining \% on input line 24.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[77]
+LaTeX Info: Redefining \. on input line 55.
+LaTeX Info: Redefining \% on input line 55.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[78]
+LaTeX Info: Redefining \. on input line 90.
+LaTeX Info: Redefining \% on input line 90.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[79]
+LaTeX Info: Redefining \. on input line 130.
+LaTeX Info: Redefining \% on input line 130.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[80]
+LaTeX Info: Redefining \. on input line 169.
+LaTeX Info: Redefining \% on input line 169.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[81]
+LaTeX Info: Redefining \. on input line 207.
+LaTeX Info: Redefining \% on input line 207.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[82]
+LaTeX Info: Redefining \. on input line 238.
+LaTeX Info: Redefining \% on input line 238.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[83])
+Overfull \hbox (3.41057pt too wide) in paragraph at lines 403--403
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Demostración en lenguaje natural| 
+ []
+
+
+Overfull \hbox (13.40146pt too wide) detected at line 431
+[]
+ []
+
+LaTeX Info: Redefining \. on input line 431.
+LaTeX Info: Redefining \% on input line 431.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[84]
+Overfull \hbox (8.05367pt too wide) in paragraph at lines 439--442
+[]\TU/LibertinusSerif(0)/b/n/12 Intuición geométrica: \TU/LibertinusSerif(0)/m/
+n/12 Cualquier límite propues-
+ []
+
+)
+LaTeX Info: Redefining \. on input line 24.
+LaTeX Info: Redefining \% on input line 24.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[85]
+\openout2 = `C5_Duplicar_una_sucesion_convergente.aux'.
+
+ (./C5_Duplicar_una_sucesion_convergente.tex
+Capítulo 5.
+
+Overfull \hbox (9.36034pt too wide) in paragraph at lines 1--1
+|[]\TU/LibertinusSerif(0)/b/n/24.88 Duplicar una sucesión
+ []
+
+[86
+
+
+
+
+]
+Overfull \hbox (3.22342pt too wide) in paragraph at lines 53--53
+|[]\TU/LibertinusSerif(0)/b/n/17.28 Nuevas herramientas que ne-
+ []
+
+LaTeX Info: Redefining \. on input line 61.
+LaTeX Info: Redefining \% on input line 61.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[87]
+Overfull \hbox (5.80663pt too wide) in paragraph at lines 61--65
+\TU/LibertinusSerif(0)/m/n/12 Para usar este teorema puede resultar conveniente
+ crear
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/A36EBE9771117D24406027001972CA4455C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/31BEFF87D48F6DCB5DD93E1C08D466BD55C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/CB9B86AE46EE27588AA3D74AE973CDF555C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/A1E31C7E93246153E0E4CC5343030BA155C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+Overfull \hbox (10.47435pt too wide) in paragraph at lines 72--76
+[]\TU/LibertinusSerif(0)/m/n/12 y después \TU/JuliaMono-Regular.ttf(0)/m/n/10 r
+ewrite[] [][][[]NuevoHecho[]][] \TU/LibertinusSerif(0)/m/n/12 sustituirá []\TU/
+JuliaMono-Regular.ttf(0)/m/n/10 |[]Algo[] [][]*[][] []OtraCosa[]|[]
+ []
+
+LaTeX Info: Redefining \. on input line 84.
+LaTeX Info: Redefining \% on input line 84.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[88]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/219CA1DB7040711582F3D44955ADAE0655C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 21.
+LaTeX Info: Redefining \% on input line 21.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[89]
+LaTeX Info: Redefining \. on input line 60.
+LaTeX Info: Redefining \% on input line 60.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[90]
+LaTeX Info: Redefining \. on input line 100.
+LaTeX Info: Redefining \% on input line 100.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[91]
+LaTeX Info: Redefining \. on input line 135.
+LaTeX Info: Redefining \% on input line 135.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[92]
+LaTeX Info: Redefining \. on input line 171.
+LaTeX Info: Redefining \% on input line 171.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[93])
+LaTeX Info: Redefining \. on input line 297.
+LaTeX Info: Redefining \% on input line 297.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[94]
+LaTeX Info: Redefining \. on input line 325.
+LaTeX Info: Redefining \% on input line 325.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[95]
+LaTeX Info: Redefining \. on input line 351.
+LaTeX Info: Redefining \% on input line 351.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[96])
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
- (./C1-La_historia_del_analisis_real.aux)
-(./C2-El_calculo_de_pi.aux))
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[97]
+\openout2 = `C6$_{}$Tecnicas_avanzadas_de_demostracion_y_el_teorema_del_empared
+ado.aux'.
+
+
+No file C6$_{}$Tecnicas_avanzadas_de_demostracion_y_el_teorema_del_emparedado.t
+ex.
+\openout2 = `C7_Unicidad_y_teoremas_avanzados_de_limites.aux'.
+
+(./C7_Unicidad_y_teoremas_avanzados_de_limites.tex
+Capítulo 6.
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/8BFF8606723F4993C56332DFA0BD03E755C75E2E30760
+220C9F6B633683ACC0C.pygtex) [98
+
+
+
+
+
+
+
+]
+Overfull \hbox (50.5215pt too wide) in paragraph at lines 28--28
+|[]\TU/LibertinusSerif(0)/b/n/12 Positividad del valor absoluto: \TU/JuliaMono-
+Regular.ttf(0)/b/n/12 abs_pos_of_nonzero| 
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/573EFE21698264A46E24CE3B10C638FB55C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
+(Font)              scaled to size 8.54097pt on input line 2.
+Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
+/OT:script=latn;language=dflt;" at 8.54097pt
+ -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf
+LaTeX Info: Redefining \. on input line 9.
+LaTeX Info: Redefining \% on input line 9.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[99])
+LaTeX Info: Redefining \. on input line 82.
+LaTeX Info: Redefining \% on input line 82.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[100]
+Overfull \hbox (71.50403pt too wide) detected at line 90
+[][] [] [][] [] [][] [] [][][][][] [] [][][][][] [] [][] [] [][][][][] [] [][] 
+[] [][][][][] [] [][] [] [] [] [] [] [][] [] [][][]
+ []
+
+
+Overfull \hbox (13.52806pt too wide) in paragraph at lines 103--103
+\TU/LibertinusSerif(0)/b/n/17.28 nes convergentes permanecen
+ []
+
+LaTeX Info: Redefining \. on input line 109.
+LaTeX Info: Redefining \% on input line 109.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 25.32314pt, for example:
+(fancyhdr)                \setlength{\headheight}{25.32314pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-13.32314pt}.
+
+[101]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/4E06D5E3FC222CC1B8B4174DC26A3D9855C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 5.
+LaTeX Info: Redefining \% on input line 5.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 25.32314pt, for example:
+(fancyhdr)                \setlength{\headheight}{25.32314pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-13.32314pt}.
+
+[102])
+Overfull \hbox (0.93167pt too wide) in paragraph at lines 157--159
+[]\TU/LibertinusSerif(0)/m/n/12 Por la convergencia de $[]$ hacia $[]$, existe 
+$[]$ tal que $[][][][][] []
+ []
+
+
+Overfull \hbox (73.11215pt too wide) detected at line 164
+[][][] [] [][][][][] [] [][] [] [][][][][][] [] [][][][][][] [] [][] [] [][][][
+][] [] [][][][][][] [] [][][][][] [] [][] [] [][][][][][] [] [][]
+ []
+
+LaTeX Info: Redefining \. on input line 164.
+LaTeX Info: Redefining \% on input line 164.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 25.32314pt, for example:
+(fancyhdr)                \setlength{\headheight}{25.32314pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-13.32314pt}.
+
+[103]
+Overfull \hbox (9.07993pt too wide) in paragraph at lines 179--179
+\TU/LibertinusSerif(0)/b/n/17.28 luto: Sucesiones de valores ab-
+ []
+
+LaTeX Info: Redefining \. on input line 190.
+LaTeX Info: Redefining \% on input line 190.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 25.32314pt, for example:
+(fancyhdr)                \setlength{\headheight}{25.32314pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-13.32314pt}.
+
+[104]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/1A7D264289B286EDEEAA7FBCA350BCDA55C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 9.
+LaTeX Info: Redefining \% on input line 9.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 25.32314pt, for example:
+(fancyhdr)                \setlength{\headheight}{25.32314pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-13.32314pt}.
+
+[105])
+Overfull \hbox (8.71846pt too wide) in paragraph at lines 247--247
+|[]\TU/LibertinusSerif(0)/b/n/17.28 Recíprocos de sucesiones con-
+ []
+
+LaTeX Info: Redefining \. on input line 253.
+LaTeX Info: Redefining \% on input line 253.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 25.32314pt, for example:
+(fancyhdr)                \setlength{\headheight}{25.32314pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-13.32314pt}.
+
+[106]
+LaTeX Info: Redefining \. on input line 272.
+LaTeX Info: Redefining \% on input line 272.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[107]
+LaTeX Info: Redefining \. on input line 296.
+LaTeX Info: Redefining \% on input line 296.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[108]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/01497FAFC6FB3C582F512CFEB5B527B355C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[109])
+Overfull \hbox (6.75319pt too wide) in paragraph at lines 346--349
+\TU/LibertinusSerif(0)/m/n/12 teorema \TU/JuliaMono-Regular.ttf(0)/m/n/12 Event
+uallyGeHalfLim\TU/LibertinusSerif(0)/m/n/12 , existe $[][]$ tal que $[][][][][]
+[] []
+ []
+
+
+Overfull \hbox (59.1974pt too wide) detected at line 365
+[]
+ []
+
+LaTeX Info: Redefining \. on input line 365.
+LaTeX Info: Redefining \% on input line 365.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[110]
+LaTeX Info: Redefining \. on input line 389.
+LaTeX Info: Redefining \% on input line 389.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[111]
+Overfull \hbox (0.30667pt too wide) in paragraph at lines 398--401
+\TU/LibertinusSerif(0)/m/n/12 junto completo de herramientas para los límites d
+e fun-
+ []
+
+LaTeX Info: Redefining \. on input line 425.
+LaTeX Info: Redefining \% on input line 425.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[112])
+LaTeX Info: Redefining \. on input line 27.
+LaTeX Info: Redefining \% on input line 27.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[113]
+\openout2 = `C8_Teoremas_avanzados_de_limites_e_induccion.aux'.
+
+ (./C8_Teoremas_avanzados_de_limites_e_induccion.tex
+Capítulo 7.
+
+Overfull \hbox (22.57164pt too wide) in paragraph at lines 1--1
+|[]\TU/LibertinusSerif(0)/b/n/24.88 Teoremas avanzados de
+ []
+
+[114
+
+
+
+
+]
+LaTeX Info: Redefining \. on input line 62.
+LaTeX Info: Redefining \% on input line 62.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[115]
+Overfull \hbox (0.98868pt too wide) in paragraph at lines 70--72
+[]\TU/LibertinusSerif(0)/b/n/12 Simplicio: \TU/LibertinusSerif(0)/m/n/12 Pero, 
+¿por qué funciona esto? Es decir, ¿por
+ []
+
+
+Overfull \hbox (8.34462pt too wide) in paragraph at lines 73--76
+\TU/LibertinusSerif(0)/m/n/12 propia definición de los números naturales. ¿Cómo
+ crees
+ []
+
+LaTeX Info: Redefining \. on input line 88.
+LaTeX Info: Redefining \% on input line 88.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[116]
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/2BD24D717037D7D5B2DA73EDE7D139C155C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/881D22DC85E30D7FC247F0E2288AABE055C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/750FE226723238424B49F9676756E74C55C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+LaTeX Info: Redefining \. on input line 126.
+LaTeX Info: Redefining \% on input line 126.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[117]
+\openout4 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/7DDD39E63FDB25B7B7EDF24023A11FE255C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+LaTeX Info: Redefining \. on input line 155.
+LaTeX Info: Redefining \% on input line 155.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[118]
+LaTeX Info: Redefining \. on input line 183.
+LaTeX Info: Redefining \% on input line 183.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[119]
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/8D1F1C41BDBECED06E8B948BC2A2458955C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 13.
+LaTeX Info: Redefining \% on input line 13.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[120])
+LaTeX Info: Redefining \. on input line 246.
+LaTeX Info: Redefining \% on input line 246.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[121]
+LaTeX Info: Redefining \. on input line 268.
+LaTeX Info: Redefining \% on input line 268.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[122]
+LaTeX Info: Redefining \. on input line 287.
+LaTeX Info: Redefining \% on input line 287.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[123]
+Overfull \hbox (1.3186pt too wide) in paragraph at lines 296--300
+[]\TU/LibertinusSerif(0)/m/n/12 Cuando ya tienes una hipótesis \TU/JuliaMono-Re
+gular.ttf(0)/m/n/12 h : P ∨ Q\TU/LibertinusSerif(0)/m/n/12 , puedes usar
+ []
+
+LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
+(Font)              scaled to size 11.23196pt on input line 301.
+Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
+/OT:script=latn;language=dflt;" at 11.23196pt
+ -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf
+
+Overfull \hbox (11.91846pt too wide) in paragraph at lines 303--307
+[]\TU/LibertinusSerif(0)/m/n/12 La táctica \TU/JuliaMono-Regular.ttf(0)/m/n/12 
+by_cases \TU/LibertinusSerif(0)/m/n/12 tiene la sintaxis \TU/JuliaMono-Regular.
+ttf(0)/m/n/12 by_cases h : hecho\TU/LibertinusSerif(0)/m/n/12 ,
+ []
+
+LaTeX Info: Redefining \. on input line 315.
+LaTeX Info: Redefining \% on input line 315.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[124]
+Overfull \hbox (5.07495pt too wide) in paragraph at lines 316--316
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Aplicación: Eventualmente Mayor
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/A994DF57247ABBD5F4E2925909CD00EB55C75E2E30760
+220C9F6B633683ACC0C.pygtex)
+LaTeX Info: Redefining \. on input line 346.
+LaTeX Info: Redefining \% on input line 346.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[125]
+Overfull \hbox (77.3098pt too wide) in paragraph at lines 350--353
+[]\TU/LibertinusSerif(0)/b/n/12 Caso 2: \TU/LibertinusSerif(0)/m/n/12 Si $[] []
+ []$, podemos aplicar el teorema \TU/JuliaMono-Regular.ttf(0)/m/n/12 Eventually
+GeHalfLimPos
+ []
+
+LaTeX Info: Redefining \. on input line 377.
+LaTeX Info: Redefining \% on input line 377.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[126]
+Overfull \hbox (4.94656pt too wide) in paragraph at lines 378--378
+|[]\TU/LibertinusSerif(0)/b/n/14.4 El Principio de Inducción Matemá-
+ []
+
+LaTeX Info: Redefining \. on input line 401.
+LaTeX Info: Redefining \% on input line 401.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[127]
+Overfull \hbox (33.98982pt too wide) in paragraph at lines 405--405
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Nueva Herramienta: \TU/JuliaMono-Regular.ttf
+(0)/b/n/14.4 ge_one_of_nonzero| 
+ []
+
+
+Overfull \hbox (10.61896pt too wide) in paragraph at lines 410--410
+|[]\TU/LibertinusSerif(0)/b/n/14.4 Ejemplo: Crecimiento Exponencial| 
+ []
+
+\openout3 = `Analisis_en_Lean_movil.pyg'.
+
+
+(./_minted-Analisis_en_Lean_movil/3064BC1A97E681D54CB471D3629EF6A155C75E2E30760
+220C9F6B633683ACC0C.pygtex
+LaTeX Info: Redefining \. on input line 10.
+LaTeX Info: Redefining \% on input line 10.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[128])
+LaTeX Info: Redefining \. on input line 468.
+LaTeX Info: Redefining \% on input line 468.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[129])
+LaTeX Info: Redefining \. on input line 28.
+LaTeX Info: Redefining \% on input line 28.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[130] (./Analisis_en_Lean_movil.aux
+LaTeX Info: Redefining \. on input line 25.
+LaTeX Info: Redefining \% on input line 25.
+ (./C1_La_historia_del_analisis_real.aux)
+(./C2_El_calculo_de_pi.aux) (./C3_Convergencia_de_sucesiones.aux)
+(./C4_No_convergencia.aux) (./C5_Duplicar_una_sucesion_convergente.aux)
+(./C6$_{}$Tecnicas_avanzadas_de_demostracion_y_el_teorema_del_emparedado.aux)
+(./C7_Unicidad_y_teoremas_avanzados_de_limites.aux)
+(./C8_Teoremas_avanzados_de_limites_e_induccion.aux))
 Package rerunfilecheck Info: File `Analisis_en_Lean_movil.out' has not changed.
 
-(rerunfilecheck)             Checksum: ABCF0939CC92BC8DE3AB111D5ADF18A4;2189.
+(rerunfilecheck)             Checksum: CB4B1B1044CD16014C200B58265D4FB2;23765.
 runsystem(rm Analisis_en_Lean_movil.pyg)...executed.
 
  ) ) 
 Here is how much of TeX's memory you used:
- 24351 strings out of 476191
- 481205 string characters out of 5812072
- 1034977 words of memory out of 5000000
- 44632 multiletter control sequences out of 15000+600000
- 473699 words of font info for 121 fonts, out of 8000000 for 9000
+ 24754 strings out of 476191
+ 508018 string characters out of 5812072
+ 1067875 words of memory out of 5000000
+ 44908 multiletter control sequences out of 15000+600000
+ 473771 words of font info for 130 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 91i,12n,140p,1038b,1044s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 91i,12n,140p,1038b,1065s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Analisis_en_Lean_movil.pdf (46 pages).
+Output written on Analisis_en_Lean_movil.pdf (131 pages).

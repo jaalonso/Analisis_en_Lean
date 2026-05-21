@@ -1,14 +1,113 @@
 \babel@toc {spanish}{}\relax 
-\contentsline {chapter}{\numberline {1}La historia del análisis real}{2}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Preámbulo}{2}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Introducción a Lean}{9}{section.1.2}%
-\contentsline {section}{\numberline {1.3}La táctica \texttt {rfl}}{10}{section.1.3}%
-\contentsline {section}{\numberline {1.4}La táctica \texttt {rw}}{11}{section.1.4}%
-\contentsline {section}{\numberline {1.5}La táctica \texttt {ring\_nf}}{12}{section.1.5}%
-\contentsline {section}{\numberline {1.6}La táctica \texttt {use}}{13}{section.1.6}%
-\contentsline {section}{\numberline {1.7}La táctica \texttt {intro}}{13}{section.1.7}%
-\contentsline {section}{\numberline {1.8}La táctica \texttt {specialize}}{14}{section.1.8}%
-\contentsline {section}{\numberline {1.9}El desafío táctico definitivo}{17}{section.1.9}%
-\contentsline {chapter}{\numberline {2}El cálculo de Newton del número pi}{20}{chapter.2}%
-\contentsline {section}{\numberline {2.1}La revolución matemática de 1666}{20}{section.2.1}%
-\contentsline {section}{\numberline {2.2}La definición principal}{34}{section.2.2}%
+\contentsline {chapter}{\numberline {1}La historia del análisis real}{8}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Preámbulo}{8}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Introducción a Lean}{15}{section.1.2}%
+\contentsline {section}{\numberline {1.3}La táctica \texttt {rfl}}{16}{section.1.3}%
+\contentsline {section}{\numberline {1.4}La táctica \texttt {rw}}{17}{section.1.4}%
+\contentsline {section}{\numberline {1.5}La táctica \texttt {ring\_nf}}{18}{section.1.5}%
+\contentsline {section}{\numberline {1.6}La táctica \texttt {use}}{19}{section.1.6}%
+\contentsline {section}{\numberline {1.7}La táctica \texttt {intro}}{19}{section.1.7}%
+\contentsline {section}{\numberline {1.8}La táctica \texttt {specialize}}{20}{section.1.8}%
+\contentsline {section}{\numberline {1.9}El desafío táctico definitivo}{23}{section.1.9}%
+\contentsline {chapter}{\numberline {2}El cálculo de Newton del número pi}{26}{chapter.2}%
+\contentsline {section}{\numberline {2.1}La revolución matemática de 1666}{26}{section.2.1}%
+\contentsline {section}{\numberline {2.2}La definición principal}{40}{section.2.2}%
+\contentsline {chapter}{\numberline {3}Convergencia de sucesiones}{52}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Más sobre sucesiones}{52}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Nivel 1: La propiedad arquimediana}{52}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}La estrategia de demostración en lenguaje natural}{53}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Los desafíos de la implementación en Lean}{54}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Nuevas herramientas que necesitarás}{56}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Demostraciones en Lean}{56}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Demostración en lenguaje natural de la propiedad arquimediana}{59}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Revisión de errores comunes}{60}{subsection.3.2.6}%
+\contentsline {section}{\numberline {3.3}Nivel 2: Nuestro primer límite real}{61}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}El objetivo: Demostrar que $1/n \to 0$}{61}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Recordatorio: La definición de convergencia de sucesiones}{61}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Estrategia de demostración en lenguaje natural}{62}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Los desafíos de la implementación en Lean}{63}{subsection.3.3.4}%
+\contentsline {subsubsection}{\numberline {3.3.4.1}Desafío 1: Multiplicación cruzada de fracciones}{63}{subsubsection.3.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.3.4.2}Desafío 2: Aritmética lineal}{64}{subsubsection.3.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.3.4.3}Desafío 3: Casting explícito de tipos}{64}{subsubsection.3.3.4.3}%
+\contentsline {subsubsection}{\numberline {3.3.4.4}Desafío 4: Casting en aplicaciones de tácticas}{64}{subsubsection.3.3.4.4}%
+\contentsline {subsection}{\numberline {3.3.5}Nuevas herramientas que necesitarás}{65}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.6}Consejos profesionales para este nivel}{65}{subsection.3.3.6}%
+\contentsline {subsection}{\numberline {3.3.7}Demostración en Lean}{66}{subsection.3.3.7}%
+\contentsline {subsection}{\numberline {3.3.8}Lo que acabamos de lograr}{70}{subsection.3.3.8}%
+\contentsline {chapter}{\numberline {4}No convergencia}{72}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Un gran debate}{72}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Paso 2: Solución en Lean}{77}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Paso 3: Demostración en lenguaje natural}{84}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Demostración en lenguaje natural}{84}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Ideas clave}{85}{subsection.4.3.2}%
+\contentsline {chapter}{\numberline {5}Duplicar una sucesión convergente}{86}{chapter.5}%
+\contentsline {section}{\numberline {5.1}El desafío de escalar en la fábrica}{86}{section.5.1}%
+\contentsline {section}{\numberline {5.2}La configuración matemática}{87}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Idea Clave: Escalado Inverso de la Tolerancia}{87}{subsection.5.2.1}%
+\contentsline {section}{\numberline {5.3}Nuevas herramientas que necesitarás}{88}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Valor absoluto de productos}{88}{subsection.5.3.1}%
+\contentsline {section}{\numberline {5.4}Enfoque estratégico}{88}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Solución en Lean}{89}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Prueba en lenguaje natural}{94}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Enunciado del teorema}{95}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Prueba}{95}{subsection.5.6.2}%
+\contentsline {section}{\numberline {5.7}Por qué importa este patrón}{96}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}La estrategia elegante}{97}{subsection.5.7.1}%
+\contentsline {chapter}{\numberline {6}Unicidad y teoremas avanzados de límites}{98}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Unicidad de límites}{98}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Nuevas herramientas}{99}{subsection.6.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.1.1}Prueba por contradicción: \texttt {by\_contra}}{99}{subsubsection.6.1.1.1}%
+\contentsline {subsubsection}{\numberline {6.1.1.2}Positividad del valor absoluto: \texttt {abs\_pos\_of\_nonzero}}{99}{subsubsection.6.1.1.2}%
+\contentsline {subsection}{\numberline {6.1.2}Enunciado matemático}{99}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Demostración en Lean}{99}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}Prueba en lenguaje natural}{100}{subsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.1.5}Por qué importa la unicidad}{101}{subsection.6.1.5}%
+\contentsline {section}{\numberline {6.2}Eventualmente: Las sucesiones convergentes permanecen cerca de su límite}{101}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Enunciado matemático}{102}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Enfoque estratégico}{102}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Demostración en Lean}{103}{subsection.6.2.3}%
+\contentsline {subsection}{\numberline {6.2.4}Prueba en lenguaje natural}{103}{subsection.6.2.4}%
+\contentsline {subsection}{\numberline {6.2.5}Aplicaciones}{104}{subsection.6.2.5}%
+\contentsline {section}{\numberline {6.3}Continuidad del valor absoluto: Sucesiones de valores absolutos}{104}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Nuevas herramientas}{105}{subsection.6.3.1}%
+\contentsline {subsubsection}{\numberline {6.3.1.1}Propiedad de Lipschitz: \texttt {abs\_Lipschitz}}{105}{subsubsection.6.3.1.1}%
+\contentsline {subsection}{\numberline {6.3.2}Enunciado matemático}{105}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Demostración en Lean}{105}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Prueba en lenguaje natural}{106}{subsection.6.3.4}%
+\contentsline {subsection}{\numberline {6.3.5}Por qué importa este resultado}{106}{subsection.6.3.5}%
+\contentsline {section}{\numberline {6.4}Recíprocos de sucesiones convergentes}{107}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Nuevas herramientas}{107}{subsection.6.4.1}%
+\contentsline {subsubsection}{\numberline {6.4.1.1}Valor absoluto de cocientes: \texttt {abs\_div}}{107}{subsubsection.6.4.1.1}%
+\contentsline {subsubsection}{\numberline {6.4.1.2}No nulo a partir de valor absoluto positivo: \texttt {nonzero\_of\_abs\_pos}}{108}{subsubsection.6.4.1.2}%
+\contentsline {subsection}{\numberline {6.4.2}Enunciado matemático}{108}{subsection.6.4.2}%
+\contentsline {subsection}{\numberline {6.4.3}Enfoque estratégico}{108}{subsection.6.4.3}%
+\contentsline {subsection}{\numberline {6.4.4}Demostración en Lean}{109}{subsection.6.4.4}%
+\contentsline {subsection}{\numberline {6.4.5}Prueba en lenguaje natural}{110}{subsection.6.4.5}%
+\contentsline {subsection}{\numberline {6.4.6}Prueba conseguida}{111}{subsection.6.4.6}%
+\contentsline {subsection}{\numberline {6.4.7}Lo que lograste}{111}{subsection.6.4.7}%
+\contentsline {subsection}{\numberline {6.4.8}Aplicaciones y extensiones}{112}{subsection.6.4.8}%
+\contentsline {subsection}{\numberline {6.4.9}Dominio de la técnica}{113}{subsection.6.4.9}%
+\contentsline {chapter}{\numberline {7}Teoremas avanzados de límites e inducción}{114}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Introducción: Inducción Matemática}{114}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Jefe Final: Recíprocos de Sucesiones Convergentes}{119}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}El Marco Matemático}{119}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Nuevas Herramientas}{119}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Enfoque Estratégico}{120}{subsection.7.2.3}%
+\contentsline {subsection}{\numberline {7.2.4}Solución en Lean}{120}{subsection.7.2.4}%
+\contentsline {subsection}{\numberline {7.2.5}Demostración en Lenguaje Natural}{122}{subsection.7.2.5}%
+\contentsline {subsection}{\numberline {7.2.6}Aplicaciones y Extensiones}{123}{subsection.7.2.6}%
+\contentsline {section}{\numberline {7.3}Por Casos: Análisis de Casos Sin Hipótesis}{124}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}La Táctica \texttt {by\_cases}}{124}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Aplicación: Eventualmente Mayor que la Mitad del Límite}{125}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Solución en Lean}{125}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}Demostración en Lenguaje Natural}{126}{subsection.7.3.4}%
+\contentsline {subsection}{\numberline {7.3.5}Importancia}{126}{subsection.7.3.5}%
+\contentsline {section}{\numberline {7.4}Inducción Matemática}{127}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}El Principio de Inducción Matemática}{127}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}La Táctica \texttt {induction'}}{127}{subsection.7.4.2}%
+\contentsline {subsection}{\numberline {7.4.3}Nueva Herramienta: \texttt {ge\_one\_of\_nonzero}}{128}{subsection.7.4.3}%
+\contentsline {subsection}{\numberline {7.4.4}Ejemplo: Crecimiento Exponencial}{128}{subsection.7.4.4}%
+\contentsline {subsection}{\numberline {7.4.5}Solución en Lean}{128}{subsection.7.4.5}%
+\contentsline {subsection}{\numberline {7.4.6}Demostración en Lenguaje Natural}{129}{subsection.7.4.6}%
+\contentsline {subsection}{\numberline {7.4.7}Aplicaciones}{129}{subsection.7.4.7}%
+\contentsline {subsection}{\numberline {7.4.8}Idea Clave}{130}{subsection.7.4.8}%

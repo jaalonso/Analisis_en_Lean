@@ -11,7 +11,9 @@
 %%% 1. Estilo de teoremas, lemas, etc. (texto en cursiva)
 \theoremstyle{plain}
 \newtheorem{theorem}{Teorema}[section]
+\newtheorem{teorema}{Teorema}[section]
 \newtheorem{lema}[theorem]{Lema}
+\newtheorem{lemma}[theorem]{Lema}
 \newtheorem{corolario}[theorem]{Corolario}
 \newtheorem{proposicion}[theorem]{Proposición}
 
@@ -23,11 +25,24 @@
 %%% 3. Estilo de notas (título en cursiva, texto normal)
 \theoremstyle{remark}
 \newtheorem{nota}[theorem]{Nota}
+\newtheorem{claim}[theorem]{Nota}
 
 %%% 4. Personalización de la demostración
 \addto\captionsspanish{
   \renewcommand{\proofname}{\textbf{Demostración:}}
 }
+
+% ── Macros matemáticos ────────────────────────────────────────────────────────
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\abs}[1]{\left|#1\right|}
+
+% Definir \square para el final de demostraciones
+\newcommand{\square}{\qedsymbol}
+
+% ---------- Diálogo ----------
+\newcommand{\socrates}[1]{\medskip\noindent\textbf{SÓCRATES:} #1}
+\newcommand{\simplicio}[1]{\medskip\noindent\textbf{SIMPLICIO:} #1}
 
 %%% Local Variables:
 %%% mode: latex

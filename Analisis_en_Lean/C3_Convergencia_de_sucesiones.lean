@@ -124,8 +124,7 @@ variable (a : ℕ → ℝ)
 -- Sea ε ∈ ℝ tal que ε > 0. Por la propiedad arquimediana, existe N ∈ ℕ
 -- tal que
 --    1 / ε < N                                                      (1)
--- Veamos que, para todo n ≥ N, |a(n) - 0| < ε. En
--- efecto, sea
+-- Veamos que, para todo n ≥ N, |a(n) - 0| < ε. En efecto, sea
 --    n ≥ N                                                          (2)
 -- Entonces,
 --    |a(n) - 0| = |1/n - 0|
