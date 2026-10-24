@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Statement}\PYG{+w}{ }\PYG{n}{Subseq\PYGZus{}of\PYGZus{}Iterate}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{σ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{hσ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{σ}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n₀}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{Subseq}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{↦}\PYG{+w}{ }\PYG{n}{σ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{by}
+\PYG{+w}{  }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{subseq\PYGZus{}of\PYGZus{}succ}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hσ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{σ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{σ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{σ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{σ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{n+nb+bp}{+}\PYG{l+m+mi}{1}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{by}\PYG{+w}{ }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{succ\PYGZus{}iterate}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{f}\PYG{o}{]}\PYG{+w}{ }\PYG{k}{at}\PYG{+w}{ }\PYG{n}{hσ}
+\PYG{+w}{  }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{hσ}
+\end{Verbatim}

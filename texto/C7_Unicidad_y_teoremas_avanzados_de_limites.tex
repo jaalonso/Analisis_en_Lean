@@ -7,7 +7,7 @@ convergen a un límite único. Esto puede parecer obvio a primera vista: ¿cómo
 podría una sucesión acercarse arbitrariamente a dos números distintos? Sin
 embargo, como ocurre con muchos hechos intuitivos en análisis, la prueba
 rigurosa requiere un razonamiento cuidadoso con nuestras definiciones
-épsilon-$N$.
+épsilon--$k$.
 
 La clave para demostrar la unicidad es la \emph{prueba por contradicción}.
 Asumiremos que una sucesión converge a dos límites distintos $L$ y $M$, y
@@ -40,31 +40,204 @@ $M$, entonces $L = M$.
 
 \subsection{Demostración en Lean}
 
-\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
-theorem LimUnique (a : ℕ → ℝ) (L M : ℝ)
-    (aToL : SeqLim a L) (aToM : SeqLim a M) :
-    L = M := by
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si una sucesión aₙ converge tanto a L como a M,
+-- entonces L = M.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Tenemos que demostrar que si aₙ es una sucesión y L y M son límites de
+-- aₙ, entonces L = M. Lo haremos por contradicción. Para ello,
+-- supongamos que
+--    L ≠ M.                                                         (1)
+-- Sea
+--    ε = |L - M|                                                    (2)
+-- Tenemos que demostrar una contradicción, para lo que basta probar
+-- que ε < ε.
+--
+-- De (1) se sigue que
+--    ε = |L - M| > 0
+-- de donde
+--    ε/2 > 0
+-- Teniendo en cuenta que aₙ converge a L y a M, y usando ε/2, existen
+-- k₁ y k₂ tales que
+--    ∀ n ≥ k₁, |aₙ - L| < ε/2                                       (3)
+--    ∀ n ≥ k₂, |aₙ - M| < ε/2                                       (4)
+-- Sea
+--    k = máx(k₁, k₂)                                                (5)
+-- Entonces,
+--    k ≥ k₁                                                         (6)
+--    k ≥ k₂                                                         (7)
+-- De (3) y (5), se tiene
+--    |aₖ - L| < ε/2                                                 (8)
+-- De (4) y (7), se tiene
+--    |aₖ - M| < ε/2                                                 (9)
+-- De lo anterior, se tiene que
+--    ε = |L - M|                 [por (2)]
+--      = |(L - M) + (aₖ - aₖ)|
+--      = |(L - aₖ) + (aₖ - M)|
+--      ≤ |L - aₖ| + |aₖ - M|
+--      = |aₖ - L| + |aₖ - M|
+--      < ε/2 + ε/2               [por (8) y (9)]
+--      = ε
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+variable {a : ℕ → ℝ}
+variable {L M : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (hL : LimSuc a L)
+  (hM : LimSuc a M)
+  : L = M :=
+by
   by_contra h
-  have f0 : L - M ≠ 0 := by bound
-  have f1 : 0 < |L - M| := by apply abs_pos_of_nonzero f0
-  have f2 : 0 < |L - M| / 2 := by bound
-  specialize aToL (|L - M| / 2) f2
-  specialize aToM (|L - M| / 2) f2
-  choose N1 hN1 using aToL
-  choose N2 hN2 using aToM
-  have f3 : N1 ≤ N1 + N2 := by bound
-  have f4 : N2 ≤ N1 + N2 := by bound
-  specialize hN1 (N1 + N2) f3
-  specialize hN2 (N1 + N2) f4
-  have f5 : |L - M| =
-    |(L - a (N1 + N2)) + (a (N1 + N2) - M)| := by ring_nf
-  have f6 : |(L - a (N1 + N2)) + (a (N1 + N2) - M)| ≤
-    |(L - a (N1 + N2))| + |(a (N1 + N2) - M)| := by apply abs_add
-  have f7 : |(L - a (N1 + N2))| =
-    |-(a (N1 + N2) - L)| := by ring_nf
-  have f8 : |-(a (N1 + N2) - L)| =
-    |(a (N1 + N2) - L)| := by apply abs_neg
-  linarith [f5, f6, f7, f8, hN1, hN2]
+  -- h : ¬L = M
+  -- ⊢ False
+  let ε := |L - M|
+  apply lt_irrefl ε
+  -- ⊢ ε < ε
+  obtain ⟨k1, hk1⟩ := hL (ε/2) (by grind)
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε / 2
+  obtain ⟨k2, hk2⟩ := hM (ε/2) (by grind)
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - M| < ε / 2
+  let k := max k1 k2
+  calc ε = |L - M|                 := rfl
+       _ = |(L - M) + (a k - a k)| := by grind
+       _ = |(L - a k) + (a k - M)| := by grind
+       _ ≤ |L - a k| + |a k - M|   := by grind
+       _ = |a k - L| + |a k - M|   := by grind
+       _ < ε/2 + ε/2               := by grind
+       _ = ε                       := by grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (hL : LimSuc a L)
+  (hM : LimSuc a M)
+  : L = M :=
+by
+  by_contra h
+  -- h : ¬L = M
+  -- ⊢ False
+  let ε := |L - M|
+  apply lt_irrefl ε
+  -- ⊢ ε < ε
+  obtain ⟨k1, hk1⟩ := hL (ε/2) (by grind)
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε / 2
+  obtain ⟨k2, hk2⟩ := hM (ε/2) (by grind)
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - M| < ε / 2
+  let k := max k1 k2
+  calc ε = |(L - a k) + (a k - M)| := by grind
+       _ < ε                       := by grind
+
+-- 3ª demostración
+-- ===============
+
+example
+  (hL : LimSuc a L)
+  (hM : LimSuc a M)
+  : L = M :=
+by
+  by_contra h
+  -- h : ¬L = M
+  -- ⊢ False
+  let ε := |L - M|
+  apply lt_irrefl ε
+  -- ⊢ ε < ε
+  have h1 : 0 < ε/2 := half_pos (abs_sub_pos.mpr h)
+  obtain ⟨k1, hk1⟩ := hL (ε/2) h1
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε / 2
+  obtain ⟨k2, hk2⟩ := hM (ε/2) h1
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - M| < ε / 2
+  let k := max k1 k2
+  have h2 : k ≥ k1 := le_max_left k1 k2
+  have h3 : k ≥ k2 := le_max_right k1 k2
+  have h4 : |a k - L| < ε/2 := hk1 k h2
+  have h5 : |a k - M| < ε/2 := hk2 k h3
+  calc ε = |L - M|                 := rfl
+       _ = |(L - M) + (a k - a k)| := by ring_nf
+       _ = |(L - a k) + (a k - M)| := by ring_nf
+       _ ≤ |L - a k| + |a k - M|   := abs_add_le (L - a k) (a k - M)
+       _ = |a k - L| + |a k - M|   := by congr 1 ; exact abs_sub_comm L (a k)
+       _ < ε/2 + ε/2               := add_lt_add h4 h5
+       _ = ε                       := by ring
+
+-- 4ª demostración
+-- ===============
+
+example
+  (hL : LimSuc a L)
+  (hM : LimSuc a M)
+  : L = M :=
+by
+  by_contra h
+  -- h : ¬L = M
+  -- ⊢ False
+  let ε := |L - M|
+  apply lt_irrefl ε
+  -- ⊢ ε < ε
+  have h1 : 0 < ε/2 := half_pos (abs_sub_pos.mpr h)
+  obtain ⟨k1, hk1⟩ := hL (ε/2) h1
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε / 2
+  obtain ⟨k2, hk2⟩ := hM (ε/2) h1
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - M| < ε / 2
+  let k := max k1 k2
+  have h2 : k ≥ k1 := le_max_left k1 k2
+  have h3 : k ≥ k2 := le_max_right k1 k2
+  have h4 : |a k - L| < ε/2 := hk1 k h2
+  have h5 : |a k - M| < ε/2 := hk2 k h3
+  calc ε = |L - M|                 := rfl
+       _ = |(L - M) + 0|           := congrArg abs (add_zero (L - M)).symm
+       _ = |(L - M) + (a k - a k)| := congrArg (|(L - M) + ·|) (sub_self (a k)).symm
+       _ = |(L - a k) + (a k - M)| := congrArg abs (by ring)
+       _ ≤ |L - a k| + |a k - M|   := abs_add_le (L - a k) (a k - M)
+       _ = |a k - L| + |a k - M|   := congrArg (· + |a k - M|) (abs_sub_comm L (a k))
+       _ < ε/2 + ε/2               := add_lt_add h4 h5
+       _ = ε                       := add_halves ε
+
+-- Lemas usados
+-- ============
+
+namespace Lemas
+
+variable (a b c d : ℝ)
+variable (f : ℝ → ℝ)
+#check (abs_add_le a b : |a + b| ≤ |a| + |b|)
+#check (abs_sub_comm a b : |a - b| = |b - a|)
+#check (abs_sub_pos : 0 < |a - b| ↔ a ≠ b)
+#check (add_halves a : a / 2 + a / 2 = a)
+#check (add_lt_add : a < b → c < d → a + c < b + d)
+#check (add_zero a : a + 0 = a)
+#check (congrArg f : a = b → f a = f b)
+#check (half_pos : a > 0 → a / 2 > 0)
+#check (le_max_left a b : a ≤ max a b)
+#check (le_max_right a b : b ≤ max a b)
+#check (lt_irrefl a : ¬a < a)
+#check (sub_ne_zero_of_ne : a ≠ b → a - b ≠ 0)
+#check (sub_self a : a - a = 0)
+
+end Lemas
 \end{minted}
 
 \subsection{Prueba en lenguaje natural}
@@ -73,21 +246,22 @@ theorem LimUnique (a : ℕ → ℝ) (L M : ℝ)
 Supongamos, por contradicción, que $L \neq M$. Entonces $L - M \neq 0$, por
 lo que $|L - M| > 0$, y por tanto $\varepsilon := |L - M|/2 > 0$.
 
-Como $a(n) \to L$, existe $N_1$ tal que $|a(n) - L| < \varepsilon$ para todo
-$n \geq N_1$. Como $a(n) \to M$, existe $N_2$ tal que $|a(n) - M| <
-\varepsilon$ para todo $n \geq N_2$.
+Como $a(n) \to L$, existe $k_1$ tal que $|a(n) - L| < \varepsilon/2$ para todo
+$n \geq k_1$. Como $a(n) \to M$, existe $k_2$ tal que $|a(n) - M| <
+\varepsilon/2$ para todo $n \geq k_2$.
 
-Sea $N = N_1 + N_2$. Para $n = N$ tenemos simultáneamente $|a(N) - L| <
-\varepsilon$ y $|a(N) - M| < \varepsilon$. Observemos que:
+Sea $k = k_1 + k_2$. Para $n = k$ tenemos simultáneamente $|a(k) - L| <
+\varepsilon$ y $|a(k) - M| < \varepsilon$. Observemos que:
 \[
-  |L - M| = |(L - a(N)) + (a(N) - M)|.
+  |L - M| = |(L - a(k)) + (a(k) - M)|.
 \]
 Por la desigualdad triangular:
-\[
-  |L - M| \leq |L - a(N)| + |a(N) - M|
-           = |a(N) - L| + |a(N) - M|
-           < \varepsilon + \varepsilon = |L - M|.
-\]
+\begin{align*}
+  |L - M| &\leq |L - a(k)| + |a(k) - M| \\
+          &= |a(k) - L| + |a(k) - M| \\
+          &< \varepsilon/2 + \varepsilon/2               \\
+          &= |L - M|.
+\end{align*}
 Esto nos da $|L - M| < |L - M|$, lo cual es una contradicción. Por tanto,
 $L = M$.
 \end{proof}
@@ -100,7 +274,7 @@ límite, y garantiza que nuestra noción de convergencia está bien definida. Si
 la unicidad, muchos teoremas y técnicas estándar fallarían o requerirían
 modificaciones sustanciales.
 
-\section{Eventualmente: Las sucesiones convergentes permanecen cerca de su límite}
+\section{Las sucesiones convergentes a un límite no nulo, eventualmente se alejan de cero}
 
 Cuando una sucesión converge a un límite distinto de cero, no solo se acerca
 arbitrariamente a ese límite, sino que \emph{eventualmente} también se aleja
@@ -116,7 +290,7 @@ $L$ y reducirse hacia cero.
 
 \begin{theorem}
 Si $a : \mathbb{N} \to \mathbb{R}$ converge a $L$ con $L \neq 0$, entonces
-existe $N$ tal que para todo $n \geq N$ se tiene $|a(n)| \geq |L|/2$.
+existe $k$ tal que para todo $n \geq k$ se tiene $|a(n)| \geq |L|/2$.
 \end{theorem}
 
 \subsection{Enfoque estratégico}
@@ -129,24 +303,175 @@ que $|a(n)|$ es al menos $|L|/2$.
 
 \subsection{Demostración en Lean}
 
-\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
-theorem EventuallyGeHalfLim (a : ℕ → ℝ) (L : ℝ)
-    (aToL : SeqLim a L) (LneZero : L ≠ 0) :
-    ∃ N, ∀ n ≥ N, |L| / 2 ≤ |a n| := by
-  specialize aToL (|L| / 2)
-  have : 0 < |L| := by apply abs_pos_of_nonzero LneZero
-  have : 0 < |L| / 2 := by bound
-  specialize aToL this
-  choose N hN using aToL
-  use N
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si una sucesión converge a un límite no nulo, entonces
+-- sus términos están eventualmente acotados inferiormente por la mitad
+-- del valor absoluto del límite; es decir, si una sucesión a converge a
+-- L con L ≠ 0, entonces existe k tal que para todo n ≥ k se tiene que
+-- |aₙ| ≥ |L|/2.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Puesto que L ≠ 0, se tiene que
+--    |L| / 2 > 0
+-- y, como a converge a L, existe un k tal que
+--    ∀ n ≥ k, |aₙ - L| < |L| / 2                                    (1)
+-- Veamos que
+--    ∀ n ≥ k, |aₙ| ≥ |L|/2.
+-- En efecto, sea n ≥ k. Entonces, por (1),
+--    |aₙ - L| < |L| / 2                                             (2)
+-- Además,
+--    |L| = |aₙ + (L - aₙ)|
+--        ≤ |aₙ| + |L - aₙ|
+--        = |aₙ| + |-(aₙ - L)|
+--        = |aₙ| + |aₙ - L|
+--        ≤ |aₙ| + |L| / 2      [por (2)]
+-- Luego,
+--    |L| ≤ |aₙ| + |L| / 2
+-- y, por tanto,
+--    |aₙ| ≥ |L|/2
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+variable {a : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  obtain ⟨k, hk⟩ := ha (|L| / 2) (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+  use k
+  -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
   intro n hn
-  specialize hN n hn
-  have l1 : |L| = |a n + (L - a n)| := by ring_nf
-  have l2 : |a n + (L - a n)| ≤ |a n| + |L - a n| := by
-    apply abs_add
-  have l3 : |L - a n| = |-(a n - L)| := by ring_nf
-  have l4 : |-(a n - L)| = |(a n - L)| := by apply abs_neg
-  linarith [l1, l2, l3, l4, hN]
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |L| / 2 ≤ |a n|
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k,  |a n| ≥ |L| / 2 :=
+by
+  obtain ⟨k, hk⟩ := ha (|L| / 2) (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+  use k
+  -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |L| / 2 ≤ |a n|
+  have h3 : |a n - L| < |L| / 2 := hk n hn
+  have h4 : |L| ≤ |a n| + |L| / 2 := by
+    calc |L|
+         = |a n + (L - a n)|    := by grind
+       _ ≤ |a n| + |L - a n|    := by grind
+       _ = |a n| + |-(a n - L)| := by grind
+       _ = |a n| + |a n - L|    := by grind
+       _ ≤ |a n| + |L| / 2      := by grind
+  grind
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  obtain ⟨k, hk⟩ := ha (|L| / 2) (by positivity)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+  use k
+  -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |L| / 2 ≤ |a n|
+  have h3 : |a n - L| < |L| / 2 := hk n hn
+  have h4 : |L| ≤ |a n| + |L| / 2 := by
+    calc |L|
+         = |a n + (L - a n)|    := by ring_nf
+       _ ≤ |a n| + |L - a n|    := abs_add_le (a n) (L - a n)
+       _ = |a n| + |-(a n - L)| := by ring_nf
+       _ = |a n| + |a n - L|    := by congr 1 ; exact abs_neg (a n - L)
+       _ ≤ |a n| + |L| / 2      := by gcongr
+  linarith [h4]
+
+-- 4ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  have h1 : 0 < |L| := abs_pos.mpr hL
+  have h2 : 0 < |L| / 2 := half_pos h1
+  obtain ⟨k, hk⟩ := ha (|L| / 2) h2
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+  use k
+  -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |L| / 2 ≤ |a n|
+  have h3 : |a n - L| < |L| / 2 := hk n hn
+  have h4 : |L| ≤ |a n| + |L| / 2 := by calc
+    |L| = |a n + (L - a n)|    := by ring_nf
+      _ ≤ |a n| + |L - a n|    := abs_add_le (a n) (L - a n)
+      _ = |a n| + |-(a n - L)| := congrArg (|a n| + |·|) (neg_sub (a n) L).symm
+      _ = |a n| + |a n - L|    := congrArg (|a n| + ·) (abs_neg (a n - L))
+      _ ≤ |a n| + |L| / 2      := add_le_add_right (le_of_lt h3) |a n|
+  calc |L| / 2
+       = |L| - |L| / 2 := (sub_half |L|).symm
+     _ ≤ |a n|         := tsub_le_iff_right.mpr h4
+
+-- 5ª demostración
+-- ===============
+
+lemma EventualmenteMayorIgMitadAbsLimitePos
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  obtain ⟨k, hk⟩ := ha (|L| / 2) (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+  refine ⟨k, fun _ _ => by grind⟩
+
+-- Lemas usados
+-- ============
+
+variable (x y z : ℝ)
+#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+#check (abs_neg x : |(-x)| = |x|)
+#check (abs_pos : 0 < |x| ↔ x ≠ 0)
+#check (add_le_add_right : y ≤ z → ∀ x, x + y ≤ x + z)
+#check (half_pos : 0 < x → 0 < x / 2)
+#check (neg_sub x y : -(x - y) = y - x)
+#check (sub_half x : x - x / 2 = x / 2)
+#check (tsub_le_iff_right : x - y ≤ z ↔ x ≤ z + y)
 \end{minted}
 
 \subsection{Prueba en lenguaje natural}
@@ -154,14 +479,16 @@ theorem EventuallyGeHalfLim (a : ℕ → ℝ) (L : ℝ)
 \begin{proof}
 Como $L \neq 0$, tenemos $|L| > 0$, y por tanto $\varepsilon := |L|/2 > 0$.
 
-Por la convergencia de $a$ hacia $L$, existe $N$ tal que
-$|a(n) - L| < |L|/2$ para todo $n \geq N$.
+Por la convergencia de $a$ hacia $L$, existe $k$ tal que
+$|a(n) - L| < |L|/2$ para todo $n \geq k$.
 
-Para cualquier $n \geq N$ tenemos:
-\[
-  |L| = |a(n) + (L - a(n))| \leq |a(n)| + |L - a(n)|
-      = |a(n)| + |a(n) - L| < |a(n)| + \frac{|L|}{2}.
-\]
+Para cualquier $n \geq k$ tenemos:
+\begin{align*}
+  |L| &= |a(n) + (L - a(n))|     \\
+      &\leq |a(n)| + |L - a(n)|     \\
+      &= |a(n)| + |a(n) - L|     \\
+      &< |a(n)| + \frac{|L|}{2}. \\
+\end{align*}
 Reordenando:
 \[
   |L| - \frac{|L|}{2} < |a(n)|,
@@ -199,39 +526,215 @@ denomina \emph{desigualdad triangular inversa} para valores absolutos.
 \subsection{Enunciado matemático}
 
 \begin{theorem}
-Si $a : \mathbb{N} \to \mathbb{R}$ converge a $L$, y $b : \mathbb{N} \to
+Si $a : \mathbb{N} \to \mathbb{R}$ converge a $L$ y $b : \mathbb{N} \to
 \mathbb{R}$ se define por $b(n) = |a(n)|$ para todo $n$, entonces $b$
 converge a $|L|$.
 \end{theorem}
 
 \subsection{Demostración en Lean}
 
-\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
-theorem AbsLim (a : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
-    (b : ℕ → ℝ) (bEqAbsa : ∀ n, b n = |a n|) :
-    SeqLim b |L| := by
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si aₙ converge a L, entonces |aₙ| converge a |L|.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea bₙ = |aₙ|, para todo n. Tenemos que demostrar que bₙ converge a
+-- |L|. Para ello, sea ε > 0 y tenemos que demostrar que existe un k tal
+-- que,
+--    ∀ n ≥ k, |bₙ - |L|| < ε                                        (1)
+--
+-- Puesto que aₙ converge a L, existe un k tal que,
+--    ∀ n ≥ k, |aₙ - L| < ε                                          (2)
+-- Veamos que para dicho k se cumple (1). En efecto, sea
+--    n ≥ k.                                                         (3)
+-- Entonces,
+--    |bₙ - |L|| = ||aₙ| - |L||
+--               ≤ |aₙ - L|     [por la desigualdad triangular inversa]
+--               < ε            [por (2) y (3)]
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+variable {a b : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hb : ∀ n, b n = |a n|)
+  : LimSuc b |L| :=
+by
   intro ε hε
-  specialize aToL ε hε
-  choose N hN using aToL
-  use N
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - |L|| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - |L|| < ε
   intro n hn
-  specialize hN n hn
-  specialize bEqAbsa n
-  rewrite [bEqAbsa]
-  have : |(|a n|) - (|L|)| ≤ |a n - L| := by apply abs_Lipschitz
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - |L|| < ε
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hb : ∀ n, b n = |a n|)
+  : LimSuc b |L| :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - |L|| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < ε
+  refine ⟨k, fun _ _ => by grind⟩
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hb : ∀ n, b n = |a n|)
+  : LimSuc b |L| :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - |L|| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - |L|| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - |L|| < ε
+  calc |b n - (|L|)|
+       = |(|a n|) - (|L|)| := by grind
+     _ ≤ |a n - L|         := by grind
+     _ < ε                 := by grind
+
+-- 4ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hb : ∀ n, b n = |a n|)
+  : LimSuc b |L| :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - |L|| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - |L|| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - |L|| < ε
+  calc |b n - (|L|)|
+       = |(|a n|) - (|L|)| := by rw [hb n]
+     _ ≤ |a n - L|         := abs_abs_sub_abs_le (a n) L
+     _ < ε                 := hk n hn
+
+-- 5ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hb : ∀ n, b n = |a n|)
+  : LimSuc b |L| :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - |L|| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - |L|| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - |L|| < ε
+  calc |b n - (|L|)|
+       = |(|a n|) - (|L|)| := congrArg (|· - (|L|)|) (hb n)
+     _ ≤ |a n - L|         := abs_abs_sub_abs_le (a n) L
+     _ < ε                 := hk n hn
+
+-- 6ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hb : ∀ n, b n = |a n|)
+  : LimSuc b |L| :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - |L|| < ε
+  specialize ha ε hε
+  -- ha : ∃ k, ∀ n ≥ k, |a n - L| < ε
+  choose k hk using ha
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - |L|| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - |L|| < ε
+  specialize hk n hn
+  -- hk : |a n - L| < ε
+  specialize hb n
+  -- hb : b n = |a n|
+  rewrite [hb]
+  -- ⊢ ||a n| - |L|| < ε
+  have : |(|a n|) - (|L|)| ≤ |a n - L| := abs_abs_sub_abs_le (a n) L
   bound
+
+-- Lemas usados
+-- ============
+
+variable (x y : ℝ)
+#check (abs_abs_sub_abs_le x y : |(|x|) - (|y|)| ≤ |x - y|)
 \end{minted}
 
 \subsection{Prueba en lenguaje natural}
 
 \begin{proof}
-Sea $\varepsilon > 0$ dado. Como $a(n) \to L$, existe $N$ tal que
-$|a(n) - L| < \varepsilon$ para todo $n \geq N$.
+Sea $\varepsilon > 0$ dado. Como $a(n) \to L$, existe $k$ tal que
+$|a(n) - L| < \varepsilon$ para todo $n \geq k$.
 
-Para cualquier $n \geq N$:
-\[
-  |b(n) - |L|| = \big||a(n)| - |L|\big| \leq |a(n) - L| < \varepsilon,
-\]
+Para cualquier $n \geq k$:
+\begin{align*}
+  |b(n) - |L|| &= \big||a(n)| - |L|\big| \\
+               &\leq |a(n) - L|             \\
+               &< \varepsilon,
+\end{align*}
+
 donde hemos usado la propiedad de Lipschitz del valor absoluto. Por tanto
 $b(n) \to |L|$.
 \end{proof}
@@ -297,71 +800,398 @@ pueden ser difíciles de acotar directamente. Los pasos clave son:
 
 \subsection{Demostración en Lean}
 
-\begin{minted}[frame=single, linenos, fontsize=\small]{lean}
-theorem InvLim (a : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
-    (LneZero : L ≠ 0) (b : ℕ → ℝ)
-    (bEqInva : ∀ n, b n = 1 / a n) :
-    SeqLim b (1 / L) := by
-  choose NhalfL hNhalfL using
-    EventuallyGeHalfLim a L aToL LneZero
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si aₙ converge a L con L ≠ 0, entonces 1/aₙ converge a
+-- 1/L.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea bₙ la sucesión definida por
+--    ∀ n, bₙ = 1/aₙ                                               (1)
+-- Tenemos que demostrar que bₙ converge a 1/L. Para ello, sea ε > 0
+-- dado y hay que probar que existe un k tal que
+--    ∀ n ≥ k, |bₙ - 1/L| < ε                                      (2)
+--
+-- Por el teorema EventualmenteMayorIgMitadAbsLimitePos,
+-- existe k₁ tal que
+--    ∀ n ≥ k₁, |aₙ| ≥ |L|/2                                       (3)
+--
+-- Como L ≠ 0, se tiene que
+--    |L| > 0                                                      (4)
+-- y, por tanto,
+--    ε|L|²/2 > 0.                                                 (5)
+-- Por la convergencia de aₙ, existe k₂ tal que
+--    ∀ n ≥ k₂, |aₙ - L| < ε|L|²/2                                 (6)
+--
+-- Sea                                                             (7)
+--    k = máx(k₁, k₂).
+-- Veamos que se verifica (2). Para ello, sea
+--    n ≥ k                                                        (8)
+-- Por (6), se tiene
+--    n ≥ k₁
+-- y, por (3), se tiene
+--    |aₙ| ≥ |L|/2                                                 (9)
+-- que, junto con (4), asegura que
+--    |aₙ| > 0
+-- así que
+--    aₙ ≠ 0
+-- y bₙ = 1/aₙ está bien definido.
+--
+-- Además, de (7) también se tiene que
+--    n ≥ k₂
+-- y, por (6), se tiene
+--    |aₙ - L| < ε|L|²/2                                          (10)
+--
+-- Finalmente,
+--   |bₙ - 1/L| = |1/aₙ - 1/L|              [por (1)]
+--              = |(L - aₙ) / (aₙL)|
+--              = |L - aₙ| / |aₙL|
+--              = |aₙ - L| / (|aₙ||L|)
+--              < (ε|L|²/2) / (|aₙ||L|)     [por (10)]
+--              ≤ (ε|L|²/2) / (|L|/2)|L|)   [por (9)]
+--              = (ε|L|²/2) / (|L|²/2)
+--              = ε.
+-- con lo que se prueba (2).
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C7B_Eventualmente_alejadas
+import Mathlib.Tactic
+
+variable {a b : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
   intro ε hε
-  have : 0 < |L| := by apply abs_pos_of_nonzero LneZero
-  specialize aToL (ε * |L| * |L| / 2) (by bound)
-  choose Na hNa using aToL
-  use Na + NhalfL
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimitePos ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  set cota := ε * (|L| ^ 2 / 2)
+  obtain ⟨k2, hk2⟩ := ha cota (by positivity)
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < cota
+  use max k1 k2
+  -- ⊢ ∀ n ≥ max k1 k2, |b n - 1 / L| < ε
   intro n hn
-  specialize bEqInva n
-  rewrite [bEqInva]
-  have hnHalfL : NhalfL ≤ n := by bound
-  have hna    : Na ≤ n      := by bound
-  specialize hNhalfL n hnHalfL
-  specialize hNa     n hna
-  have : 0 < |a n|  := by bound
-  have : a n ≠ 0    := by apply nonzero_of_abs_pos this
-  have l1 : |1 / a n - 1 / L| =
-      |(L - a n) / (a n * L)| := by field_simp
-  have l2 : |(L - a n) / (a n * L)| =
-      |L - a n| / |a n * L| := by apply abs_div
-  have l3 : |L - a n| / |a n * L| =
-      |L - a n| / (|a n| * |L|) := by bound
-  have l4 : |L - a n| = |-(a n - L)| := by ring_nf
-  have l5 : |-(a n - L)| = |a n - L| := by apply abs_neg
-  have l6 : |a n - L| / (|a n| * |L|) <
-      (ε * |L| * |L| / 2) / (|a n| * |L|) := by
-        field_simp; nlinarith
-  have l10 : |L - a n| / (|a n| * |L|) =
-      |-(a n - L)| / (|a n| * |L|) := by rw [l4]
-  have l11 : |-(a n - L)| / (|a n| * |L|) =
-      |a n - L| / (|a n| * |L|) := by rw [l5]
-  have l13 : ε * |L| * |L| / 2 / (|a n| * |L|) =
-      ε * |L| / 2 / |a n| := by field_simp
-  have l14 : ε * |L| / 2 / |a n| ≤ ε := by
-        field_simp; bound
-  linarith [l1, l2, l3, l10, l11, l6, l13, l14]
+  -- n : ℕ
+  -- hn : n ≥ ka + k
+  -- ⊢ |b n - 1 / L| < ε
+  have abs_an_ge_mitad_abs_L : |L| / 2 ≤ |a n| := by grind
+  have an_ne_cero : a n ≠ 0 := by grind
+  calc |b n - 1/L|
+       = |1/(a n) - 1/L|           := by grind
+     _ = |(L - a n) / (a n * L)|   := by grind
+     _ = |L - a n| / |a n * L|     := by grind
+     _ = |a n - L| / (|a n| * |L|) := by grind
+     _ < cota / (|a n| * |L|)      := by field_simp ; grind
+     _ ≤ cota / ((|L| / 2) * |L|)  := by gcongr
+     _ = cota / (|L| ^ 2 / 2)      := by grind
+     _ = ε                         := by grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  set cota := ε * (|L| ^ 2 / 2)
+  have abs_L_pos : |L| > 0 := by positivity
+  have cota_pos : cota > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimitePos ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  obtain ⟨k2, hk2⟩ := ha cota cota_pos
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < ε * |L| ^ 2 / 2
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - 1 / L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - 1 / L| < ε
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have abs_an_ge_mitad_abs_L : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_an_pos : |a n| > 0 := by calc
+     0 < |L| / 2 := half_pos abs_L_pos
+     _ ≤ |a n|   := abs_an_ge_mitad_abs_L
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp abs_an_pos
+  have abs_dif_an_L_lt_cota : |a n - L| < cota := hk2 n n_ge_k2
+  calc |b n - 1/L|
+       = |1/(a n) - 1/L| :=
+           by congr ; exact hb n
+     _ = |(L - a n) / (a n * L)| :=
+           by congr ; field_simp
+     _ = |L - a n| / |a n * L| :=
+           abs_div (L - a n) (a n * L)
+     _ = |a n - L| / |a n * L| :=
+           by congr 1 ; exact abs_sub_comm L (a n)
+     _ = |a n - L| / (|a n| * |L|) :=
+           by congr ; exact abs_mul (a n) L
+     _ < cota / (|a n| * |L|) :=
+           by gcongr
+     _ ≤ cota / ((|L| / 2) * |L|) :=
+           by gcongr
+     _ = cota / (|L| ^ 2 / 2) :=
+           by field_simp
+     _ = ε :=
+           by field
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  set cota := ε * (|L| ^ 2 / 2)
+  have abs_L_pos : |L| > 0 := by positivity
+  have medio_abs_L_pos : |L| / 2 > 0 := half_pos abs_L_pos
+  have medio_cuad_abs_L_pos : |L| ^ 2 / 2 > 0 := by positivity
+  have cota_pos : cota > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimitePos ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  obtain ⟨k2, hk2⟩ := ha (cota) cota_pos
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < cota
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - 1 / L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - 1 / L| < ε
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have cota_inf_abs_a : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_an_pos : |a n| > 0 := by calc
+    0 < |L| / 2 := medio_abs_L_pos
+    _ ≤ |a n|   := cota_inf_abs_a
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp abs_an_pos
+  have abs_dif_an_L_lt_cota : |a n - L| < cota := hk2 n n_ge_k2
+  have prod_abs_pos : |a n| * |L| > 0 := mul_pos abs_an_pos abs_L_pos
+  have prod_abs_ge_cota_den : |a n| * |L| ≥ (|L| / 2) * |L| :=
+    (mul_le_mul_iff_of_pos_right abs_L_pos).mpr cota_inf_abs_a
+  have cota_den_pos : (|L| / 2) * |L| > 0 := mul_pos (half_pos abs_L_pos) abs_L_pos
+  have medio_cuad_abs_L_ne_cero : (|L| ^ 2) / 2 ≠ 0 := (ne_of_lt medio_cuad_abs_L_pos).symm
+  calc |b n - 1/L|
+       = |1/(a n) - 1/L| :=
+           by congr ; exact hb n
+     _ = |(L - a n) / (a n * L)| :=
+           by congr ; field_simp
+     _ = |L - a n| / |a n * L| :=
+           abs_div (L - a n) (a n * L)
+     _ = |a n - L| / |a n * L| :=
+           by congr 1 ; exact abs_sub_comm L (a n)
+     _ = |a n - L| / (|a n| * |L|) :=
+           by congr ; exact abs_mul (a n) L
+     _ < cota / (|a n| * |L|) :=
+           (div_lt_div_iff_of_pos_right prod_abs_pos).mpr abs_dif_an_L_lt_cota
+     _ ≤ cota / ((|L| / 2) * |L|) :=
+           (div_le_div_iff_of_pos_left cota_pos prod_abs_pos cota_den_pos).mpr prod_abs_ge_cota_den
+     _ = cota / (|L| ^ 2 / 2) :=
+           by congr 1 ; ring
+     _ = ε :=
+           mul_div_cancel_right₀ ε medio_cuad_abs_L_ne_cero
+
+-- 4ª demostración
+-- ===============
+
+variable {x y z : ℝ}
+
+lemma RestaFracciones
+  (hx : x ≠ 0)
+  (hy : y ≠ 0)
+  : 1/x - 1/y = (y - x) / (x * y) :=
+by
+  calc 1/x - 1/y
+       = (1 * y - x * 1) / (x * y) := div_sub_div 1 1 hx hy
+     _ = (y - x) / (x * y)         := by rw [one_mul, mul_one]
+
+lemma DesigualdadDenominador
+  (hx : x > 0)
+  (hy : y ≥ z)
+  (hz : z > 0)
+  : x / y ≤ x / z :=
+(div_le_div_iff_of_pos_left hx (lt_of_lt_of_le hz hy) hz).mpr hy
+
+lemma SimplificarDenominador
+   : (x / 2) * x = x ^ 2 / 2 :=
+by
+  calc (x / 2) * x
+       = (x * x) / 2 := div_mul_eq_mul_div x 2 x
+     _ = x ^ 2 / 2   := congrArg (· / 2) (pow_two x).symm
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  set cota := ε * (|L| ^ 2 / 2)
+  have abs_L_pos : |L| > 0 := abs_pos.mpr hL
+  have medio_abs_L_pos : |L| / 2 > 0 := half_pos abs_L_pos
+  have medio_cuad_abs_L_pos : |L| ^ 2 / 2 > 0 := half_pos (sq_pos_of_pos abs_L_pos)
+  have cota_pos : cota > 0 := mul_pos hε medio_cuad_abs_L_pos
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimitePos ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  obtain ⟨k2, hk2⟩ := ha cota cota_pos
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < cota
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - 1 / L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - 1 / L| < ε
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have cota_inf_abs_a : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_an_pos : |a n| > 0 := by calc
+    0 < |L| / 2 := medio_abs_L_pos
+    _ ≤ |a n|   := cota_inf_abs_a
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp abs_an_pos
+  have abs_dif_an_L_lt_cota : |a n - L| < cota := hk2 n n_ge_k2
+  have prod_abs_pos : |a n| * |L| > 0 := mul_pos abs_an_pos abs_L_pos
+  have prod_abs_ge_cota_den : |a n| * |L| ≥ (|L| / 2) * |L| :=
+    (mul_le_mul_iff_of_pos_right abs_L_pos).mpr cota_inf_abs_a
+  have cota_den_pos : (|L| / 2) * |L| > 0 := mul_pos (half_pos abs_L_pos) abs_L_pos
+  have medio_cuad_abs_L_ne_cero : (|L| ^ 2) / 2 ≠ 0 := (ne_of_lt medio_cuad_abs_L_pos).symm
+  calc |b n - 1/L|
+     = |1/(a n) - 1/L| :=
+         congrArg (|· - 1/L|) (hb n)
+   _ = |(L - a n) / (a n * L)| :=
+         congrArg abs (RestaFracciones an_ne_cero hL)
+   _ = |L - a n| / |a n * L| :=
+         abs_div (L - a n) (a n * L)
+   _ = |a n - L| / (|a n| * |L|) :=
+         congrArg₂ (· / ·) (abs_sub_comm L (a n)) (abs_mul (a n) L)
+   _ < cota / (|a n| * |L|) :=
+         (div_lt_div_iff_of_pos_right prod_abs_pos).mpr abs_dif_an_L_lt_cota
+   _ ≤ cota / ((|L| / 2) * |L|) :=
+         DesigualdadDenominador cota_pos prod_abs_ge_cota_den cota_den_pos
+   _ = cota / ((|L| ^ 2 / 2)) :=
+         congrArg (cota / ·) SimplificarDenominador
+   _ = ε :=
+         mul_div_cancel_right₀ ε medio_cuad_abs_L_ne_cero
+
+-- 5ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) := by
+  intro ε hε
+  let cota := ε * (|L| ^ 2 / 2)
+  have cota_pos : cota > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimitePos ha hL
+  obtain ⟨k2, hk2⟩ := ha cota cota_pos
+  use max k1 k2
+  intro n hn
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have abs_an_ge : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_dif_lt : |a n - L| < cota := hk2 n n_ge_k2
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp (by grind)
+  calc |b n - 1 / L|
+      = |1 / a n - 1 / L|           := by rw [hb]
+    _ = |(L - a n) / (a n * L)|     := by field_simp [an_ne_cero, hL]
+    _ = |L - a n| / |a n * L|       := by rw [abs_div]
+    _ = |a n - L| / |a n * L|       := by rw [abs_sub_comm]
+    _ = |a n - L| / (|a n| * |L|)   := by rw [abs_mul]
+    _ < cota / (|a n| * |L|)        := by gcongr
+    _ ≤ cota / ((|L| / 2) * |L|)    := by gcongr
+    _ = cota / (|L| ^ 2 / 2)        := by ring
+    _ = ε                           := by field
+
+-- Lemas usados
+-- ============
+
+variable (x y z u : ℝ)
+#check (EventualmenteMayorIgMitadAbsLimitePos : LimSuc a L → L ≠ 0 → ∃ k, ∀ n ≥ k, |L| / 2 ≤ |a n|)
+#check (abs_div x y : |x / y| = |x| / |y|)
+#check (abs_mul x y : |x * y| = |x| * |y|)
+#check (abs_pos : 0 < |x| ↔ x ≠ 0)
+#check (abs_sub_comm x y : |x - y| = |y - x|)
+#check (div_le_div_iff_of_pos_left : 0 < x → 0 < y → 0 < z → (x / y ≤ x / z ↔ z ≤ y))
+#check (div_lt_div_iff_of_pos_right : 0 < z → (x / z < y / z ↔ x < y))
+#check (div_mul_eq_mul_div x y z)
+#check (div_sub_div x z : y ≠ 0 → u ≠ 0 → x / y - z / u = (x * u - y * z) / (y * u))
+#check (half_pos : 0 < x → 0 < x / 2)
+#check (le_of_max_le_left : max x y ≤ z → x ≤ z)
+#check (le_of_max_le_right : max x y ≤ z → y ≤ z)
+#check (lt_of_lt_of_le : x < y → y ≤ z → x < z)
+#check (mul_div_cancel_right₀ x : y ≠ 0 → x * y / y = x)
+#check (mul_le_mul_iff_of_pos_right : 0 < x → (y * x ≤ z * x ↔ y ≤ z))
+#check (mul_one x : x * 1 = x)
+#check (mul_pos : 0 < x → 0 < y → 0 < x * y)
+#check (ne_of_lt : x < y → x ≠ y)
+#check (one_mul x : 1 * x = x)
+#check (pow_two x : x ^ 2 = x * x)
+#check (sq_pos_of_pos : 0 < x → 0 < x ^ 2)
 \end{minted}
 
 \subsection{Prueba en lenguaje natural}
 
 \begin{proof}
 Sea $\varepsilon > 0$ dado. Como $L \neq 0$, por el teorema
-\texttt{EventuallyGeHalfLim}, existe $N_1$ tal que $|a(n)| \geq |L|/2$ para
-todo $n \geq N_1$.
+\texttt{EventuallyGeHalfLim}, existe $k_1$ tal que $|a(n)| \geq |L|/2$ para
+todo $n \geq k_1$.
 
 Como $|L| > 0$, tenemos $\varepsilon \cdot |L|^2/2 > 0$. Por la convergencia
-de $a$ hacia $L$, existe $N_2$ tal que $|a(n) - L| < \varepsilon |L|^2/2$
-para todo $n \geq N_2$.
+de $a$ hacia $L$, existe $k_2$ tal que $|a(n) - L| < \varepsilon |L|^2/2$
+para todo $n \geq k_2$.
 
-Sea $N = N_1 + N_2$. Para cualquier $n \geq N$ se tiene $|a(n)| \geq |L|/2
+Sea $k = k_1 + k_2$. Para cualquier $n \geq k$ se tiene $|a(n)| \geq |L|/2
 > 0$, así que $a(n) \neq 0$ y $b(n) = 1/a(n)$ está bien definido. Entonces:
 \begin{align*}
-  |b(n) - 1/L| &= |1/a(n) - 1/L|
-    = \left|\frac{L - a(n)}{a(n) \cdot L}\right|
-    = \frac{|L - a(n)|}{|a(n)| \cdot |L|}
-    = \frac{|a(n) - L|}{|a(n)| \cdot |L|} \\
-    &< \frac{\varepsilon |L|^2/2}{|a(n)| \cdot |L|}
-    \leq \frac{\varepsilon |L|^2/2}{(|L|/2) \cdot |L|}
-    = \frac{\varepsilon |L|^2/2}{|L|^2/2}
-    = \varepsilon.
+  |b(n) - 1/L| &= |1/a(n) - 1/L|                          \\
+               &= \left|\frac{L - a(n)}{a(n) \cdot L}\right|  \\
+               &= \frac{|L - a(n)|}{|a(n)| \cdot |L|}         \\
+               &= \frac{|a(n) - L|}{|a(n)| \cdot |L|}         \\
+               &< \frac{\varepsilon |L|^2/2}{|a(n)| \cdot |L|}          \\
+               &\leq \frac{\varepsilon |L|^2/2}{(|L|/2) \cdot |L|}         \\
+               &= \frac{\varepsilon |L|^2/2}{|L|^2/2}               \\
+               &= \varepsilon.
 \end{align*}
 Por tanto $b(n) \to 1/L$.
 \end{proof}
@@ -373,7 +1203,6 @@ elemental. El teorema del límite del recíproco es un hito importante: has
 demostrado que los recíprocos preservan la convergencia (cuando el límite es
 no nulo).
 
-% ----
 \subsection{Lo que lograste}
 
 Esta prueba requirió orquestar múltiples técnicas sofisticadas:
@@ -425,6 +1254,555 @@ resolución de problemas matemáticos.
 
 Ya dominas las técnicas esenciales para demostrar teoremas de límites.
 ¡Bien hecho!
+
+\section{Ejercicios}
+
+\begin{ejercicio}
+  Demostrar que si una sucesión converge a un límite no nulo, entonces
+  sus términos están eventualmente acotados superiormente por el doble
+  del valor absoluto del límite; es decir, si una sucesión $aₙ$ converge a
+  $L$ con $L ≠ 0$, entonces existe $k$ tal que para todo $n ≥ k$ se tiene que
+  $|aₙ| < 2|L|$.
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Puesto que L ≠ 0, se tiene que
+--    |L| / 2 > 0
+-- y, como a converge a L, existe un k tal que
+--    ∀ n ≥ k, |aₙ - L| < |L|                                        (1)
+-- Veamos que
+--    ∀ n ≥ k, |aₙ| ≤ 2|L|.
+-- En efecto, sea n ≥ k. Entonces, por (1),
+--    |aₙ - L| < |L|                                                 (2)
+-- Además,
+--    |aₙ| = |aₙ - L + L|
+--         ≤ |aₙ - L| + |L|
+--         < |L| + |L|
+--         = 2|L|
+-- Luego,
+--    |aₙ| < 2|L|
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+variable {a : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| < 2 * |L| :=
+by
+  have h1 : 0 < |L| := by grind
+  obtain ⟨k, hk⟩ := ha |L| h1
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L|
+  use k
+  -- ⊢ ⊢ ∀ n ≥ k, |a n| ≤ 2 * |L|
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |a n| ≤ 2 * |L|
+  have h2 : |a n - L| < |L| := hk n hn
+  calc |a n|
+       = |a n - L + L|   := by grind
+     _ ≤ |a n - L| + |L| := by grind
+     _ < |L| + |L|       := by grind
+     _ = 2 * |L|         := by grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| < 2 * |L| :=
+by
+  have h1 : 0 < |L| := abs_pos.mpr hL
+  obtain ⟨k, hk⟩ := ha |L| h1
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L|
+  use k
+  -- ⊢ ⊢ ∀ n ≥ k, |a n| ≤ 2 * |L|
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |a n| ≤ 2 * |L|
+  have h2 : |a n - L| < |L| := hk n hn
+  calc |a n|
+       = |a n - L + L|   := by ring_nf
+     _ ≤ |a n - L| + |L| := abs_add_le (a n - L) L
+     _ < |L| + |L|       := by gcongr
+     _ = 2 * |L|         := by ring_nf
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| < 2 * |L| :=
+by
+  have h1 : 0 < |L| := abs_pos.mpr hL
+  obtain ⟨k, hk⟩ := ha |L| h1
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L|
+  use k
+  -- ⊢ ⊢ ∀ n ≥ k, |a n| ≤ 2 * |L|
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |a n| ≤ 2 * |L|
+  have h2 : |a n - L| < |L| := hk n hn
+  calc |a n|
+       = |a n - L + L|   := congrArg abs (sub_add_cancel (a n) L).symm
+     _ ≤ |a n - L| + |L| := abs_add_le (a n - L) L
+     _ < |L| + |L|       := (add_lt_add_iff_right |L|).mpr h2
+     _ = 2 * |L|         := (two_mul |L|).symm
+
+-- 4ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  : ∃ k, ∀ n ≥ k, |a n| < 2 * |L| :=
+by
+  obtain ⟨k, hk⟩ := ha |L| (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+  refine ⟨k, fun _ _ => by grind⟩
+
+-- Lemas usados
+-- ============
+
+variable (x y z : ℝ)
+#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+#check (abs_pos : 0 < |x| ↔ x ≠ 0)
+#check (add_lt_add_iff_right x : y + x < z + x ↔ y < z)
+#check (sub_add_cancel x y : x - y + y = x)
+#check (two_mul x : 2 * x = x + x)
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar que si las sucesiones $aₙ$ y $bₙ$ convergen a $L$ y $M$,
+  respectivamente, con $L < M$, entonces eventualmente $aₙ < bₙ$; es decir,
+  que existe un $k ∈ ℕ$ tal que, para todo $n ≥ k$, $aₙ < bₙ$.
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea
+--    ε = (M - L) / 2                                                (1)
+-- Puesto que L < M, se tiene que ε > 0. Y, usando las convergencias de
+-- aₙ y bₙ, se tiene que existen k₁ y k₂ tales que
+--    ∀ n ≥ k₁, |aₙ - L| < ε                                         (2)
+--    ∀ n ≥ k₂, |bₙ - M| < ε                                         (3)
+-- Sea
+--    k = máx(k₁, k₂)                                                (4)
+-- Veamos que
+--    ∀ n ≥ k, aₙ < bₙ
+-- Para ello, sea n ∈ ℕ tal que
+--    n ≥ k.                                                         (5)
+-- Entonces, (4) y (5), se tiene que
+--    n ≥ k₁                                                         (6)
+--    n ≥ k₂                                                         (7)
+-- Veamos que
+--    aₙ < (L + M) / 2                                               (8)
+-- Efectivamente,
+--    aₙ = aₙ - L + L
+--       ≤ |aₙ - L| + L
+--       < ε + L            [por (2) y (6)]
+--       = (M - L) / 2 + L  [por (1)]
+--       = (L + M) / 2
+-- Veamos también que
+--    bₙ > (L + M) / 2                                              (9)
+-- Efectivamente
+--    bₙ = bₙ - M + M
+--        > -ε + M               [por (3) y (7)]
+--        = -((M - L) / 2) + M   [por (1)]
+--        = (L + M) / 2
+-- Finalmente,
+--    aₙ < (L + M) / 2  [por (8)]
+--       < bₙ           [por (9)]
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+variable {a b : ℕ → ℝ}
+variable {L M : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example (a b : ℕ → ℝ) (L M : ℝ)
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hLM : L < M)
+  : ∃ k, ∀ n ≥ k, a n < b n :=
+by
+  set ε := (M - L) / 2
+  obtain ⟨k1, hk1⟩ := ha ε (by grind)
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε
+  obtain ⟨k2, hk2⟩ := hb ε (by grind)
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |b n - M| < ε
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, a n < b n
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example (a b : ℕ → ℝ) (L M : ℝ)
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hLM : L < M)
+  : ∃ k, ∀ n ≥ k, a n < b n :=
+by
+  set ε := (M - L) / 2
+  have hε : ε > 0 := by grind
+  obtain ⟨k1, hk1⟩ := ha ε hε
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε
+  obtain ⟨k2, hk2⟩ := hb ε hε
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |b n - M| < ε
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, a n < b n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ a n < b n
+  have h1 : n ≥ k1 := by grind
+  have h2 : n ≥ k2 := by grind
+  have h3 : |a n - L| < ε := by grind
+  have h4 : |b n - M| < ε := by grind
+  have h5 : a n < (L + M) / 2 := by
+    calc a n
+         = a n - L + L     := by grind
+       _ ≤ |a n - L| + L   := by grind
+       _ < ε + L           := by grind
+       _ = (M - L) / 2 + L := by grind
+       _ = (L + M) / 2     := by grind
+  have h6 : b n > (L + M) / 2 := by
+    calc b n
+         = b n - M + M        := by grind
+       _ > -ε + M             := by grind
+       _ = -((M - L) / 2) + M := by grind
+       _ = (L + M) / 2        := by grind
+  calc a n
+       < (L + M) / 2     := h5
+     _ < b n             := h6
+
+-- 3ª demostración
+-- ===============
+
+example (a b : ℕ → ℝ) (L M : ℝ)
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hLM : L < M)
+  : ∃ k, ∀ n ≥ k, a n < b n :=
+by
+  set ε := (M - L) / 2
+  have hε : ε > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := ha ε hε
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε
+  obtain ⟨k2, hk2⟩ := hb ε hε
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |b n - M| < ε
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, a n < b n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ a n < b n
+  have h1 : n ≥ k1 := le_of_max_le_left hn
+  have h2 : n ≥ k2 := le_of_max_le_right hn
+  have h3 : |a n - L| < ε := hk1 n h1
+  have h4 : |b n - M| < ε := hk2 n h2
+  have h5 : a n < (L + M) / 2 := by calc
+    a n = a n - L + L     := by ring
+      _ ≤ |a n - L| + L   := by gcongr
+      _ < ε + L           := by gcongr
+      _ = (M - L) / 2 + L := by ring
+      _ = (L + M) / 2     := by ring
+  have h6 : b n > (L + M) / 2 := by calc
+    b n = b n - M + M        := by ring
+      _ > -ε + M             := by gcongr
+      _ = -((M - L) / 2) + M := by ring
+      _ = (L + M) / 2        := by ring
+  calc a n
+       < (L + M) / 2     := h5
+     _ < b n             := h6
+
+-- 4ª demostración
+-- ===============
+
+example (a b : ℕ → ℝ) (L M : ℝ)
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hLM : L < M)
+  : ∃ k, ∀ n ≥ k, a n < b n :=
+by
+  set ε := (M - L) / 2
+  have hε : ε > 0 := half_pos (sub_pos.mpr hLM)
+  obtain ⟨k1, hk1⟩ := ha ε hε
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε
+  obtain ⟨k2, hk2⟩ := hb ε hε
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |b n - M| < ε
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, a n < b n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ a n < b n
+  have h1 : n ≥ k1 := le_of_max_le_left hn
+  have h2 : n ≥ k2 := le_of_max_le_right hn
+  have h3 : |a n - L| < ε := hk1 n h1
+  have h4 : |b n - M| < ε := hk2 n h2
+  have h5 : a n < (L + M) / 2 := by
+    calc a n
+         = a n - L + L     := (sub_add_cancel (a n) L).symm
+       _ < ε + L           := (add_lt_add_iff_right L).mpr (lt_of_abs_lt h3)
+       _ = (M - L) / 2 + L := refl
+       _ = (L + M) / 2     := by ring
+  have h6 : b n > (L + M) / 2 := by
+   calc b n
+        = b n - M + M        := (sub_add_cancel (b n) M).symm
+      _ > -ε + M             := (add_lt_add_iff_right M).mpr (neg_lt_of_abs_lt h4)
+      _ = -((M - L) / 2) + M := refl
+      _ = (L + M) / 2        := by ring
+  exact lt_trans h5 h6
+
+-- 5ª demostración
+-- ===============
+
+example (a b : ℕ → ℝ) (L M : ℝ)
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hLM : L < M)
+  : ∃ k, ∀ n ≥ k, a n < b n :=
+by
+  obtain ⟨k1, hk1⟩ := ha ((M - L) / 2) (by grind)
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < ε
+  obtain ⟨k2, hk2⟩ := hb ((M - L) / 2) (by grind)
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |b n - M| < ε
+  exact ⟨max k1 k2, fun _ _ => by grind⟩
+
+-- 6ª demostración
+-- ===============
+
+example (a b : ℕ → ℝ) (L M : ℝ)
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hLM : L < M)
+  : ∃ k, ∀ n ≥ k, a n < b n :=
+by
+  have LneM : M - L ≠ 0 := by bound
+  have absML : 0 < |M - L| := abs_pos.mpr LneM
+  have MsubL : 0 ≤ M - L := by bound
+  have absMLeq : |M - L| = M - L := abs_of_nonneg MsubL
+  have absML2 : 0 < |M - L| / 2 := by bound
+  specialize ha (|M - L| / 2) absML2
+  -- ha : ∃ k, ∀ n ≥ k, |a n - L| < |M - L| / 2
+  specialize hb (|M - L| / 2) absML2
+  -- hb : ∃ k, ∀ n ≥ k, |b n - M| < |M - L| / 2
+  choose k1 hk1 using ha
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |a n - L| < |M - L| / 2
+  choose k2 hk2 using hb
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |b n - M| < |M - L| / 2
+  use k1 + k2
+  -- ⊢ ∀ n ≥ k1 + k2, a n < b n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k1 + k2
+  -- ⊢ a n < b n
+  have nk1 : k1 ≤ n := by bound
+  have nk2 : k2 ≤ n := by bound
+  specialize hk1 n nk1
+  -- hk1 : |a n - L| < |M - L| / 2
+  specialize hk2 n nk2
+  -- hk2 : |b n - M| < |M - L| / 2
+  rewrite [abs_lt, absMLeq] at hk1
+  -- hk1 : -((M - L) / 2) < a n - L ∧ a n - L < (M - L) / 2
+  rewrite [abs_lt, absMLeq] at hk2
+  -- hk2 : -((M - L) / 2) < b n - M ∧ b n - M < (M - L) / 2
+  linarith [hk1.2, hk2.1]
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar la desigualdad triangular inversa; es decir, que para
+  cualesquiera números reales $x$ e $y$, se cumple la siguiente relación:
+  $$||x| - |y|| ≤ |x - y|$$
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar la desigualdad triangular inversa; es decir, que para
+-- cualesquiera números reales x e y, se cumple la siguiente relación:
+--    ||x| - |y|| ≤ |x - y|
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Para demostrar que
+--    ||x| - |y|| ≤ |x - y|
+-- es suficiente demostrar estas dos desigualdades
+--    |x| - |y| ≤ |x - y|
+--     -(|x| - |y|) ≤ |x - y|
+--
+-- La demostración de la primera es
+--    |x| - |y|
+--    = |(x - y) + y| - |y|
+--    ≤ (|x - y| + |y|) - |y|    [por desigualdad triangular]
+--    = |x - y|
+-- y la de la segunda es
+--    -(|x| - |y|)
+--    = |y| - |x|
+--    = |x - (x - y)| - |x|
+--    ≤ (|x| + |x - y|) - |x|    [por desigualdad triangular]
+--    = |x - y|
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+variable (x y : ℝ)
+
+-- 1ª demostración
+-- ===============
+
+example : |(|x| - |y|)| ≤ |x - y| :=
+by
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example :
+  |(|x| - |y|)| ≤ |x - y| :=
+by
+  apply abs_le'.mpr
+  constructor
+  · -- ⊢ |x| - |y| ≤ |x - y|
+    grind
+  · -- ⊢ -(|x| - |y|) ≤ |x - y|
+    grind
+
+-- 3ª demostración
+-- ===============
+
+example :
+  |(|x| - |y|)| ≤ |x - y| :=
+by
+  apply abs_le'.mpr
+  constructor
+  · -- ⊢ |x| - |y| ≤ |x - y|
+    calc |x| - |y|
+         = |(x - y) + y| - |y|   := by grind
+       _ ≤ (|x - y| + |y|) - |y| := by grind
+       _ = |x - y|               := by grind
+  · -- ⊢ -(|x| - |y|) ≤ |x - y|
+    calc -(|x| - |y|)
+         = |y| - |x|             := by grind
+       _ = |x - (x - y)| - |x|   := by grind
+       _ ≤ (|x| + |x - y|) - |x| := by grind
+       _ = |x - y|               := by grind
+
+-- 4ª demostración
+-- ===============
+
+example :
+  |(|x| - |y|)| ≤ |x - y| :=
+by
+  apply abs_le'.mpr
+  constructor
+  · -- ⊢ |x| - |y| ≤ |x - y|
+    calc |x| - |y|
+         = |(x - y) + y| - |y|   := by congr ; ring
+       _ ≤ (|x - y| + |y|) - |y| := sub_le_sub_right (abs_add_le (x - y) y) |y|
+       _ = |x - y|               := by ring
+  · -- ⊢ -(|x| - |y|) ≤ |x - y|
+    calc -(|x| - |y|)
+         = |y| - |x|             := by ring
+       _ = |x - (x - y)| - |x|   := by congr ; ring
+       _ ≤ (|x| + |x - y|) - |x| := sub_le_sub_right (abs_sub x (x - y)) |x|
+       _ = |x - y|               := by ring
+
+-- 5ª demostración
+-- ===============
+
+example :
+  |(|x| - |y|)| ≤ |x - y| :=
+by
+  apply abs_le'.mpr
+  constructor
+  · -- ⊢ |x| - |y| ≤ |x - y|
+    calc |x| - |y|
+         = |(x - y) + y| - |y|   := congrArg (|·| - |y|) (sub_add_cancel x y).symm
+       _ ≤ (|x - y| + |y|) - |y| := sub_le_sub_right (abs_add_le (x - y) y) |y|
+       _ = |x - y|               := add_sub_cancel_right |x - y| |y|
+  · -- ⊢ -(|x| - |y|) ≤ |x - y|
+    calc -(|x| - |y|)
+         = |y| - |x|             := neg_sub |x| |y|
+       _ = |x - (x - y)| - |x|   := congrArg (|·| - |x|) (sub_sub_self x y).symm
+       _ ≤ (|x| + |x - y|) - |x| := sub_le_sub_right (abs_sub x (x - y)) |x|
+       _ = |x - y|               := add_sub_cancel_left |x| |x - y|
+
+-- 6ª demostración
+-- ===============
+
+example : |(|x| - |y|)| ≤ |x - y| :=
+abs_abs_sub_abs_le x y
+
+-- Lemas usados
+-- ============
+
+variable (f : ℝ → ℝ)
+#check (abs_abs_sub_abs_le x y : |(|x| - |y|)| ≤ |x - y|)
+#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+#check (abs_le' : |x| ≤ y ↔ x ≤ y ∧ -x ≤ y)
+#check (abs_sub x y : |x - y| ≤ |x| + |y|)
+#check (add_sub_cancel_left x y : (x + y) - x = y)
+#check (add_sub_cancel_right x y : (x + y) - y = x)
+#check (congrArg f : x = y → f x = f y)
+#check (neg_sub x y : -(x - y) = y - x)
+#check (sub_add_cancel x y: (x - y) + y = x)
+#check (sub_le_sub_right : x ≤ y → ∀ z, x - z ≤ y - z)
+#check (sub_sub_self x y : x - (x - y) = y)
+\end{minted}
 
 %%% Local Variables:
 %%% mode: LaTeX

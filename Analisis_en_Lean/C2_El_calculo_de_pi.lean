@@ -4,18 +4,20 @@
 -- Sevilla, 10-enero-2026
 -- ---------------------------------------------------------------------
 
-import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
+module
+
+public import Mathlib.Basic.Real.Basic
+import Mathlib.Tactic.Ring.RingNF        -- ring_nf
 
 -- ---------------------------------------------------------------------
 -- Ejercicio 1. Formalizar la definición de límite de una sucesión; es
 -- decir, dada una sucesión (a : ℕ → ℝ) y un número real L ∈ ℝ,
--- decimos que la sucesión a converge a L si para todo ϵ > 0, existe N ∈
--- ℕ tal que, para todo n ≥ N, tenemos |a(n)−L|<ϵ.
+-- decimos que la sucesión a converge a L si para todo ϵ > 0, existe k ∈
+-- ℕ tal que, para todo n ≥ k, tenemos |a(n)−L|<ϵ.
 -- ---------------------------------------------------------------------
 
-def LimSuc (a : ℕ → ℝ) (L : ℝ) : Prop :=
-  ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |a n - L| < ε
+@[expose] public def SeqLim (a : ℕ → ℝ) (L : ℝ) : Prop :=
+  ∀ ε > 0, ∃ k : ℕ, ∀ n ≥ k, |a n - L| < ε
 
 -- ---------------------------------------------------------------------
 -- Ejercicio 2. Demostrar que si a es una sucesión tal que para todo
@@ -26,8 +28,8 @@ def LimSuc (a : ℕ → ℝ) (L : ℝ) : Prop :=
 -- ================================
 
 -- Tenemos que demostrar que para cada ε ∈ ℝ tal que ε > 0, existe un
--- N ∈ ℕ, tal que (∀n ∈ ℕ)[n ≥ N → |a(n) - L| < ε]. Basta tomar N como
--- 0, ya que para todo n ≥ N se tiene
+-- k ∈ ℕ, tal que (∀n ∈ ℕ)[n ≥ k → |a(n) - L| < ε]. Basta tomar k como
+-- 0, ya que para todo n ≥ k se tiene
 --    |a(n) - L| = |L - L|
 --               = |0|
 --               = 0
@@ -44,14 +46,14 @@ variable (L : ℝ)
 
 example
   (h : ∀ n, a n = L)
-  : LimSuc a L :=
+  : SeqLim a L :=
 by
-  change ∀ ε > 0 , ∃ N : ℕ, ∀ n ≥ N , |a n - L| < ε
-  -- ⊢ ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε
+  change ∀ ε > 0 , ∃ k : ℕ, ∀ n ≥ k , |a n - L| < ε
+  -- ⊢ ∀ ε > 0, ∃ k, ∀ n ≥ k, |a n - L| < ε
   intro ε hε
   -- ε : ℝ
   -- hε : ε > 0
-  -- ⊢ ∃ N, ∀ n ≥ N, |a n - L| < ε
+  -- ⊢ ∃ k, ∀ n ≥ k, |a n - L| < ε
   use 0
   -- ⊢ ∀ n ≥ 0, |a n - L| < ε
   intro n hn
@@ -73,12 +75,12 @@ by
 
 example
   (h : ∀ n, a n = L)
-  : LimSuc a L :=
+  : SeqLim a L :=
 by
   intros ε hε
   -- ε : ℝ
   -- hε : ε > 0
-  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |a n - L| < ε
+  -- ⊢ ∃ k, ∀ (n : ℕ), n ≥ k → |a n - L| < ε
   use 0
   -- ⊢ ∀ (n : ℕ), n ≥ 0 → |a n - L| < ε
   intros n hn
@@ -96,12 +98,12 @@ by
 
 example
   (h : ∀ n, a n = L)
-  : LimSuc a L :=
+  : SeqLim a L :=
 by
   intros ε hε
   -- ε : ℝ
   -- hε : ε > 0
-  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |a n - L| < ε
+  -- ⊢ ∃ k, ∀ (n : ℕ), n ≥ k → |a n - L| < ε
   use 0
   -- ⊢ ∀ (n : ℕ), n ≥ 0 → |a n - L| < ε
   intros n hn
@@ -117,12 +119,12 @@ by
 
 example
   (h : ∀ n, a n = L)
-  : LimSuc a L :=
+  : SeqLim a L :=
 by
   intros ε hε
   -- ε : ℝ
   -- hε : ε > 0
-  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |a n - L| < ε
+  -- ⊢ ∃ k, ∀ (n : ℕ), n ≥ k → |a n - L| < ε
   aesop
 
 -- 5ª demostración
@@ -130,12 +132,12 @@ by
 
 example
   (h : ∀ n, a n = L)
-  : LimSuc a L :=
+  : SeqLim a L :=
 by
   intros ε hε
   -- ε : ℝ
   -- hε : ε > 0
-  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |a n - L| < ε
+  -- ⊢ ∃ k, ∀ (n : ℕ), n ≥ k → |a n - L| < ε
   aesop
 
 -- 6ª demostración
@@ -143,10 +145,10 @@ by
 
 example
   (h : ∀ n, a n = L)
-  : LimSuc a L :=
+  : SeqLim a L :=
 fun ε hε ↦ by aesop
 
 -- Lemas usados
 -- ============
 
-#check (sub_self a : a - a = 0)
+-- #check (sub_self a : a - a = 0)

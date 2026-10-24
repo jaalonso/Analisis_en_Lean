@@ -4,9 +4,11 @@
 -- Sevilla, 19-abril-2026
 -- ---------------------------------------------------------------------
 
-import Mathlib.Data.Real.Basic
+module
+
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+public import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
 
 variable {a : ℕ → ℝ}
 
@@ -15,8 +17,8 @@ variable {a : ℕ → ℝ}
 -- sucesiones convergentes.
 -- ---------------------------------------------------------------------
 
-def SucConv (a : ℕ → ℝ) : Prop :=
-  ∃ L, LimSuc a L
+@[expose] public def SucConv (a : ℕ → ℝ) : Prop :=
+  ∃ L, SeqLim a L
 
 -- ---------------------------------------------------------------------
 -- Ejercicio 2. Demostrar que la sucesión 1, -1, 1, -1, ... no es
@@ -54,7 +56,7 @@ by
   -- ⊢ False
   choose L hL using h
   -- L : ℝ
-  -- hL : LimSuc a L
+  -- hL : SeqLim a L
   choose N hN using hL (1/2) (by grind)
   -- N : ℕ
   -- hN : ∀ n ≥ N, |a n - L| < 1 / 2
@@ -75,6 +77,8 @@ by
 
 -- 2ª demostración
 -- ===============
+
+namespace Demostracion2
 
 variable {x y z x' y' : ℝ}
 variable {m n k : ℕ}
@@ -151,7 +155,7 @@ by
   -- ⊢ False
   choose L hL using h
   -- L : ℝ
-  -- hL : LimSuc a L
+  -- hL : SeqLim a L
   choose N hN using hL (1/2) one_half_pos
   -- N : ℕ
   -- hN : ∀ n ≥ N, |a n - L| < 1 / 2
@@ -178,33 +182,39 @@ by
   have h2 : (1:ℝ) < 1 := lt_trans one_lt_two h1
   exact (lt_irrefl 1) h2
 
+end Demostracion2
+
 -- Lemas usados
 -- ============
 
-#check (Nat.le_add_right n m : n ≤ n + m)
-#check (Nat.mul_le_mul_right k : n ≤ m → n * k ≤ m * k)
-#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
-#check (add_halves x : x / 2 + x / 2 = x)
-#check (add_lt_add : x < x' → y < y' → x + y < x' + y')
-#check (congrArg₂  (· + ·) : x = x' → y = y' → x + y = x' + y')
-#check (congr_arg f  : x = y → f x = f y)
-#check (left_distrib x y z : x * (y + z) = x * y + x * z)
-#check (lt_irrefl x : ¬x < x)
-#check (lt_trans : x < y → y < z → x < z)
-#check (neg_mul 1 x : -1 * x = -(1 * x))
-#check (neg_mul_neg x y : -x * -y = x * y)
-#check (neg_neg x : - -x = x)
-#check (neg_one_sq : (-1)^2 = 1)
-#check (one_add_one_eq_two : 1 + 1 = 2)
-#check (one_le_two : 1 ≤ 2)
-#check (one_lt_two : (1 : ℝ) < 2)
-#check (one_mul x : 1 * x = x)
-#check (one_mul x : 1 * x = x)
-#check (one_pow n : 1 ^ n = 1)
-#check (pow_mul x m n : x ^ (m * n) = (x ^ m) ^ n)
-#check (pow_succ x n : x ^ (n + 1) = x ^ n * x)
-#check (sub_add_add_cancel x y z : (x - z) + (y + z) = x + y)
-#check (sub_eq_add_neg x y : x - y = x + -y)
+-- variable {x y z x' y' : ℝ}
+-- variable {m n k : ℕ}
+-- variable (f : ℝ → ℝ)
+--
+-- #check (Nat.le_add_right n m : n ≤ n + m)
+-- #check (Nat.mul_le_mul_right k : n ≤ m → n * k ≤ m * k)
+-- #check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+-- #check (add_halves x : x / 2 + x / 2 = x)
+-- #check (add_lt_add : x < x' → y < y' → x + y < x' + y')
+-- #check (congrArg₂  (· + ·) : x = x' → y = y' → x + y = x' + y')
+-- #check (congr_arg f  : x = y → f x = f y)
+-- #check (left_distrib x y z : x * (y + z) = x * y + x * z)
+-- #check (lt_irrefl x : ¬x < x)
+-- #check (lt_trans : x < y → y < z → x < z)
+-- #check (neg_mul 1 x : -1 * x = -(1 * x))
+-- #check (neg_mul_neg x y : -x * -y = x * y)
+-- #check (neg_neg x : - -x = x)
+-- #check (neg_one_sq : (-1)^2 = 1)
+-- #check (one_add_one_eq_two : 1 + 1 = 2)
+-- #check (one_le_two : 1 ≤ 2)
+-- #check (one_lt_two : (1 : ℝ) < 2)
+-- #check (one_mul x : 1 * x = x)
+-- #check (one_mul x : 1 * x = x)
+-- #check (one_pow n : 1 ^ n = 1)
+-- #check (pow_mul x m n : x ^ (m * n) = (x ^ m) ^ n)
+-- #check (pow_succ x n : x ^ (n + 1) = x ^ n * x)
+-- #check (sub_add_add_cancel x y z : (x - z) + (y + z) = x + y)
+-- #check (sub_eq_add_neg x y : x - y = x + -y)
 
 -- 3ª demostración
 -- ===============
@@ -218,11 +228,11 @@ by
   intro h
   -- h : SucConv a
   -- ⊢ False
-  change ∃ L, LimSuc a L at h
-  -- h : ∃ L, LimSuc a L
+  change ∃ L, SeqLim a L at h
+  -- h : ∃ L, SeqLim a L
   choose L hL using h
   -- L : ℝ
-  -- hL : LimSuc a L
+  -- hL : SeqLim a L
   change ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε at hL
   -- hL : ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - L| < ε
   specialize hL (1/2)

@@ -53,37 +53,434 @@ Queremos demostrar que $c$ converge a $L+M$.
 
 \subsection{Solución en Lean}
 
-\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement SumLim (a b c : ℕ → ℝ) (L M : ℝ)
-    (ha : SeqLim a L) (hb : SeqLim b M) (hc : ∀ n, c n = a n + b n) :
-    SeqLim c (L + M) := by
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si la sucesión a converge a L y la b a M, entonces a+b
+-- converge a L+M.
+-- ----------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Tenemos que probar que para todo ε ∈ ℝ, si
+--    ε > 0                                                          (1)
+-- entonces
+--    (∃N ∈ ℕ)(∀n ∈ ℕ)[n ≥ N → |(a + b)(n) - (L + M)| < ε]           (2)
+--
+-- Por (1), se tiene que
+--    ε/2 > 0                                                        (3)
+-- Por (3) y porque el límite de a es L, se tiene que
+--    (∃N ∈ ℕ)(∀n ∈ ℕ)[n ≥ N → |a(n) - L| < ε/2]
+-- Sea N₁ ∈ ℕ tal que
+--    (∀n ∈ ℕ)[n ≥ N₁ → |a(n) - L| < ε/2]                            (4)
+-- Por (3) y porque el límite de b es M, se tiene que
+--    (∃N ∈ ℕ)(∀n ∈ ℕ)[n ≥ N → |b(n) - M| < ε/2]
+-- Sea N₂ ∈ ℕ tal que
+--    (∀n ∈ ℕ)[n ≥ N₂ → |b(n) - M| < ε/2]                            (5)
+-- Sea N = máx(N₁, N₂). Veamos que verifica la condición (1). Para ello,
+-- sea n ∈ ℕ tal que n ≥ N. Entonces, n ≥ N₁ y n ≥ N₂. Por tanto, por
+-- las propiedades (4) y (5) se tiene que
+--    |a(n) - L| < ε/2                                               (6)
+--    |b(n) - M| < ε/2                                               (7)
+-- Finalmente,
+--    |(a + b)(n) - (L + M)| = |(a(n) + b(n)) - (L + M)|
+--                           = |(a(n) - L) + (b(n) - M)|
+--                           ≤ |a(n) - L| + |b(n) - M|
+--                           < ε / 2 + ε / 2                [por (6) y (7)
+--                           = ε
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+
+variable {a b c : ℕ → ℝ}
+variable {L M : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+namespace Solucion1
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε / 2) (by linarith)
+  -- Na : ℕ
+  -- hNa : ∀ (n : ℕ), n ≥ Na → |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε / 2) (by linarith)
+  -- Nb : ℕ
+  -- hNb : ∀ (n : ℕ), n ≥ Nb → |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ (n : ℕ), n ≥ max Na Nb → |(s + t) n - (L + M)| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  calc |(a + b) n - (L + M)|
+     = |(a n + b n) - (L + M)|  := rfl
+   _ = |(a n - L) + (b n - M)|  := by ring_nf
+   _ ≤ |a n - L| + |b n - M|    := abs_add_le _ _
+   _ < ε / 2 + ε / 2            := add_lt_add (hNa n (le_of_max_le_left hn))
+                                              (hNb n (le_of_max_le_right hn))
+   _ = ε                        := add_halves ε
+
+end Solucion1
+
+-- 2ª demostración
+-- ===============
+
+namespace Solucion2
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε / 2) (half_pos hε)
+  -- Na : ℕ
+  -- hNa : ∀ (n : ℕ), n ≥ Na → |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε / 2) (half_pos hε)
+  -- Nb : ℕ
+  -- hNb : ∀ (n : ℕ), n ≥ Nb → |b n - M| < ε / 2
+  refine ⟨max Na Nb, fun n hn => ?_⟩
+  -- n : ℕ
+  -- hn : n ≥ max Na Nb
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  have nNa : n ≥ Na := le_of_max_le_left hn
+  specialize hNa n nNa
+  -- hNa : |a n - L| < ε / 2
+  have nNb : n ≥ Nb := le_of_max_le_right hn
+  specialize hNb n nNb
+  -- hNb : |b n - M| < ε / 2
+  calc |(a + b) n - (L + M)|
+     = |(a n + b n) - (L + M)|  := rfl
+   _ = |(a n - L) + (b n - M)|  := by ring_nf
+   _ ≤ |a n - L| + |b n - M|    := by apply abs_add_le
+   _ < ε / 2 + ε / 2            := by linarith [hNa, hNb]
+   _ = ε                        := by apply add_halves
+
+end Solucion2
+
+-- 3ª demostración
+-- ===============
+
+namespace Solucion3
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε/2) (by linarith)
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε/2) (by linarith)
+  -- Nb : ℕ
+  -- hNb : ∀ n ≥ Nb, |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ n ≥ max Na Nb, |(a + b) n - (L + M)| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nb
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  have hn₁ : n ≥ Na := le_of_max_le_left hn
+  specialize hNa n hn₁
+  -- hNa : |a n - L| < ε / 2
+  have hn₂ : n ≥ Nb := le_of_max_le_right hn
+  specialize hNb n hn₂
+  -- hNb : |b n - M| < ε / 2
+  calc |(a + b) n - (L + M)|
+       = |(a n + b n) - (L + M)|  := by rfl
+     _ = |(a n - L) + (b n -  M)| := by {congr; ring}
+     _ ≤ |a n - L| + |b n -  M|   := by apply abs_add_le
+     _ < ε / 2 + ε / 2            := by linarith
+     _ = ε                        := by apply add_halves
+
+end Solucion3
+
+-- 4ª demostración
+-- ===============
+
+namespace Solucion4
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε/2) (by linarith)
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε/2) (by linarith)
+  -- Nb : ℕ
+  -- hNb : ∀ n ≥ Nb, |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ n ≥ max Na Nb, |(a + b) n - (L + M)| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nb
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  obtain ⟨hn₁, hn₂⟩ := max_le_iff.mp hn
+  -- hn₁ : n ≥ Na
+  -- hn₂ : n ≥ Nb
+  calc |(a + b) n - (L + M)|
+       = |a n + b n - (L + M)|   := by rfl
+     _ = |(a n - L) + (b n - M)| := by { congr; ring }
+     _ ≤ |a n - L| + |b n - M|   := by apply abs_add_le
+     _ < ε/2 + ε/2               := add_lt_add (hNa n hn₁) (hNb n hn₂)
+     _ = ε                       := by simp
+
+end Solucion4
+
+-- 5ª demostración
+-- ===============
+
+namespace Solucion5
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε/2) (by linarith)
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε/2) (by linarith)
+  -- Nb : ℕ
+  -- hNb : ∀ n ≥ Nb, |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ n ≥ max Na Nb, |(a + b) n - (L + M)| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nb
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  obtain ⟨hn₁, hn₂⟩ := max_le_iff.mp hn
+  -- hn₁ : Na ≤ n
+  -- hn₂ : Nb ≤ n
+  have cota₁ : |a n - L| < ε/2 := hNa n hn₁
+  have cota₂ : |b n - M| < ε/2 := hNb n hn₂
+  calc |(a + b) n - (L + M)|
+       = |(a n + b n) - (L + M)| := by rfl
+     _ = |(a n - L) + (b n - M)| := by { congr; ring }
+     _ ≤ |a n - L| + |b n - M|   := by apply abs_add_le
+     _ < ε                       := by linarith
+
+end Solucion5
+
+-- 6ª demostración
+-- ===============
+
+namespace Solucion6
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε Hε
+  -- ε : ℝ
+  -- Hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε/2) (by linarith)
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε/2) (by linarith)
+  -- Nb : ℕ
+  -- hNb : ∀ n ≥ Nb, |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ n ≥ max Na Nb, |(a + b) n - (L + M)| < ε
+  have h1 : max Na Nb ≥ Na := le_max_left _ _
+  have h2 : max Na Nb ≥ Nb := le_max_right _ _
+  intros n Hn
+  -- n : ℕ
+  -- Hn : n ≥ max Na Nb
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  have h3 : |a n - L| < ε/2 := hNa n (by linarith)
+  have h4 : |b n - M| < ε/2 := hNb n (by linarith)
+  calc |(a + b) n - (L + M)|
+       = |(a n + b n) - (L + M)|   := by rfl
+     _ = |(a n - L) + (b n - M)|   := by {congr; ring }
+     _ ≤ |(a n - L)| + |(b n - M)| := by apply abs_add_le
+     _ < ε/2 + ε/2                 := by linarith
+     _ = ε                         := by ring
+
+end Solucion6
+
+-- 7ª demostración
+-- ===============
+
+namespace Solucion7
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hc : ∀ n, c n = a n + b n)
+  : LimSuc c (L + M) :=
+by
   change ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |c n - (L + M)| < ε
+  -- ⊢ ∀ ε > 0, ∃ N, ∀ n ≥ N, |c n - (L + M)| < ε
   intro ε hε
-  unfold SeqLim at ha
-  change ∀ ε1 > 0, ∃ Na : ℕ, ∀ n ≥ Na, |a n - L| < ε1 at ha
-  change ∀ ε2 > 0, ∃ Nb : ℕ, ∀ n ≥ Nb, |b n - M| < ε2 at hb
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |c n - (L + M)| < ε
+  change ∀ ε₁ > 0, ∃ Na : ℕ, ∀ n ≥ Na, |a n - L| < ε₁ at ha
+  -- ha : ∀ ε₁ > 0, ∃ Na, ∀ n ≥ Na, |a n - L| < ε₁
+  change ∀ ε₂ > 0, ∃ Nb : ℕ, ∀ n ≥ Nb, |b n - M| < ε₂ at hb
+  -- hb : ∀ ε₂ > 0, ∃ Nb, ∀ n ≥ Nb, |b n - M| < ε₂
   specialize ha (ε / 2)
+  -- ha : ε / 2 > 0 → ∃ Na, ∀ n ≥ Na, |a n - L| < ε / 2
   specialize hb (ε / 2)
-  have eps_on_2_pos : 0 < ε / 2 := by linarith [hε]
-  specialize ha eps_on_2_pos
-  specialize hb eps_on_2_pos
+  -- ⊢ ∃ N, ∀ n ≥ N, |c n - (L + M)| < ε
+  have hε2 : 0 < ε / 2 := by linarith [hε]
+  specialize ha hε2
+  -- ha : ∃ Na, ∀ n ≥ Na, |a n - L| < ε / 2
+  specialize hb hε2
+  -- hb : ∃ Nb, ∀ n ≥ Nb, |b n - M| < ε / 2
   choose Na hNa using ha
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε / 2
   choose Nb hNb using hb
+  -- Nb : ℕ
+  -- hNb : ∀ n ≥ Nb, |b n - M| < ε / 2
   use Na + Nb
+  -- ⊢ ∀ n ≥ Na + Nb, |c n - (L + M)| < ε
   intro n hn
+  -- n : ℕ
+  -- hn : n ≥ Na + Nb
+  -- ⊢ |c n - (L + M)| < ε
   specialize hc n
+  -- hc : c n = a n + b n
   rewrite [hc]
-  have thing : a n + b n - (L + M) = (a n - L) + (b n - M) := by ring_nf
-  rewrite [thing]
+  -- ⊢ |a n + b n - (L + M)| < ε
+  have h1 : a n + b n - (L + M) =
+    (a n - L) + (b n - M) := by ring_nf
+  rewrite [h1]
+  -- ⊢ |a n - L + (b n - M)| < ε
   specialize hNa n
+  -- hNa : n ≥ Na → |a n - L| < ε / 2
   specialize hNb n
-  have ineq_a : Na ≤ n := by bound
-  have ineq_b : Nb ≤ n := by bound
-  specialize hNa ineq_a
-  specialize hNb ineq_b
-  have ineq : |a n - L + (b n - M)| ≤ |a n - L| + |(b n - M)| :=
-    by apply abs_add
-  bound
+  -- hNb : n ≥ Nb → |b n - M| < ε / 2
+  have h2 : Na ≤ n := by linarith
+  have h3 : Nb ≤ n := by linarith
+  specialize hNa h2
+  -- hNa : |a n - L| < ε / 2
+  specialize hNb h3
+  -- hNb : |b n - M| < ε / 2
+  have h4 : |a n - L + (b n - M)| ≤
+    |a n - L| + |(b n - M)| := by apply abs_add_le
+  linarith [abs_add_le (a n - L) (b n - M)]
+
+end Solucion7
+
+-- 8ª demostración
+-- ===============
+
+namespace Solucion8
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε/2) (by linarith)
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε/2) (by linarith)
+  -- Nb : ℕ
+  -- hNb : ∀ n ≥ Nb, |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ n ≥ max Na Nb, |(a + b) n - (L + M)| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nb
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  specialize hNa n (le_of_max_le_left hn)
+  -- hNa : |a n - L| < ε / 2
+  specialize hNb n (le_of_max_le_right hn)
+  -- hNb : |b n - M| < ε / 2
+  simp
+  -- ⊢ |a n + b n - (L + M)| < ε
+  grind
+
+end Solucion8
+
+-- 9ª demostración
+-- ===============
+
+namespace Solucion9
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  : LimSuc (a + b) (L + M) :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ (n : ℕ), n ≥ N → |(a + b) n - (L + M)| < ε
+  obtain ⟨Na, hNa⟩ := ha (ε / 2) (by grind)
+  -- Na : ℕ
+  -- hNa : ∀ (n : ℕ), n ≥ Na → |a n - L| < ε / 2
+  obtain ⟨Nb, hNb⟩ := hb (ε / 2) (by grind)
+  -- Nb : ℕ
+  -- hNb : ∀ (n : ℕ), n ≥ Nb → |b n - M| < ε / 2
+  use max Na Nb
+  -- ⊢ ∀ (n : ℕ), n ≥ max Na Nb → |(s + t) n - (L + M)| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ |(a + b) n - (L + M)| < ε
+  calc |(a + b) n - (L + M)|
+     = |(a n + b n) - (L + M)|  := rfl
+   _ = |(a n - L) + (b n - M)|  := by grind
+   _ ≤ |a n - L| + |b n - M|    := by grind
+   _ < ε / 2 + ε / 2            := by grind
+   _ = ε                        := by grind
+
+end Solucion9
+
+-- Lemas usados
+-- ============
+
+variable (x y z z' : ℝ)
+#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+#check (add_halves x : x / 2 + x / 2 = x)
+#check (add_lt_add : x < y → z < z' → x + z < y + z')
+#check (half_pos : x > 0 → x / 2 > 0)
+#check (le_max_left x y : x ≤ max x y)
+#check (le_max_right x y : y ≤ max x y)
+#check (le_of_max_le_left : max x y ≤ z → x ≤ z)
+#check (le_of_max_le_right : max x y ≤ z → y ≤ z)
+#check (max_le_iff : max x y ≤ z ↔ x ≤ z ∧ y ≤ z)
 \end{minted}
 
 \subsection{Demostración en Lenguaje Natural}
@@ -141,12 +538,75 @@ luego $h_2$ y finalmente $h_3$.
 
 \subsection{Ejemplo}
 
-\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement (x y : ℝ) (hx : x = 2) (hy : y = 3) :
-    x = 2 ∧ y = 3 := by
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+-- ---------------------------------------------------------------------
+-- Demostrar que si `x = 2` y adenás `y = 3`, entonces se tiene que
+--    x = 2 ∧ y = 3
+-- ---------------------------------------------------------------------
+
+-- 1ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hx : x = 2)
+  (hy : y = 3)
+  : x = 2 ∧ y = 3 :=
+And.intro hx hy
+
+-- 2ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hx : x = 2)
+  (hy : y = 3)
+  : x = 2 ∧ y = 3 :=
+⟨hx, hy⟩
+
+-- 3ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hx : x = 2)
+  (hy : y = 3)
+  : x = 2 ∧ y = 3 :=
+by
+  constructor
+  · -- ⊢ x = 2
+    exact hx
+  · -- hy : y = 3
+    exact hy
+
+-- 4ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hx : x = 2)
+  (hy : y = 3)
+  : x = 2 ∧ y = 3 :=
+by
   split_ands
-  apply hx
-  apply hy
+  · -- ⊢ x = 2
+    exact hx
+  · -- hy : y = 3
+    exact hy
+
+-- 5ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hx : x = 2)
+  (hy : y = 3)
+  : x = 2 ∧ y = 3 :=
+by
+  tauto
 \end{minted}
 
 La táctica \texttt{split\_ands} puede parecer sencilla, pero es
@@ -183,11 +643,45 @@ demostrando $P$ o $Q$:
 
 \subsection{Ejemplo}
 
-\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement (x y : ℝ) (hx : x = 2) (hy : y = 3) :
-    x = 3 ∨ y = 3 := by
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+-- ---------------------------------------------------------------------
+-- Demostrar que si `y = 3`, entonces se tiene que
+--    x = 3 ∨ y = 3
+-- ---------------------------------------------------------------------
+
+-- 1ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hy : y = 3)
+  : x = 3 ∨ y = 3 :=
+Or.inr hy
+
+-- 2ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hy : y = 3)
+  : x = 3 ∨ y = 3 :=
+by
   right
-  apply hy
+  -- ⊢ y = 3
+  exact hy
+
+-- 3ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (hy : y = 3)
+  : x = 3 ∨ y = 3 :=
+by
+  tauto
 \end{minted}
 
 Los enunciados ``o'' están en todas partes en matemáticas. Las
@@ -217,9 +711,50 @@ solo, se usa \texttt{h.2.1}, y para $R$ se usa \texttt{h.2.2}.
 \subsection{Ejemplo}
 
 \begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement (x y : ℝ) (h : x = 2 ∧ y = 3) :
-    y = 3 := by
-  apply h.2
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+-- ---------------------------------------------------------------------
+-- Demostrar que si `x = 2 ∧ y = 3`, entonces `y = 3`.
+-- ---------------------------------------------------------------------
+
+-- 1ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∧ y = 3)
+  : y = 3 :=
+h.right
+
+-- 2ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∧ y = 3)
+  : y = 3 :=
+h.2
+
+-- 3ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∧ y = 3)
+  : y = 3 :=
+by
+  exact h.2
+
+-- 4ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∧ y = 3)
+  : y = 3 :=
+by
+  tauto
 \end{minted}
 
 La notación de punto es esencial para mantener la claridad en demostraciones
@@ -245,14 +780,79 @@ que se han cubierto todas las posibilidades lógicas.
 
 \subsection{Ejemplo}
 
-\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement (x y : ℝ) (h : x = 2 ∨ y = 3) :
-    (x - 2) * (y - 3) = 0 := by
-  cases' h with h1 h2
-  rewrite [h1]
-  ring_nf
-  rewrite [h2]
-  ring_nf
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+-- ---------------------------------------------------------------------
+-- Demostrar que si `x = 2 ∨ y = 3`, entonces `(x - 2)(y - 3) = 0`.
+-- ---------------------------------------------------------------------
+
+-- 1ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∨ y = 3)
+  : (x - 2) * (y - 3) = 0 :=
+by
+  obtain (h1 | h2) := h
+  · -- h1 : x = 2
+    rewrite [h1]
+    -- ⊢ (2 - 2) * (y - 3) = 0
+    simp
+  · -- h2 : y = 3
+    rewrite [h2]
+    -- ⊢ (x - 2) * (3 - 3) = 0
+    simp
+
+-- 2ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∨ y = 3)
+  : (x - 2) * (y - 3) = 0 :=
+by
+  rcases h with (h1 | h2)
+  · -- h1 : x = 2
+    rewrite [h1]
+    -- ⊢ (2 - 2) * (y - 3) = 0
+    simp
+  · -- h2 : y = 3
+    rewrite [h2]
+    -- ⊢ (x - 2) * (3 - 3) = 0
+    simp
+
+-- 3ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∨ y = 3)
+  : (x - 2) * (y - 3) = 0 :=
+by
+  cases h with
+  | inl h1 =>
+    -- h1 : x = 2
+    rewrite [h1]
+    -- ⊢ (2 - 2) * (y - 3) = 0
+    simp
+  | inr h2 =>
+    -- h2 : y = 3
+    rewrite [h2]
+    -- ⊢ (x - 2) * (3 - 3) = 0
+    simp
+
+-- 4ª demostración
+-- ===============
+
+example
+  (x y : ℝ)
+  (h : x = 2 ∨ y = 3)
+  : (x - 2) * (y - 3) = 0 :=
+by
+  grind
 \end{minted}
 
 \subsection{El conjunto completo de herramientas y/o}
@@ -294,17 +894,187 @@ $(-y, y)$.
 
 \subsection{Ejemplo de aplicación}
 
-\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement (a : ℕ → ℝ) (L : ℝ) (ha : SeqLim a L) :
-    ∃ N, ∀ n ≥ N, a n ≥ L - 1 := by
-  specialize ha 1 (by bound)
-  choose N hN using ha
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si la sucesión a es convergente, entonces a está
+-- eventualmente acotadas inferiormente; es decir, si a converge a L,
+-- entonces
+--    (∃ N)(∀ n ≥ N)[aₙ ≥ L - 1]
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Puesto que a converge a L, existe un N ∈ ℕ tal que
+--    (∀ n ≥ N) |aₙ - L| < 1                                          (1)
+-- Veamos que
+--    (∀ n ≥ N) [aₙ ≥ L - 1]
+-- En efecto, sea n ≥ N. Por (1),
+--    |aₙ - L| < 1
+-- Luego,
+--    -1 < aₙ - L ∧ aₙ - L < 1
+--    ==> -1 < aₙ - L
+--    ==> aₙ ≥ L - 1
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+
+variable {a : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+namespace Solucion1
+
+variable (x : ℝ)
+
+lemma L1
+  (h : -1 < x)
+  : 0 ≤ x + 1 :=
+by
+  have h1 : -1 + 1 < x + 1 := (add_lt_add_iff_right 1).mpr h
+  have h2 : 0 < x + 1 := neg_lt_iff_pos_add.mp h
+  exact le_of_lt h2
+
+example
+  (ha : LimSuc a L) :
+  ∃ N, ∀ n ≥ N, a n ≥ L - 1 :=
+by
+  obtain ⟨N, hN⟩ := ha 1 one_pos
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1
   use N
+  -- ⊢ ∀ n ≥ N, a n ≥ L - 1
   intro n hn
-  specialize hN n hn
-  rewrite [abs_lt] at hN
-  have : -1 < a n - L := by apply hN.1
-  bound
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ a n ≥ L - 1
+  have h1 : |a n - L| < 1 := hN n hn
+  have h2 : -1 < a n - L ∧ a n - L < 1 := abs_lt.mp h1
+  have h3 : -1 < a n - L := h2.1
+  rw [ge_iff_le, ← sub_nonneg]
+  -- ⊢ 0 ≤ a n - (L - 1)
+  calc 0
+     _ ≤ (a n - L) + 1 := L1 (a n - L) h3
+     _ = a n - (L - 1) := sub_add (a n) L 1
+
+end Solucion1
+
+-- 2ª demostración
+-- ===============
+
+namespace Solucion2
+
+example
+  (ha : LimSuc a L) :
+  ∃ N, ∀ n ≥ N, a n ≥ L - 1 :=
+by
+  obtain ⟨N, hN⟩ := ha 1 one_pos
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1
+  use N
+  -- ⊢ ∀ n ≥ N, a n ≥ L - 1
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ a n ≥ L - 1
+  have h1 : -1 < a n - L := (abs_lt.mp (hN n hn)).1
+  have h2 : a n - (L - 1) = (a n - L) + 1 := (sub_add (a n) L 1).symm
+  rw [ge_iff_le, ← sub_nonneg]
+  -- ⊢ 0 ≤ a n - (L - 1)
+  rw [h2]
+  -- ⊢ 0 ≤ a n - L + 1
+  exact neg_le_iff_add_nonneg.mp (le_of_lt h1)
+
+end Solucion2
+
+-- 3ª demostración
+-- ===============
+
+namespace Solucion3
+
+example
+  (ha : LimSuc a L) :
+  ∃ N, ∀ n ≥ N, a n ≥ L - 1 :=
+by
+  obtain ⟨N, hN⟩ := ha 1 one_pos
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1
+  use N
+  -- ⊢ ∀ n ≥ N, a n ≥ L - 1
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ a n ≥ L - 1
+  have h1 : -1 < a n - L := (abs_lt.mp (hN n hn)).1
+  rw [ge_iff_le, ← sub_nonneg]
+  -- ⊢ 0 ≤ a n - (L - 1)
+  calc 0
+     _ ≤ (a n - L) + 1 := by grind
+     _ = a n - (L - 1) := by grind
+
+end Solucion3
+
+-- 4ª demostración
+-- ===============
+
+namespace Solucion4
+
+example
+  (ha : LimSuc a L) :
+  ∃ N, ∀ n ≥ N, a n ≥ L - 1 :=
+by
+  obtain ⟨N, hN⟩ := ha 1 one_pos
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1
+  use N
+  -- ⊢ ∀ n ≥ N, a n ≥ L - 1
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ a n ≥ L - 1
+  have : -1 < a n - L := (abs_lt.mp (hN n hn)).1
+  linarith
+
+end Solucion4
+
+-- 5ª demostración
+-- ===============
+
+namespace Solucion5
+
+example
+  (ha : LimSuc a L) :
+  ∃ N, ∀ n ≥ N, a n ≥ L - 1 :=
+by
+  obtain ⟨N, hN⟩ := ha 1 (by grind)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 1
+  refine ⟨N, fun n hn => ?_⟩
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ a n ≥ L - 1
+  grind
+
+end Solucion5
+
+-- 6ª demostración
+-- ===============
+
+namespace Solucion6
+
+example
+  (ha : LimSuc a L) :
+  ∃ N, ∀ n ≥ N, a n ≥ L - 1 :=
+let ⟨N, hN⟩ := ha 1 (by grind)
+⟨N, fun n hn => by grind⟩
+
+end Solucion6
 \end{minted}
 
 Esta demostración ilustra la extracción de una cota inferior a partir de
@@ -314,8 +1084,8 @@ un bloque de construcción para muchos teoremas importantes.
 
 \section{El teorema del emparedado}
 
-El Teorema del Emparedado (también conocido como Teorema del Sándwich o
-Teorema de Compresión) captura de forma hermosa la idea intuitiva de que si
+El teorema del emparedado (también conocido como teorema del sándwich o
+teorema de compresión) captura de forma hermosa la idea intuitiva de que si
 se atrapa una sucesión entre otras dos sucesiones que convergen al mismo
 límite, entonces la sucesión atrapada también debe converger a ese límite.
 
@@ -337,29 +1107,335 @@ para todo $n$), entonces $b$ también converge a $L$.
 
 \subsection{Demostración en Lean}
 
-\begin{minted}[linenos, breaklines, fontsize=\small]{lean}
-Statement SqueezeThm (a b c : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
-    (cToL : SeqLim c L) (aLeb : ∀ n, a n ≤ b n) (bLec : ∀ n, b n ≤ c n) :
-    SeqLim b L := by
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si las sucesiones a y c convergen a L, y b está
+-- comprimida entre a y c (es decir, aₙ ≤ bₙ ≤ cₙ para todo n), entonces
+-- b también converge a L.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea ε > 0. Tenemos que demostrar que existe un N tal que,
+--    ∀ n ≥ N, |bₙ - L| < ε                                          (1)
+--
+-- Puesto que a y c convergen a L, existen N₁ y ℕ₂ tales que
+--    ∀ n ≥ N₁, |aₙ - L| < ε                                         (2)
+--    ∀ n ≥ N₂, |cₙ - L| < ε                                         (3)
+-- Sea
+--    N = máx(N₁, ℕ₂).                                               (4)
+-- Para demostrar (1), sea n ≥ N. Por  (4), se tiene que
+--    n ≥ N₁
+--    n ≥ N₂
+-- Luego, usando (2) y (3), se tiene que
+--    |aₙ - L| < ε
+--    |cₙ - L| < ε
+-- de donde se deduce que
+--    - ε < aₙ - L < ε                                               (5)
+--    - ε < bₙ - L < ε                                               (6)
+-- Luego,
+--    -ε < aₙ - L   [por (5)]
+--       ≤ bₙ - L   [por hipótesis de b]
+--       ≤ cₙ - L   [por hipótesis de b]
+--       < ε        [por (6)]
+-- Por tanto,
+--    -ε < bₙ - L < ε
+-- y, finalmente,
+--    |bₙ - L| < ε
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+variable {a b c : ℕ → ℝ}
+variable {L : ℝ}
+
+def LimSuc (a : ℕ → ℝ) (L : ℝ) : Prop :=
+  ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |a n - L| < ε
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hc : LimSuc c L)
+  (hab : ∀ n, a n ≤ b n)
+  (hbc : ∀ n, b n ≤ c n)
+  : LimSuc b L :=
+by
   intro ε hε
-  specialize aToL ε hε
-  specialize cToL ε hε
-  choose Na hNa using aToL
-  choose Nc hNc using cToL
-  use Na + Nc
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  obtain ⟨Na, hNa⟩ := ha ε hε
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hc ε hε
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  exact ⟨max Na Nc, by grind⟩
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hc : LimSuc c L)
+  (hab : ∀ n, a n ≤ b n)
+  (hbc : ∀ n, b n ≤ c n)
+  : LimSuc b L :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  have ha : ∃ N, ∀ n ≥ N, |a n - L| < ε := ha ε hε
+  have hb : ∃ N, ∀ n ≥ N, |c n - L| < ε := hc ε hε
+  obtain ⟨Na, hNa⟩ := ha
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hb
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  use max Na Nc
+  -- ⊢ ∀ n ≥ max Na Nc, |b n - L| < ε
   intro n hn
-  have hna : Na ≤ n := by bound
-  have hnc : Nc ≤ n := by bound
-  specialize hNa n hna
-  specialize hNc n hnc
-  rewrite [abs_lt] at hNa
-  rewrite [abs_lt] at hNc
+  -- n : ℕ
+  -- hn : n ≥ max Na Nc
+  -- ⊢ |b n - L| < ε
   rewrite [abs_lt]
+  -- ⊢ -ε < b n - L ∧ b n - L < ε
+  constructor
+  · -- ⊢ -ε < b n - L
+    calc -ε
+       < a n - L := by grind
+     _ ≤ b n - L := by grind
+  · -- ⊢ b n - L < ε
+    calc b n - L
+       ≤ c n - L := by grind
+     _ < ε       := by grind
+
+-- 3ª demostración
+-- ===============
+
+example
+    (ha : LimSuc a L)
+    (hc : LimSuc c L)
+    (hab : ∀ n, a n ≤ b n)
+    (hbc : ∀ n, b n ≤ c n) :
+    LimSuc b L :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  obtain ⟨Na, hNa⟩ := ha ε hε
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hc ε hε
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  refine ⟨max Na Nc, fun n hn => ?_⟩
+  -- n : ℕ
+  -- hn : n ≥ max Na Nc
+  -- ⊢ |b n - L| < ε
+  have hna := hNa n (le_of_max_le_left hn)
+  have hnc := hNc n (le_of_max_le_right hn)
+  rw [abs_lt] at hna hnc ⊢
+  -- hna : -ε < a n - L ∧ a n - L < ε
+  -- hnc : -ε < c n - L ∧ c n - L < ε
+  -- ⊢ -ε < b n - L ∧ b n - L < ε
+  exact ⟨by linarith [hab n], by linarith [hbc n]⟩
+
+-- 4ª demostración
+-- ===============
+
+example
+    (ha : LimSuc a L)
+    (hc : LimSuc c L)
+    (hab : ∀ n, a n ≤ b n)
+    (hbc : ∀ n, b n ≤ c n)
+    : LimSuc b L :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  obtain ⟨Na, hNa⟩ := ha ε hε
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hc ε hε
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  refine ⟨max Na Nc, fun n hn => ?_⟩
+  -- n : ℕ
+  -- hn : n ≥ max Na Nc
+  -- ⊢ |b n - L| < ε
+  have hna := hNa n (le_of_max_le_left hn)
+  have hnc := hNc n (le_of_max_le_right hn)
+  rw [abs_lt] at hna hnc ⊢
+  -- hna : -ε < a n - L ∧ a n - L < ε
+  -- hnc : -ε < c n - L ∧ c n - L < ε
+  -- ⊢ -ε < b n - L ∧ b n - L < ε
+  refine ⟨?_, ?_⟩
+  · -- ⊢ -ε < b n - L
+    calc -ε
+         < a n - L := hna.1
+       _ ≤ b n - L := by linarith [hab n]
+  · calc b n - L
+         ≤ c n - L := by linarith [hbc n]
+       _ < ε       := hnc.2
+
+-- 5ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hc : LimSuc c L)
+  (hab : ∀ n, a n ≤ b n)
+  (hbc : ∀ n, b n ≤ c n)
+  : LimSuc b L :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  have ha : ∃ N, ∀ n ≥ N, |a n - L| < ε := ha ε hε
+  have hb : ∃ N, ∀ n ≥ N, |c n - L| < ε := hc ε hε
+  obtain ⟨Na, hNa⟩ := ha
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hb
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  use max Na Nc
+  -- ⊢ ∀ n ≥ max Na Nc, |b n - L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nc
+  -- ⊢ |b n - L| < ε
+  have hna : Na ≤ n := le_of_max_le_left hn
+  have hnc : Nc ≤ n := le_of_max_le_right hn
+  have hNa : |a n - L| < ε := hNa n hna
+  have hNc : |c n - L| < ε := hNc n hnc
+  rewrite [abs_lt] at hNa
+  -- hNa : -ε < a n - L ∧ a n - L < ε
+  rewrite [abs_lt] at hNc
+  -- hNc : -ε < c n - L ∧ c n - L < ε
+  rewrite [abs_lt]
+  -- ⊢ -ε < b n - L ∧ b n - L < ε
+  constructor
+  · -- ⊢ -ε < b n - L
+    calc -ε
+       < a n - L := hNa.1
+     _ ≤ b n - L := by simp only [tsub_le_iff_right, sub_add_cancel, hab]
+  · -- ⊢ b n - L < ε
+    calc b n - L
+       ≤ c n - L := by simp only [tsub_le_iff_right, sub_add_cancel, hbc]
+     _ < ε       := hNc.2
+
+-- 6ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hc : LimSuc c L)
+  (hab : ∀ n, a n ≤ b n)
+  (hbc : ∀ n, b n ≤ c n)
+  : LimSuc b L :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  have ha : ∃ N, ∀ n ≥ N, |a n - L| < ε := ha ε hε
+  have hb : ∃ N, ∀ n ≥ N, |c n - L| < ε := hc ε hε
+  obtain ⟨Na, hNa⟩ := ha
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hb
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  use max Na Nc
+  -- ⊢ ∀ n ≥ max Na Nc, |b n - L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nc
+  -- ⊢ |b n - L| < ε
+  have hna : Na ≤ n := le_of_max_le_left hn
+  have hnc : Nc ≤ n := le_of_max_le_right hn
+  have hNa : |a n - L| < ε := hNa n hna
+  have hNc : |c n - L| < ε := hNc n hnc
+  rewrite [abs_lt] at hNa
+  -- hNa : -ε < a n - L ∧ a n - L < ε
+  rewrite [abs_lt] at hNc
+  -- hNc : -ε < c n - L ∧ c n - L < ε
+  rewrite [abs_lt]
+  -- ⊢ -ε < b n - L ∧ b n - L < ε
   split_ands
-  · specialize aLeb n
-    bound
-  · specialize bLec n
-    bound
+  · -- ⊢ -ε < b n - L
+    have hab : a n ≤ b n := hab n
+    linarith
+  · -- ⊢ b n - L < ε
+    have hbc : b n ≤ c n := hbc n
+    linarith
+
+-- 7ª demostración
+-- ===============
+
+example
+    (ha : LimSuc a L)
+    (hc : LimSuc c L)
+    (hab : ∀ n, a n ≤ b n)
+    (hbc : ∀ n, b n ≤ c n)
+    : LimSuc b L :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ n ≥ N, |b n - L| < ε
+  obtain ⟨Na, hNa⟩ := ha ε hε
+  -- Na : ℕ
+  -- hNa : ∀ n ≥ Na, |a n - L| < ε
+  obtain ⟨Nc, hNc⟩ := hc ε hε
+  -- Nc : ℕ
+  -- hNc : ∀ n ≥ Nc, |c n - L| < ε
+  refine ⟨max Na Nc, ?_⟩
+  -- ⊢ ∀ n ≥ max Na Nc, |b n - L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ max Na Nc
+  -- ⊢ |b n - L| < ε
+  have hna : n ≥ Na := le_of_max_le_left hn
+  have hnc : n ≥ Nc := le_of_max_le_right hn
+  have ha' : |a n - L| < ε := hNa n hna
+  have hc' : |c n - L| < ε := hNc n hnc
+  rw [abs_lt] at ha' hc' ⊢
+  -- ⊢ -ε < b n - L ∧ b n - L < ε
+  constructor
+  · -- ⊢ -ε < b n - L
+    have h1 : -ε < a n - L := ha'.1
+    have h2 : a n - L ≤ b n - L := by
+      linarith [hab n]
+    linarith
+  · -- ⊢ b n - L < ε
+    have h1 : b n - L ≤ c n - L := by
+      linarith [hbc n]
+    have h2 : c n - L < ε := hc'.2
+    linarith
+
+-- Lemas usados
+-- ============
+
+variable (a b c : ℝ)
+#check (abs_lt : |a| < b ↔ -b < a ∧ a < b)
+#check (le_of_max_le_left : max a b ≤ c → a ≤ c)
+#check (le_of_max_le_right : max a b ≤ c → b ≤ c)
+#check (sub_add_cancel a b : (a - b) + b = a)
+#check (tsub_le_iff_right : a - b ≤ c ↔ a ≤ c + b)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -382,7 +1458,7 @@ $|b(n)-L| < \varepsilon$. Luego $b(n) \to L$.
 
 \subsection{Aplicaciones}
 
-El Teorema del Emparedado es un caballo de batalla del análisis matemático,
+El teorema del emparedado es un caballo de batalla del análisis matemático,
 utilizado para demostrar resultados de convergencia difíciles reduciéndolos
 a problemas más sencillos. Algunos ejemplos son:
 \begin{itemize}
@@ -396,6 +1472,608 @@ El teorema demuestra el poder de combinar múltiples técnicas: argumentos
 épsilon-$N$, manipulación de valores absolutos, descomposición lógica y
 razonamiento con desigualdades. Esta síntesis de herramientas es lo que
 hace posible la demostración matemática avanzada.
+
+\section{Ejercicios}
+
+\begin{ejercicio}
+  Demostrar que si $x=2$, $y=3$ y $z=4$, entonces
+  $$x = 2 ∧ y = 3 ∧ z = 4$$
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- ---------------------------------------------------------------------
+-- Demostrar que si `x=2`, `y=3` y `z=4`, entonces
+--    x = 2 ∧ y = 3 ∧ z = 4
+-- ---------------------------------------------------------------------
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+variable (x y z : ℝ)
+
+-- 1ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  solve_by_elim
+
+-- 3ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  simp_all
+
+-- 4ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  trivial
+
+-- 5ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  simp [*]
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  simp only [and_self, hx, hy, hz]
+
+-- 6ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  constructor
+  · -- ⊢ x = 2
+    exact hx
+  · -- ⊢ y = 3 ∧ z = 4
+    constructor
+    · -- ⊢ y = 3
+      exact hy
+    · -- ⊢ z = 4
+      exact hz
+
+-- 7ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+by
+  split_ands
+  · -- ⊢ x = 2
+    exact hx
+  · -- ⊢ y = 3
+    exact hy
+  · -- ⊢ z = 4
+    exact hz
+
+-- 8ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+And.intro hx (And.intro hy hz)
+
+-- 9ª demostración
+-- ===============
+
+example
+  (hx : x = 2)
+  (hy : y = 3)
+  (hz : z = 4)
+  : x = 2 ∧ y = 3 ∧ z = 4 :=
+⟨hx, ⟨hy, hz⟩⟩
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar que si $x = 2 ∧ y = 3 ∧ z = 4$, entonces $z=4$.
+\end{ejercicio}
+
+
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+variable (x y z : ℝ)
+
+-- 1ª demostración
+-- ===============
+
+example
+  (h : x = 2 ∧ y = 3 ∧ z = 4)
+  : z = 4 :=
+by
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (h : x = 2 ∧ y = 3 ∧ z = 4)
+  : z = 4 :=
+by
+  simp_all
+
+-- 3ª demostración
+-- ===============
+
+example
+  (h : x = 2 ∧ y = 3 ∧ z = 4)
+  : z = 4 :=
+by
+  simp [*]
+
+-- 4ª demostración
+-- ===============
+
+example
+  (h : x = 2 ∧ y = 3 ∧ z = 4)
+  : z = 4 :=
+by
+  simp only [h]
+
+-- 4ª demostración
+-- ===============
+
+example
+  (h : x = 2 ∧ y = 3 ∧ z = 4)
+  : z = 4 :=
+h.2.2
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar que si la sucesión $a$ converge a 5, entonces es
+  eventualmente positiva; es decir, existe un $N$ tal que para todo $n ≥ N$
+  se tiene que $aₙ > 0$.
+\end{ejercicio}
+
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Puesto que a converge a 5, existe un N ∈ ℕ tal que
+--    (∀ n ≥ N) |aₙ - 5| < 5                                          (1)
+-- Veamos que
+--    (∀ n ≥ N) [aₙ > 0]
+-- En efecto, sea n ≥ N. Por (1),
+--    |aₙ - 5| < 5
+-- Luego,
+--    -5 < aₙ - 5 ∧ aₙ - 5 < 5
+--    ==> -5 < aₙ - 5
+--    ==> aₙ > 0
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+
+variable {a : ℕ → ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a 5)
+  : ∃ N, ∀ n ≥ N, 0 < a n :=
+by
+  obtain ⟨N, hN⟩ := ha 5 (by grind)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  refine ⟨N, by grind⟩
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a 5)
+  : ∃ N, ∀ n ≥ N, 0 < a n :=
+by
+  obtain ⟨N, hN⟩ := ha 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  use N
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  -- ⊢ ∀ n ≥ N, 0 < a n
+  grind
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a 5)
+  : ∃ N, ∀ n ≥ N, 0 < a n :=
+by
+  obtain ⟨N, hN⟩ := ha 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  use N
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  -- ⊢ ∀ n ≥ N, 0 < a n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ 0 < a n
+  linarith [(abs_lt.mp (hN n hn)).1]
+
+-- 4ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a 5)
+  : ∃ N, ∀ n ≥ N, 0 < a n :=
+by
+  obtain ⟨N, hN⟩ := ha 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  use N
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  -- ⊢ ∀ n ≥ N, 0 < a n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ 0 < a n
+  have h1 := hN n hn
+  -- h1 : |a n - 5| < 5
+  have h2 := abs_lt.mp h1
+  -- -5 < a n - 5 ∧ a n - 5 < 5
+  have h3 := h2.1
+  -- h3 : -5 < a n - 5
+  exact (lt_add_iff_pos_left (-5)).mp h3
+
+-- 5ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a 5)
+  : ∃ N, ∀ n ≥ N, 0 < a n :=
+by
+  obtain ⟨N, hN⟩ := ha 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  refine ⟨N, fun n hn => (lt_add_iff_pos_left (-5)).mp (abs_lt.mp (hN n hn)).1⟩
+
+-- Aª demostración
+-- ===============
+
+example
+  (ha : LimSuc a 5)
+  : ∃ N, ∀ n ≥ N, 0 < a n :=
+by
+  have h0 : (0 : ℝ) < 5 := by norm_num
+  specialize ha 5 h0
+  -- ha : ∃ N, ∀ n ≥ N, |a n - 5| < 5
+  choose N hN using ha
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - 5| < 5
+  use N
+  -- ⊢ ∀ n ≥ N, 0 < a n
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ 0 < a n
+  specialize hN n hn
+  -- hN : |a n - 5| < 5
+  rewrite [abs_lt] at hN
+  -- hN : -5 < a n - 5 ∧ a n - 5 < 5
+  linarith [hN.1]
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar que una sucesión cuyos términos superan 10 infinitas veces
+  no puede converger a un límite de valor absoluto menor que 5; es
+  decir, si la sucesión $a$ verifica que
+     $$∀ N, ∃ n ≥ N, |aₙ| > 10$$
+  entonces $a$ no puede tener un límite cuyo valor absoluto sea menor que
+  5.
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Para demostrarlo por reducción al absurdo, supongamos que existe un
+-- L ∈ ℝ tal que aₙ converge a L y
+--    ∣L∣ < 5.                                                      (1)
+-- Por la definición de límite, existe N ∈ ℕ tal que
+--    ∀ n ≥ N, ∣aₙ − L∣ < 5                                         (2)
+-- Por hipótesis sobre la sucesión, para ese mismo N existe tal que se
+-- cumplen las siguientes dor relaciones:
+--    n ≥ N                                                         (3)
+--    ∣aₙ∣ > 10                                                     (4)
+-- De (2) y (3) se tiene que
+--    ∣aₙ − L∣ < 5                                                  (5)
+-- Para obtener una contradicción basta probar que 0 < 0, como se
+-- muestra a continuación:
+--    0 < ∣aₙ∣              [por (4)]
+--      = ∣(aₙ − L) + L∣
+--      ≤ ∣aₙ − L∣ + ∣L∣
+--      < 5 + 5             [por (5) y (1)]
+--      = 10.
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+
+variable {a : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : ∀ N, ∃ n ≥ N, |a n| > 10)
+  : ¬ ∃ L, |L| < 5 ∧ LimSuc a L :=
+by
+  intro ⟨L, hL1, hL2⟩
+  -- L : ℝ
+  -- hL1 : |L| < 5
+  -- hL2 : LimSuc a L
+  -- ⊢ False
+  obtain ⟨N, hN⟩ := hL2 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 5
+  obtain ⟨n, hn1, hn2⟩ := ha N
+  -- n : ℕ
+  -- hn1 : n ≥ N
+  -- hn2 : |a n| > 10
+  apply lt_irrefl (10 : ℝ)
+  -- ⊢ 10 < 10
+  have h : |a n - L| < 5 := hN n hn1
+  calc 10 < |a n|           := by exact hn2
+        _ = |(a n - L) + L| := by rw [sub_add_cancel]
+        _ ≤ |a n - L| + |L| := abs_add_le (a n - L) L
+        _ < 5 + 5           := add_lt_add h hL1
+        _ = 10              := by norm_num
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : ∀ N, ∃ n ≥ N, |a n| > 10)
+  : ¬ ∃ L, |L| < 5 ∧ LimSuc a L :=
+by
+  intro ⟨L, hL, hlim⟩
+  -- L : ℝ
+  -- hL : |L| < 5
+  -- hlim : LimSuc a L
+  -- ⊢ False
+  obtain ⟨N, hN⟩ := hlim 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 5
+  obtain ⟨n, hn, hn10⟩ := ha N
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- hn10 : |a n| > 10
+  have h1 : |a n - L| < 5 := hN n hn
+  have h2 : |(a n - L) + L| ≤ |a n - L| + |L| := abs_add_le (a n - L) L
+  rw [sub_add_cancel] at h2
+  -- h2 : |a n| ≤ |a n - L| + |L|
+  linarith
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : ∀ N, ∃ n ≥ N, |a n| > 10)
+  : ¬ ∃ L, |L| < 5 ∧ LimSuc a L :=
+by
+  intro ⟨L, hL1, hL2⟩
+  -- L : ℝ
+  -- hL1 : |L| < 5
+  -- hL2 : LimSuc a L
+  -- ⊢ False
+  obtain ⟨N, hN⟩ := hL2 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 5
+  obtain ⟨n, hn1, hn2⟩ := ha N
+  -- n : ℕ
+  -- hn1 : n ≥ N
+  -- hn2 : |a n| > 10
+  apply lt_irrefl (10 : ℝ)
+  -- ⊢ 10 < 10
+  have h : |a n - L| < 5 := hN n hn1
+  calc 10 < |a n|           := by exact hn2
+        _ = |(a n - L) + L| := by ring_nf
+        _ ≤ |a n - L| + |L| := abs_add_le _ _
+        _ < 5 + 5           := by linarith
+        _ = 10              := by norm_num
+
+-- 4ª demostración
+-- ===============
+
+example
+  (ha : ∀ N, ∃ n ≥ N, |a n| > 10)
+  : ¬ ∃ L, |L| < 5 ∧ LimSuc a L :=
+by
+  intro ⟨L, hL1, hL2⟩
+  -- L : ℝ
+  -- hL1 : |L| < 5
+  -- hL2 : LimSuc a L
+  -- ⊢ False
+  obtain ⟨N, hN⟩ := hL2 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 5
+  obtain ⟨n, hn1, hn2⟩ := ha N
+  -- n : ℕ
+  -- hn1 : n ≥ N
+  -- hn2 : |a n| > 10
+  apply lt_irrefl (10 : ℝ)
+  -- ⊢ 10 < 10
+  calc 10 < |a n|           := by exact hn2
+        _ = |(a n - L) + L| := by grind
+        _ ≤ |a n - L| + |L| := by grind
+        _ < 5 + 5           := by grind
+        _ = 10              := by grind
+
+-- 5ª demostración
+-- ===============
+
+example
+  (ha : ∀ N, ∃ n ≥ N, |a n| > 10)
+  : ¬ ∃ L, |L| < 5 ∧ LimSuc a L :=
+by
+  intro ⟨L, hL1, hL2⟩
+  -- L : ℝ
+  -- hL1 : |L| < 5
+  -- hL2 : LimSuc a L
+  -- ⊢ False
+  obtain ⟨N, hN⟩ := hL2 5 (by norm_num)
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, |a n - L| < 5
+  obtain ⟨n, hn, hn10⟩ := ha N
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- hn10 : |a n| > 10
+  grind
+
+-- 6ª demostración
+-- ===============
+
+example
+  (ha : ∀ N, ∃ n ≥ N, |a n| > 10)
+  : ¬ ∃ L, |L| < 5 ∧ LimSuc a L :=
+by
+  intro h
+  -- h : ∃ L, |L| < 5 ∧ LimSuc a L
+  -- ⊢ False
+  obtain ⟨L, hL⟩ := h
+  -- L : ℝ
+  -- hL : |L| < 5 ∧ LimSuc a L
+  have h1 : |L| < 5 := hL.1
+  have ha' : LimSuc a L := hL.2
+  have h0 : (0 : ℝ) < 5 := by norm_num
+  specialize ha' 5 h0
+  -- ha' : ∃ N, ∀ n ≥ N, |a n - L| < 5
+  obtain ⟨N, hN⟩ := ha'
+  specialize ha N
+  -- ha : ∃ n ≥ N, |a n| > 10
+  obtain ⟨n, hn⟩ := ha
+  -- n : ℕ
+  -- hn : n ≥ N ∧ |a n| > 10
+  specialize hN n hn.1
+  -- hN : |a n - L| < 5
+  have ha : |a n| > 10 := hn.2
+  have h2 : |a n| = |(a n - L) + L| := by ring_nf
+  have h3 : |(a n - L) + L| ≤ |(a n - L)| + |L| := abs_add_le (a n - L) L
+  linarith [h1, ha, h2, h3, hN]
+
+-- Lemas usados
+-- ============
+
+variable (a b c d: ℝ)
+#check (abs_add_le a b : |a + b| ≤ |a| + |b|)
+#check (add_lt_add : a < b → c < d → a + c < b + d)
+#check (lt_irrefl a : ¬a < a)
+#check (sub_add_cancel a b : (a - b) + b = a)
+\end{minted}
+
+\begin{ejercicio}
+Demostrar que si las sucesiones \(a\), \(c\) y \(e\) convergen a \(L\) y, para todo
+\(n\),
+   \[aₙ ≤ bₙ ≤ cₙ ≤ dₙ ≤ eₙ\]
+enconces \(b\) y \(d\) también converge a \(L\).
+\end{ejercicio}
+
+\begin{minted}{lean}
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic
+import Analisis_en_Lean.C6g_Teorema_del_emparedado
+
+variable (a b c d e : ℕ → ℝ)
+variable (L : ℝ)
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hc : LimSuc c L)
+  (he : LimSuc e L)
+  (hab : ∀ n, a n ≤ b n)
+  (hbc : ∀ n, b n ≤ c n)
+  (hcd : ∀ n, c n ≤ d n)
+  (hde : ∀ n, d n ≤ e n)
+  : LimSuc b L ∧ LimSuc d L :=
+by
+  constructor
+  · -- ⊢ LimSuc b L
+    exact teorema_emparedado a b c L ha hc hab hbc
+  · -- ⊢ LimSuc d L
+    exact teorema_emparedado c d e L hc he hcd hde
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hc : LimSuc c L)
+  (he : LimSuc e L)
+  (hab : ∀ n, a n ≤ b n)
+  (hbc : ∀ n, b n ≤ c n)
+  (hcd : ∀ n, c n ≤ d n)
+  (hde : ∀ n, d n ≤ e n)
+  : LimSuc b L ∧ LimSuc d L :=
+⟨teorema_emparedado a b c L ha hc hab hbc,
+ teorema_emparedado c d e L hc he hcd hde⟩
+\end{minted}
+
 
 %%% Local Variables:
 %%% mode: LaTeX

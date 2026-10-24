@@ -4,9 +4,14 @@
 -- Sevilla, 10-enero-2026
 -- ---------------------------------------------------------------------
 
-import Mathlib.Data.Real.Basic
+module
+
+import Mathlib.Analysis.RCLike.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
+
+set_option linter.privateModule false
 
 -- ---------------------------------------------------------------------
 -- Ejercicio 1. Demostrar la propiedad arquimediana; es decir, que para
@@ -103,17 +108,17 @@ by
 -- Lemas usados
 -- ============
 
-variable (a b c : ℝ)
-#check (Nat.le_ceil a : a ≤ ↑⌈a⌉₊)
-#check (exists_nat_gt (1 / ε) : ∃ n : ℕ, 1 / ε < ↑n)
-#check (lt_add_one a : a < a + 1)
-#check (lt_of_le_of_lt : a ≤ b → b < c → a < c)
+-- variable (a b c : ℝ)
+-- #check (Nat.le_ceil a : a ≤ ↑⌈a⌉₊)
+-- #check (exists_nat_gt (1 / ε) : ∃ n : ℕ, 1 / ε < ↑n)
+-- #check (lt_add_one a : a < a + 1)
+-- #check (lt_of_le_of_lt : a ≤ b → b < c → a < c)
 
 -- ---------------------------------------------------------------------
 -- Ejercicio 2. Demostrar que la sucesión a(n) = 1/n converge a 0.
 -- ---------------------------------------------------------------------
 
--- def LimSuc (a : ℕ → ℝ) (L : ℝ) : Prop :=
+-- def SeqLim (a : ℕ → ℝ) (L : ℝ) : Prop :=
 --   ∀ ε > 0, ∃ N : ℕ, ∀ n ≥ N, |a n - L| < ε
 
 variable (a : ℕ → ℝ)
@@ -134,6 +139,8 @@ variable (a : ℕ → ℝ)
 
 -- 1ª demostración
 -- ===============
+
+namespace Demostracion1
 
 lemma L1
   {n : ℕ}
@@ -193,7 +200,7 @@ by
 
 example
   (ha : ∀ n, a n = 1 / n)
-  : LimSuc a 0 :=
+  : SeqLim a 0 :=
 by
   intro ε hε
   -- ε : ℝ
@@ -216,8 +223,12 @@ by
      _ ≤ 1 / N         := L4 hε hN hn
      _ < ε             := L5 hε hN
 
+end Demostracion1
+
 -- 2ª demostración
 -- ===============
+
+namespace Demostracion2
 
 lemma L2'
   {n : ℕ}
@@ -246,7 +257,7 @@ lemma L4'
 by
   apply one_div_le_one_div_of_le
   · -- ⊢ 0 < ↑N
-    exact L3 hε hN
+    exact L3' hε hN
   · -- ⊢ ↑N ≤ ↑n
     gcongr
 
@@ -262,11 +273,11 @@ by
   · -- ⊢ 0 < ε
     gcongr
   · -- ⊢ 0 < ↑N
-    exact L3 hε hN
+    exact L3' hε hN
 
 example
   (ha : ∀ n, a n = 1 / n)
-  : LimSuc a 0 :=
+  : SeqLim a 0 :=
 by
   intro ε hε
   -- ε : ℝ
@@ -289,18 +300,20 @@ by
      _ ≤ 1 / N         := L4' hε hN hn
      _ < ε             := L5' hε hN
 
+end Demostracion2
+
 -- Lemas usados
 -- ============
 
-variable (x y : ℝ)
-variable (m n : ℕ)
-#check (Nat.cast_le : ↑m ≤ ↑n ↔ m ≤ n)
-#check (Nat.cast_nonneg n : 0 ≤ n)
-#check (RCLike.ofReal_lt_ofReal : ↑x < ↑y ↔ x < y)
-#check (abs_of_nonneg : 0 ≤ x → |x| = x)
-#check (div_nonneg : 0 ≤ x -> 0 ≤ y -> 0 ≤ x / y)
-#check (exists_nat_gt x : ∃ n : ℕ, x < n)
-#check (one_div_le_one_div_of_le : 0 < x → x ≤ y → 1 / y ≤ 1 / x)
-#check (one_div_lt : 0 < x → 0 < y → (1 / x < y ↔ 1 / y < x))
-#check (one_div_pos : 0 < 1 / x ↔ 0 < x)
-#check (zero_le_one : 0 ≤ 1)
+-- variable (x y : ℝ)
+-- variable (m n : ℕ)
+-- #check (Nat.cast_le : ↑m ≤ ↑n ↔ m ≤ n)
+-- #check (Nat.cast_nonneg n : 0 ≤ n)
+-- #check (RCLike.ofReal_lt_ofReal : ↑x < ↑y ↔ x < y)
+-- #check (abs_of_nonneg : 0 ≤ x → |x| = x)
+-- #check (div_nonneg : 0 ≤ x -> 0 ≤ y -> 0 ≤ x / y)
+-- #check (exists_nat_gt x : ∃ n : ℕ, x < n)
+-- #check (one_div_le_one_div_of_le : 0 < x → x ≤ y → 1 / y ≤ 1 / x)
+-- #check (one_div_lt : 0 < x → 0 < y → (1 / x < y ↔ 1 / y < x))
+-- #check (one_div_pos : 0 < 1 / x ↔ 0 < x)
+-- #check (zero_le_one : 0 ≤ 1)

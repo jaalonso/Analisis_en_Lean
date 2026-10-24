@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Statement}\PYG{+w}{ }\PYG{n}{OrderLimLe}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{R}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{R}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{K}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{R}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{hK}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{SeqBddBy}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{K}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{K}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{by\PYGZus{}contra}\PYG{+w}{ }\PYG{n}{hL}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hL\PYGZsq{}}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{K}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{bound}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hLK}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{K}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hL\PYGZsq{}}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n}{choose}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{using}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{K}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{hLK}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{o}{(}\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{bound}\PYG{o}{)}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hN}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{K}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hN}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{1}\PYG{o}{]}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{K}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{K}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hL\PYGZsq{}}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hK}\PYG{+w}{ }\PYG{n}{N}
+\PYG{+w}{  }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{f2}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hK}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{f1}\PYG{o}{]}
+\end{Verbatim}

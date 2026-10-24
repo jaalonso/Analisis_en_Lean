@@ -1,0 +1,493 @@
+\chapter{Completitud de los números reales}
+
+\section{Introducción: La Propiedad de Completitud}
+
+Hemos llegado ahora a una de las propiedades más fundamentales de los números
+reales: la \emph{completitud}. Esta es la propiedad que distingue a los números
+reales de los números racionales y hace posible el análisis.
+
+Sabemos que las sucesiones de Cauchy de números racionales convergen a números
+reales. De hecho, así es como construimos los números reales: como clases de
+equivalencia de sucesiones de Cauchy de racionales. Registremos esto como un
+teorema:
+
+\begin{theorem}[Conv\_of\_IsCauchy]
+Si una sucesión $a : \mathbb{N} \to \mathbb{Q}$ satisface \texttt{IsCauchy a},
+entonces \texttt{SeqConv a} se cumple, es decir, la sucesión converge.
+\end{theorem}
+
+Dado que dicho límite existe, podemos definirlo explícitamente:
+
+\begin{definition}[Real\_of\_CauSeq]
+Toma \texttt{IsCauchy a} (para $a : \mathbb{N} \to \mathbb{Q}$) y devuelve el
+número real al que converge $a$.
+\end{definition}
+
+Este número real hace lo que queremos:
+
+\begin{theorem}[SeqLim\_of\_Real\_of\_Cau]
+Si $\mathit{ha} : \texttt{IsCauchy}\ (a : \mathbb{N} \to \mathbb{Q})$, entonces
+$\texttt{SeqLim}\ a\ (\texttt{Real\_of\_CauSeq}\ \mathit{ha})$ se cumple, es
+decir, la sucesión $a$ converge al número real definido por
+\texttt{Real\_of\_CauSeq}.
+\end{theorem}
+
+Pero ahora debemos preguntarnos: ¿qué ocurre con las sucesiones de Cauchy de
+números reales? ¿Necesitamos aún otro sistema numérico (los «hiperreales» o quizás
+los «sureales», para los aficionados a Conway\ldots) para capturar los límites de
+los reales?
+
+\noindent ¡No! Y esto es un fenómeno general: cuando se «completa» un espacio
+reemplazándolo por clases de equivalencia de sucesiones de Cauchy de ese espacio,
+el espacio mismo queda automáticamente «completo». Es decir, todas las sucesiones
+de Cauchy en el espacio completado ya convergen dentro del mismo espacio.
+¡Demostrémoslo para los reales!
+
+\section{La Pregunta: ¿Son Completos los Reales?}
+
+Queremos demostrar que toda sucesión de Cauchy de números reales converge a un
+número real.
+
+Pero acabamos de aprender que los números reales son, en sí mismos, sucesiones de
+Cauchy de racionales (o más exactamente, clases de equivalencia de las mismas).
+Ahora que los números reales están representados por sucesiones de Cauchy de
+racionales, ¿qué significa que $(x_n)$ sea una sucesión de Cauchy de reales?
+¿¡¿Una sucesión de Cauchy de sucesiones de Cauchy?!?
+
+Desempaquemos eso.
+
+\subsection{El Cuadro del Arreglo Doble}
+
+Digamos que tenemos una sucesión infinita de números reales,
+$x : \mathbb{N} \to \mathbb{R}$, que pensamos como $x = (x_0, x_1, x_2, \ldots)$.
+
+Cada real $x_n$ está representado en secreto por una sucesión de Cauchy
+$(q_{n,0},\, q_{n,1},\, q_{n,2},\, \ldots)$ de racionales. Así que cada $x_n$ es
+una función $\mathbb{N} \to \mathbb{Q}$, y la $x$ original es en realidad una
+función:
+\[
+  q : \mathbb{N} \to \mathbb{N} \to \mathbb{Q}
+\]
+Es decir, $x$ es realmente un arreglo de racionales con doble índice:
+
+\[
+\begin{array}{c|ccccl}
+  & j=0 & j=1 & j=2 & j=3 & \cdots \\
+\hline
+i=0: & q_{0,0} & q_{0,1} & q_{0,2} & q_{0,3} & \cdots \quad \leftarrow \text{representa } x_0 \\
+i=1: & q_{1,0} & q_{1,1} & q_{1,2} & q_{1,3} & \cdots \quad \leftarrow \text{representa } x_1 \\
+i=2: & q_{2,0} & q_{2,1} & q_{2,2} & q_{2,3} & \cdots \quad \leftarrow \text{representa } x_2 \\
+i=3: & q_{3,0} & q_{3,1} & q_{3,2} & q_{3,3} & \cdots \quad \leftarrow \text{representa } x_3 \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots
+\end{array}
+\]
+
+Cada fila es una sucesión de Cauchy de racionales $q_{n,m}$ que converge al real
+correspondiente $x_n$. ¡Asombroso! Llamemos $\mathit{hq}$ a la condición de que
+cada una de estas filas sea una sucesión de Cauchy:
+\[
+  \mathit{hq} : \forall n,\; \texttt{IsCauchy}\ (q\; n)
+\]
+
+Entonces decir que esta sucesión (de sucesiones) $x_n$ es en sí misma «de Cauchy»
+significa (como ya sabemos) que:
+\[
+  \forall \varepsilon > 0,\; \exists N,\; \forall n \geq N,\; \forall m \geq n,\;
+  |\texttt{Real\_of\_CauSeq}\ (\mathit{hq}\; m) - \texttt{Real\_of\_CauSeq}\
+  (\mathit{hq}\; n)| < \varepsilon
+\]
+
+\subsection{El Objetivo}
+
+Ahora, supongamos esta condición sobre nuestra sucesión de Cauchy (de sucesiones)
+$x$. Nuestro objetivo es demostrar que esta sucesión tiene un límite real; es decir,
+que existe una única sucesión $y : \mathbb{N} \to \mathbb{Q}$ que satisface
+\[
+  \mathit{hy} : \texttt{IsCauchy}\ y
+\]
+y tal que $x_n \to y$, lo que significa:
+\[
+  \texttt{SeqLim}\ (\lambda n \mapsto \texttt{Real\_of\_CauSeq}\ (\mathit{hq}\; n))\
+  (\texttt{Real\_of\_CauSeq}\ \mathit{hy})
+\]
+¿¡¿Cómo se supone que debemos construir tal cosa?!?
+
+\section{La Idea Clave: La Diagonalización de Cantor}
+
+La idea clave recuerda a los argumentos de diagonalización de Cantor, muy
+presentes en el análisis real: ¡necesitamos extraer una única sucesión de racionales
+de este arreglo!
+
+\subsection{El Intento Ingenuo}
+
+\textbf{El intento ingenuo:} Tomar la sucesión diagonal
+$(q_{0,0},\, q_{1,1},\, q_{2,2},\, q_{3,3},\, \ldots)$.
+
+\textbf{El problema:} ¡Cada fila converge a su propio ritmo! La fila $k$ podría
+necesitar llegar hasta el índice $1000k$ antes de estar dentro de $\varepsilon$ de
+su límite, y la fila $k+1$ podría necesitar llegar hasta el índice $k^2$, etc. Pero
+la diagonal solo muestrea la fila $k$ en la posición $k$, ¡lo cual puede ser
+demasiado pronto!
+
+\subsection{La Solución: Elegir Puntos de Convergencia}
+
+\textbf{La solución:} Para cada fila $k$, necesitamos escoger un índice $N(k)$
+suficientemente alejado para que la fila $k$ haya «convergido lo suficiente» en ese
+punto. Luego tomamos:
+\[
+  y(k) = q_{k,\, N(k)}
+\]
+¡Esta sucesión $y$ será de Cauchy y representará el límite de nuestra sucesión de
+reales!
+
+¿Cómo elegir $N(k)$? Usamos el hecho de que cada $x_k$ (como número real) es el
+límite de su sucesión de Cauchy. Entonces, para cualquier tolerancia (digamos
+$1/k$, o más exactamente $1/(k+1)$ para que siempre sea estrictamente positiva),
+existe un índice $N(k)$ tal que para todo $m \geq N(k)$, $q_{k,m}$ permanece dentro
+de $1/(k+1)$ de $x_k$ (es decir, de $q_{k,n}$ para $n \geq N(k)$). ¡Eso es lo que
+elegiremos!
+
+\section{La Estrategia de Demostración}
+
+Nuestra tarea es:
+\begin{enumerate}
+  \item Construir la sucesión $y$ eligiendo índices apropiados $N(k)$ de cada fila.
+  \item Demostrar que $y$ es de Cauchy.
+  \item Demostrar que la sucesión de reales converge al real representado por $y$.
+\end{enumerate}
+
+Recorramos la demostración formal.
+
+\subsection{Paso 1: Elegir los Índices}
+
+Para cada $n : \mathbb{N}$, usamos \texttt{SeqLim\_of\_Real\_of\_Cau}
+$(\mathit{hq}\; n)$ con tolerancia $1/(n+1)$ para obtener un índice $N(n)$ tal que:
+\[
+  \forall m \geq N(n),\quad |q_{n,m} - x_n| < \frac{1}{n+1}
+\]
+Definimos:
+\[
+  y(n) = q_{n,\, N(n)}
+\]
+Esto nos da una única sucesión de racionales, uno de cada fila, elegido en puntos
+donde esa fila ya ha convergido suficientemente cerca de su límite.
+
+\subsection{Paso 2: Demostrar que $y$ es de Cauchy}
+
+Para demostrar que $y$ es de Cauchy, necesitamos demostrar que para todo
+$\varepsilon > 0$, existe $N_0$ tal que para todo $n, m \geq N_0$, se tiene
+$|y_m - y_n| < \varepsilon$.
+
+La idea clave es un argumento de desigualdad triangular:
+\[
+  |y_m - y_n| = |q_{m,N(m)} - q_{n,N(n)}|
+  \leq |q_{m,N(m)} - x_m| + |x_m - x_n| + |x_n - q_{n,N(n)}|
+\]
+
+\textbf{Acotando el primer y el tercer término:} Necesitamos que
+$|q_{m,N(m)} - x_m|$ y $|q_{n,N(n)} - x_n|$ sean pequeños. Por nuestra elección de
+$N(m)$ y $N(n)$, tenemos:
+\[
+  |q_{m,N(m)} - x_m| < \frac{1}{m+1}, \qquad
+  |q_{n,N(n)} - x_n| < \frac{1}{n+1}
+\]
+Para que sean menores que $\varepsilon/3$, necesitamos $1/(m+1) < \varepsilon/3$ y
+$1/(n+1) < \varepsilon/3$. Por la propiedad arquimediana, existe $N_2$ tal que
+$1/(N_2+1) < \varepsilon/3$. Para todo $n, m \geq N_2$, estas cotas se cumplen.
+
+\textbf{Acotando el término del medio:} Necesitamos que $|x_m - x_n| < \varepsilon/3$.
+Como $x$ es una sucesión de Cauchy de reales, existe $N_1$ tal que para todo
+$m, n \geq N_1$, se tiene $|x_m - x_n| < \varepsilon/3$.
+
+\textbf{Combinando:} Sea $N_0 = N_1 + N_2$. Entonces para todo $m, n \geq N_0$, los
+tres términos están acotados por $\varepsilon/3$, así que:
+\[
+  |y_m - y_n| < \frac{\varepsilon}{3} + \frac{\varepsilon}{3} + \frac{\varepsilon}{3} = \varepsilon
+\]
+Por lo tanto, $y$ es de Cauchy.
+
+\subsection{Paso 3: Demostrar que $x_n \to \texttt{Real\_of\_CauSeq}\ \mathit{hy}$}
+
+Sea $L = \texttt{Real\_of\_CauSeq}\ \mathit{hy}$ el número real representado por
+$y$. Necesitamos demostrar que $x_n \to L$, es decir:
+\[
+  \forall \varepsilon > 0,\; \exists N_0,\; \forall n \geq N_0,\quad |x_n - L| < \varepsilon
+\]
+De nuevo, usamos una desigualdad triangular:
+\[
+  |x_n - L| = |x_n - y_n + y_n - L| \leq |x_n - y_n| + |y_n - L|
+\]
+
+\textbf{Acotando el primer término:} Tenemos $y_n = q_{n,N(n)}$, así que:
+\[
+  |x_n - y_n| = |x_n - q_{n,N(n)}| < \frac{1}{n+1}
+\]
+Para que sea menor que $\varepsilon/2$, necesitamos $1/(n+1) < \varepsilon/2$. Por
+la propiedad arquimediana, existe $N_2$ tal que para todo $n \geq N_2$, esto se
+cumple.
+
+\textbf{Acotando el segundo término:} Como $y$ es de Cauchy con límite $L$, por
+\texttt{SeqLim\_of\_Real\_of\_Cau} $\mathit{hy}$, existe $N_3$ tal que para todo
+$n \geq N_3$:
+\[
+  |y_n - L| < \frac{\varepsilon}{2}
+\]
+
+\textbf{Un ingrediente más:} También necesitamos usar el hecho de que $x$ en sí
+misma es de Cauchy. Existe $N_1$ tal que para todo $n, m \geq N_1$,
+$|x_n - x_m| < \varepsilon/2$.
+
+\textbf{Combinando:} Sea $N_0 = N_1 + N_2 + N_3$. Entonces para todo $n \geq N_0$:
+\[
+  |x_n - L| \leq |x_n - y_n| + |y_n - L| < \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon
+\]
+Por lo tanto, $x_n \to L$, completando la demostración.
+
+\section{La Demostración en Lean}
+
+\begin{minted}[fontsize=\small, breaklines, linenos]{lean}
+Statement Reals_are_Complete (q : N → N → Q) (x : N → R)
+    (hq : ∀ n, IsCauchy (q n))
+    (hx : ∀ n, x n = Real_of_CauSeq (hq n))
+    (hxCau : IsCauchy x) :
+    ∃ (y : N → Q) (hy : IsCauchy y),
+      SeqLim x (Real_of_CauSeq hy) := by
+  choose N hN using fun (n : N) ↦
+    SeqLim_of_Real_of_Cau (hq n) (1 / (n + 1)) (by bound)
+  have hN : ∀ n, ∀ m ≥ N n, |(q n m) - x n| < 1 / (n + 1) := by
+    intro n m hm
+    rewrite [hx n]
+    apply hN n m hm
+  let y := fun n ↦ q n (N n)
+  use y
+  have hy : IsCauchy y := by
+    intro ε hε
+    have hε' : (0 : R) < ε := by exact_mod_cast hε
+    choose N1 hN1 using hxCau (ε / 3) (by norm_num; bound)
+    choose N2 hN2 using ArchProp
+      (show (0 : R) < ε / 3 by norm_num; bound)
+    use N1 + N2
+    intro n hn m hm
+    change |(q m (N m)) - q n (N n)| < ε
+    specialize hN1 n (by bound) m hm
+    have qnBnd := hN n (N n) (by bound)
+    have qmBnd := hN m (N m) (by bound)
+    have f1 : |(q m (N m) : R) - q n (N n)| =
+        |(q m (N m) - x m) + ((x n - q n (N n)) + (x m - x n))| :=
+      by ring_nf
+    have f2 : |(q m (N m) - x m) +
+        ((x n - q n (N n)) + (x m - x n))| ≤
+        |(q m (N m) - x m)| + |(x n - q n (N n)) + (x m - x n)| :=
+      by apply abs_add
+    have f3 : |(x n - q n (N n)) + (x m - x n)| ≤
+        |(x n - q n (N n))| + |(x m - x n)| := by apply abs_add
+    have f3' : |(x n - q n (N n))| = |q n (N n) - x n| :=
+      by apply abs_sub_comm
+    field_simp at hN2
+    have hn' : (N1 : R) + N2 ≤ n := by exact_mod_cast hn
+    have hm' : (n : R) ≤ m := by exact_mod_cast hm
+    have f4' : (N2 : R) ≤ n := by bound
+    have f4'' : (N2 : R) * ε ≤ n * ε := by bound
+    have f4 : (1 : R) / (n + 1) < ε / 3 := by field_simp; bound
+    have f5' : (N2 : R) ≤ m := by bound
+    have f5'' : (N2 : R) * ε ≤ m * ε := by bound
+    have f5 : (1 : R) / (m + 1) < ε / 3 := by field_simp; bound
+    have f6 : |(q m (N m) : R) - q n (N n)| < ε := by
+      linarith [f1, f2, f3, f4, f5, qnBnd, qmBnd, hN1, f3']
+    exact_mod_cast f6
+  use hy
+  intro ε hε
+  choose N1 hN1 using hxCau (ε / 2) (by norm_num; bound)
+  choose N2 hN2 using ArchProp
+    (show (0 : R) < ε / 2 by norm_num; bound)
+  choose N3 hN3 using SeqLim_of_Real_of_Cau hy (ε / 2)
+    (by norm_num; bound)
+  use N1 + N2 + N3
+  intro n hn
+  let L := Real_of_CauSeq hy
+  change |x n - L| < ε
+  change ∀ n ≥ N3, |y n - L| < ε / 2 at hN3
+  rewrite [show |x n - L| = |(x n - y n) + (y n - L)| by ring_nf]
+  have f1 : |(x n - y n) + (y n - L)| ≤
+      |(x n - y n)| + |(y n - L)| := by apply abs_add
+  specialize hN n (N n) (by bound)
+  change |y n - x n| < 1 / (n + 1) at hN
+  rewrite [show |y n - x n| = |x n - y n| by apply abs_sub_comm] at hN
+  specialize hN3 n (by bound)
+  field_simp at hN2
+  have hn' : (N1 : R) + N2 + N3 ≤ n := by norm_cast
+  have f2' : (N2 : R) ≤ n := by bound
+  have f2'' : (N2 : R) * ε ≤ n * ε := by bound
+  have f2 : (1 : R) / (n + 1) < ε / 2 := by field_simp; bound
+  linarith [f1, f2, hN, hN3]
+\end{minted}
+
+\section{Comprendiendo la Demostración}
+
+Desempaquemos los pasos clave en lenguaje natural.
+
+\subsection{La Construcción de $y$}
+
+Usamos la táctica \texttt{choose} para extraer, para cada fila $n$, un índice $N(n)$
+tal que la $n$-ésima fila ha convergido hasta dentro de $1/(n+1)$ de su límite en
+el índice $N(n)$.
+
+Luego definimos $y(n) = q_{n,N(n)}$: tomamos un elemento de cada fila, elegido en
+un punto donde esa fila ya ha convergido suficientemente.
+
+\subsection{Por qué $y$ es de Cauchy}
+
+La demostración de que $y$ es de Cauchy usa una ingeniosa descomposición en tres
+términos:
+\[
+  |y_m - y_n| \leq |y_m - x_m| + |x_m - x_n| + |x_n - y_n|
+\]
+El término del medio es pequeño porque $x$ es de Cauchy (por hipótesis). El
+primero y el tercero son pequeños porque elegimos $y_m$ e $y_n$ en puntos donde
+las filas $m$ y $n$ ya habían convergido a sus límites $x_m$ y $x_n$.
+
+Pero hay una sutileza: necesitamos que estos términos sean pequeños
+\emph{simultáneamente} para $m$ y $n$ grandes. Aquí es donde entra la propiedad
+arquimediana. Necesitamos tanto $1/(m+1) < \varepsilon/3$ como
+$1/(n+1) < \varepsilon/3$. Eligiendo $m, n$ suficientemente grandes (concretamente,
+$m, n \geq N_2$ donde $N_2$ proviene de la propiedad arquimediana), garantizamos
+que ambas desigualdades se cumplen.
+
+\subsection{Por qué $x_n \to L$}
+
+Una vez que sabemos que $y$ es de Cauchy, representa algún número real
+$L = \texttt{Real\_of\_CauSeq}\ \mathit{hy}$.
+Para demostrar que $x_n \to L$, usamos de nuevo una descomposición en dos términos:
+\[
+  |x_n - L| \leq |x_n - y_n| + |y_n - L|
+\]
+El primer término es pequeño porque $y_n$ fue elegido de la fila $n$ en un punto
+donde la fila $n$ había convergido a $x_n$. El segundo término es pequeño porque
+$y$ converge a $L$ (por \texttt{SeqLim\_of\_Real\_of\_Cau}).
+
+\section{La Importancia de la Completitud}
+
+La completitud de los números reales es lo que hace funcionar el análisis real.
+He aquí por qué es importante:
+
+\subsection{Clausura Bajo Límites}
+
+Los números reales son cerrados bajo la operación de tomar límites: si se tiene una
+sucesión de Cauchy de números reales, su límite es también un número real. No es
+necesario seguir expandiendo hacia sistemas numéricos más grandes.
+
+Esto contrasta marcadamente con los números racionales. La sucesión
+$a_n = (1 + 1/n)^n$ es de Cauchy en $\mathbb{Q}$, pero su límite $e$ no es
+racional. Para capturar este límite, necesitamos construir $\mathbb{R}$.
+
+\subsection{Teoremas de Punto Fijo}
+
+Muchos teoremas de punto fijo dependen de la completitud. Por ejemplo, el Teorema
+del Punto Fijo de Banach establece que una contracción sobre un espacio métrico
+completo tiene un único punto fijo, que se encuentra iterando desde cualquier punto
+inicial.
+
+\subsection{Convergencia de Series}
+
+La completitud nos permite trabajar con series infinitas. Una serie
+$\sum a_n$ converge si y solo si sus sumas parciales forman una sucesión de Cauchy.
+Sin completitud, no podríamos garantizar que las sucesiones de Cauchy converjan.
+
+\subsection{Construcción de Funciones}
+
+Muchas funciones importantes se definen como límites de sucesiones:
+\begin{itemize}
+  \item La función exponencial: $e^x = \lim_{n\to\infty}(1 + x/n)^n$
+  \item Las funciones trigonométricas: definidas mediante series de potencias
+  \item Funciones especiales: funciones de Bessel, función gamma, etc.
+\end{itemize}
+Sin completitud, estos límites podrían no existir en el espacio con el que estamos
+trabajando.
+
+\section{El Proceso de Completación}
+
+La construcción que acabamos de completar ilustra un principio general en
+matemáticas: la \emph{completación} de un espacio.
+
+\subsection{El Patrón General}
+
+Comenzamos con un espacio incompleto $X$ (como $\mathbb{Q}$) dotado de una noción
+de distancia. Para completarlo:
+\begin{enumerate}
+  \item Consideramos todas las sucesiones de Cauchy en $X$.
+  \item Definimos una relación de equivalencia: dos sucesiones de Cauchy son
+        equivalentes si su diferencia converge a cero.
+  \item El espacio completado $\overline{X}$ es el conjunto de clases de
+        equivalencia.
+  \item Definimos la distancia en $\overline{X}$ usando representantes de las
+        clases de equivalencia.
+\end{enumerate}
+
+\subsection{Propiedades Clave de la Completación}
+
+\textbf{Universalidad:} La completación es única (salvo isomorfismo). Todo espacio
+completo que contenga a $X$ como subconjunto denso debe ser isomorfo a
+$\overline{X}$.
+
+\textbf{Preservación:} Las operaciones algebraicas (adición, multiplicación) y las
+propiedades topológicas (continuidad) se extienden de $X$ a $\overline{X}$.
+
+\textbf{Completitud:} ¡El espacio completado $\overline{X}$ es completo! Esto es
+exactamente lo que demostramos: las sucesiones de Cauchy en $\mathbb{R}$ convergen
+en $\mathbb{R}$.
+
+\subsection{Ejemplos en Matemáticas}
+
+\textbf{De $\mathbb{Q}$ a $\mathbb{R}$:} Los números reales son la completación de
+los racionales respecto al valor absoluto usual.
+
+\textbf{Números $p$-ádicos:} Usando una noción diferente de distancia (el valor
+absoluto $p$-ádico), podemos completar $\mathbb{Q}$ para obtener los números
+$p$-ádicos $\mathbb{Q}_p$, que tienen propiedades muy distintas de $\mathbb{R}$.
+
+\textbf{Espacios de funciones:} El espacio $L^2([0,1])$ de funciones de cuadrado
+integrable es la completación del espacio de funciones continuas bajo la norma
+$L^2$.
+
+\textbf{Completación de espacios métricos:} Cualquier espacio métrico puede
+completarse hasta obtener un espacio métrico completo.
+
+\section{El Argumento Diagonal}
+
+La construcción de $y$ eligiendo elementos $y_n = q_{n,N(n)}$ de diferentes filas
+es una forma de argumento diagonal.
+
+\section{Reflexiones Filosóficas}
+
+La completitud de los números reales representa un profundo logro matemático: la
+construcción de un sistema numérico donde toda sucesión de Cauchy converge.
+
+\subsection{El Precio de la Completitud}
+
+Para lograr la completitud, tuvimos que abandonar el mundo de los racionales, donde
+todo número puede escribirse como una expresión finita $p/q$, y entrar en el mundo
+de los reales, donde la mayoría de los números (como $\pi$, $e$, $\sqrt{2}$)
+requieren expansiones decimales infinitas.
+
+Este es el compromiso fundamental: la completitud exige aceptar los procesos
+infinitos como objetos completados.
+
+\subsection{El Beneficio de la Completitud}
+
+A cambio, obtenemos un sistema numérico donde:
+\begin{itemize}
+  \item Toda sucesión monótona y acotada converge.
+  \item Toda sucesión de Cauchy converge.
+  \item Las funciones continuas en intervalos cerrados alcanzan sus extremos.
+  \item El Teorema del Valor Intermedio se cumple.
+  \item Las series de potencias definen funciones.
+\end{itemize}
+Estas propiedades hacen posible el análisis. Sin completitud, nos encontraríamos
+constantemente con sucesiones que «deberían» converger pero no lo hacen, funciones
+que «deberían» tener ceros pero no los tienen, y teoremas que «deberían» ser válidos
+pero fallan.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

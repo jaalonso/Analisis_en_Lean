@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Statement}\PYG{+w}{ }\PYG{n}{SubseqConv}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{R}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{R}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{σ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{hσ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Subseq}\PYG{+w}{ }\PYG{n}{σ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{n}{σ}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{choose}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{using}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{N}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{σ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{SubseqGe}\PYG{+w}{ }\PYG{n}{hσ}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{f2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{σ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{f1}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hn}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{σ}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{f2}
+\PYG{+w}{  }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{hN}
+\end{Verbatim}

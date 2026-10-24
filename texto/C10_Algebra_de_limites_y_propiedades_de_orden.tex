@@ -1,6 +1,6 @@
 \chapter{Álgebra de límites y propiedades de orden}
 
-\section{Producto de Sucesiones}
+\section{Producto de sucesiones}
 
 Habiendo establecido el teorema del límite algebraico para sumas y múltiplos
 escalares, ahora abordamos el producto de sucesiones convergentes. Este resultado,
@@ -47,39 +47,210 @@ $|b(n)-M|$ menor que $\varepsilon/(2|L|)$.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean}
-Statement ProdLimNeNe (a b c : N → R) (L M : R) (hL : L ≠ 0) (hM : M ≠ 0)
-    (ha : SeqLim a L) (hb : SeqLim b M) (hc : ∀ n, c n = a n * b n) :
-    SeqLim c (L * M) := by
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea ε > 0. Como aₙ converge a L, existe N₁ tal que si n ≥ N₁,
+-- entonces
+--    |aₙ − L| < 1
+-- Por tanto, para n ≥ N₁
+--    |aₙ| = |aₙ − L + L|
+--         ≤ |aₙ − L| + |L|
+--         < 1 + |L|
+-- Definamos
+--    C = 1 + |L|
+-- Entonces
+--    C > 0
+-- y, para n ≥ N₁
+--    |aₙ| ≤ C
+-- Ahora, como aₙ converge a L, existe N₂ tal que si n ≥ N₂,
+-- entonces
+--    |aₙ − L| < ε/(2(|M| + 1))
+-- Por otra parte, como bₙ converge a M, existe N₃ tal que si
+-- n ≥ N₃, entonces
+--    |bₙ − M| < ε/(2C)
+-- Sea
+--    N = máx⁡{N₁,N₂,N₃}
+-- Si n ≥ N, entonces se cumplen las tres desigualdades
+-- anteriores. Ahora estimamos:
+--    |aₙbₙ − LM|
+-- Sumamos y restamos aₙM:
+--    aₙbₙ − LM = aₙbₙ − aₙM + aₙM − LM.
+-- Entonces
+--    |aₙbₙ − LM| = |aₙ(bₙ − M) + M(aₙ − L)|
+-- Por la desigualdad triangular,
+--    |aₙbₙ − LM| ≤ |aₙ||bₙ − M| +|M||aₙ − L|
+-- Como n ≥ N₁,tenemos
+--    |aₙ| ≤ C
+-- Luego,
+--    |aₙbₙ − LM| ≤ C|bₙ − M| + |M||aₙ − L|
+-- Usando las cotas elegidas,
+--    C|bₙ − M| < C⋅ε/(2C)
+--              = ε/2
+-- y
+--    |M||aₙ − L| < |M|⋅ε/(2(|M| + 1))
+-- Como
+--    |M|/(|M| + 1) < 1
+-- se sigue que
+--    |M|⋅ε/(2(|M| + 1)) < ε/2
+-- Por tanto,
+--    |aₙbₙ − LM| < ε/2 + ε/2
+--                = ε
+-- Así, para todo ε > 0 existe N tal que si n ≥ N, entonces
+--    |aₙbₙ − LM| < ε
+-- Esto prueba que, para todo ε > 0, existe N tal que |aₙbₙ − LM| < ε
+-- siempre que n ≥ N, es decir, aₙbₙ converge a LM.
+
+-- Demostraciones en Lean 4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Analisis_en_Lean.C9B_Acotacion_de_convergentes
+import Mathlib.Tactic
+
+variable {a b c : ℕ → ℝ}
+variable {L M : ℝ}
+
+-- 1ª solución
+-- ===========
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hc : ∀ n, c n = a n * b n)
+  : LimSuc c (L * M) :=
+by
   intro ε hε
-  choose K hK using BddOfConvNonzero b M hb hM
-  have ε1 : 0 < ε / (2 * K) := by bound
-  have absL : 0 < |L| := by apply abs_pos_of_nonzero hL
-  have ε2 : 0 < ε / (2 * |L|) := by bound
-  specialize ha (ε / (2 * K)) ε1
-  specialize hb (ε / (2 * |L|)) ε2
-  choose N1 hN1 using ha
-  choose N2 hN2 using hb
-  use N1 + N2
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |c n - L * M| < ε
+  obtain ⟨N₁, hN₁⟩ := ha 1 (by positivity)
+  -- N₁ : ℕ
+  -- hN₁ : ∀ n ≥ N₁, |a n - L| < 1
+  have h1 : ∀ n ≥ N₁, |a n| < 1 + |L| := by grind
+  set C := 1 + |L|
+  -- h1 : ∀ n ≥ N₁, |a n| < C
+  have h2 : C > 0 := by grind
+  obtain ⟨N₂, hN₂⟩ := ha (ε / (2 * (|M| + 1))) (by positivity)
+  -- N₂ : ℕ
+  -- hN₂ : ∀ n ≥ N₂, |a n - L| < ε / (2 * (|M| + 1))
+  obtain ⟨N₃, hN₃⟩ := hb (ε / (2 * C)) (by positivity)
+  -- N₃ : ℕ
+  -- hN₃ : ∀ n ≥ N₃, |b n - M| < ε / (2 * C)
+  set N := max N₁ (max N₂ N₃)
+  use N
+  -- ⊢ ∀ n ≥ N, |c n - L * M| < ε
   intro n hn
-  have hn1 : N1 ≤ n := by bound
-  have hn2 : N2 ≤ n := by bound
-  specialize hN1 n hn1
-  specialize hN2 n hn2
-  specialize hc n
-  rewrite [hc]
-  have f1 : |a n * b n - L * M| = |(a n - L) * b n + (L * (b n - M))| := by
-    ring_nf
-  have f2 : |(a n - L) * b n + (L * (b n - M))| ≤
-      |(a n - L) * b n| + |(L * (b n - M))| := by apply abs_add
-  have f3 : |(a n - L) * b n| = |(a n - L)| * |b n| := by apply abs_mul
-  have bnBnd : |b n| ≤ K := by apply hK.2 n
-  have f5 : |(a n - L)| * |b n| ≤ ε / (2 * K) * K := by bound
-  have Kpos : 0 < K := by apply hK.1
-  have f6 : ε / (2 * K) * K = ε / 2 := by field_simp
-  have f7 : |(L * (b n - M))| = |L| * |b n - M| := by apply abs_mul
-  have f8 : |L| * |b n - M| < |L| * (ε / (2 * |L|)) := by bound
-  have f9 : |L| * (ε / (2 * |L|)) = ε / 2 := by field_simp
-  linarith [f1, f2, f3, f5, f6, f7, f8, f9]
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ |c n - L * M| < ε
+  have h3 : n ≥ N₁ := by grind
+  have h4 : n ≥ N₂ := by grind
+  have h5 : n ≥ N₃ := by grind
+  have h6 : |a n| < C := by grind
+  have h7 : |b n - M| < ε / (2 * C) := by grind
+  have h8 : |a n - L| < ε / (2 * (|M| + 1)) := by grind
+  have h9 : |M| * (ε / (2 * (|M| + 1))) < ε / 2 := by
+              field_simp
+              -- ⊢ |M| < |M| + 1
+              norm_num
+  calc |c n - L * M|
+       = |a n * b n - L * M|                             := by grind
+     _ = |a n * (b n - M) + M * (a n - L)|               := by grind
+     _ ≤ |a n * (b n - M)| + |M * (a n - L)|             := by grind
+     _ = |a n| * |b n - M| + |M| * |a n - L|             := by grind
+     _ ≤ C * |b n - M| + |M| * |a n - L|                 := by gcongr
+     _ < C * (ε / (2 * C)) + |M| * |a n - L|             := by gcongr
+     _ ≤ C * (ε / (2 * C)) + |M| * (ε / (2 * (|M| + 1))) := by gcongr
+     _ = ε / 2 + |M| * (ε / (2 * (|M| + 1)))             := by grind
+     _ < ε / 2 + ε / 2                                   := by grind
+     _ = ε                                               := by grind
+
+-- 2ª solución
+-- ===========
+
+lemma L1
+  (h : LimSuc a L)
+  : ∃ k, ∀ n ≥ k, |a n| < 1 + |L| :=
+by
+  obtain ⟨k, hk⟩ := h 1 one_pos
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < 1
+  use k
+  -- ⊢ ∀ n ≥ k, |a n| < |L| + 1
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |a n| < |L| + 1
+  calc |a n|
+       = |(a n - L) + L| := congrArg abs (sub_add_cancel (a n) L).symm
+     _ ≤ |a n - L| + |L| := abs_add_le (a n - L) L
+     _ < 1 + |L|         := (add_lt_add_iff_right |L|).mpr (hk n hn)
+
+example
+  (ha : LimSuc a L)
+  (hb : LimSuc b M)
+  (hc : ∀ n, c n = a n * b n)
+  : LimSuc c (L * M) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |c n - L * M| < ε
+  obtain ⟨N₁, hN₁⟩ := L1 ha
+  -- N₁ : ℕ
+  -- hN₁ : ∀ n ≥ N₁, |a n| < 1 + |L|
+  set C := 1 + |L| with hC
+  -- hC : C = 1 + |L|
+  have h2 : C > 0 := by positivity
+  obtain ⟨N₂, hN₂⟩ := ha (ε / (2 * (|M| + 1))) (by positivity)
+  -- N₂ : ℕ
+  -- hN₂ : ∀ n ≥ N₂, |a n - M| < ε / (2 * (|M| + 1))
+  obtain ⟨N₃, hN₃⟩ := hb (ε / (2 * C)) (by positivity)
+  -- N₃ : ℕ
+  -- hN₃ : ∀ n ≥ N₃, |b n - M| < ε / (2 * C)
+  set N := max N₁ (max N₂ N₃)
+  use N
+  -- ⊢ ∀ n ≥ N, |c n - L * M| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- ⊢ |c n - L * M| < ε
+  have h3 : n ≥ N₁ := by omega
+  have h4 : n ≥ N₂ := by omega
+  have h5 : n ≥ N₃ := by omega
+  have h6 : |a n| < C := by
+    calc |a n|
+         < 1 + |L| := hN₁ n h3
+       _ = C       := rfl
+  have h7 : |b n - M| < ε / (2 * C) := hN₃ n h5
+  have h8 : |a n - L| < ε / (2 * (|M| + 1)) := hN₂ n h4
+  have h9 : |M| * (ε / (2 * (|M| + 1))) < ε / 2 := by
+              field_simp
+              -- ⊢ |M| < |M| + 1
+              norm_num
+  calc |c n - L * M|
+       = |a n * b n - L * M| :=
+            congrArg (|· - L * M|) (hc n)
+     _ = |a n * (b n - M) + M * (a n - L)| :=
+            by ring_nf
+     _ ≤ |a n * (b n - M)| + |M * (a n - L)| :=
+            abs_add_le (a n * (b n - M)) (M * (a n - L))
+     _ = |a n| * |b n - M| + |M| * |a n - L| :=
+            by simp only [abs_mul]
+     _ ≤ C * |b n - M| + |M| * |a n - L| :=
+            by gcongr
+     _ < C * (ε / (2 * C)) + |M| * |a n - L| :=
+            by gcongr
+     _ ≤ C * (ε / (2 * C)) + |M| * (ε / (2 * (|M| + 1))) :=
+            by gcongr
+     _ = ε / 2 + |M| * (ε / (2 * (|M| + 1))) :=
+            by field_simp
+     _ < ε / 2 + ε / 2 :=
+            by gcongr
+     _ = ε :=
+            add_halves ε
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -224,19 +395,188 @@ Esto implica $a(n) > K$, lo que contradice la hipótesis $a(n)\leq K$.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean}
-Statement OrderLimLe (a : N → R) (L : R) (ha : SeqLim a L)
-    (K : R) (hK : SeqBddBy a K) :
-    L ≤ K := by
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Lo demostramos por contradicción. Supongamos que
+--    L > M                                                    (1)
+-- y llegaremos a la contradicción M < M.
+--
+-- De (1), se tiene
+--    L - M > 0
+-- y, usando esta cantidad en la convergencia de aₙ, se obtiene
+-- un k tal que
+--    ∀ n ≥ k, |aₙ - L| < L - M                                (2)
+-- En particular, para n = k (que satisface k ≥ k), de (2) se
+-- obtiene
+--    |aₖ - L| < L - M                                         (3)
+-- Además,
+--    L - aₖ ≤ |aₖ - L|                                        (4)
+-- ya que
+--    L - aₖ = -(aₖ - L)
+--           ≤ |aₖ - L|
+-- Finalmente,
+--    M = L - (L - M)
+--      < L - |aₖ - L|  [por (3)]
+--      ≤ L - (L - aₖ)  [por (4)]
+--      = aₖ
+--      ≤ M             [porque M es cota superior de aₙ]
+-- Por tanto, M < M.
+
+-- Demostraciones en Lean 4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+def CotaSup (a : ℕ → ℝ) (M : ℝ) : Prop :=
+  ∀ n, a n ≤ M
+
+variable {a : ℕ → ℝ}
+variable {L M : ℝ}
+
+-- 1ª solución
+-- ===========
+
+example
+  (ha : LimSuc a L)
+  (hM : CotaSup a M)
+  : L ≤ M :=
+by
   by_contra hL
-  have hL' : K < L := by bound
-  have hLK : 0 < (L - K) := by linarith [hL']
-  choose N hN using ha (L - K) hLK
-  specialize hN N (by bound)
-  rewrite [abs_lt] at hN
-  have f1 : L - (L - K) < a N := by linarith [hN.1]
-  have f2 : K ≤ L - (L - K) := by linarith [hL']
-  specialize hK N
-  linarith [f2, hK, f1]
+  -- hL : ¬L ≤ M
+  -- ⊢ False
+  apply lt_irrefl M
+  -- ⊢ M < M
+  obtain ⟨k, hk⟩ := ha (L - M) (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < L - M
+  calc M
+       < a k := by grind
+     _ ≤ M   := hM k
+
+-- 2ª solución
+-- ===========
+
+example
+  (ha : LimSuc a L)
+  (hM : CotaSup a M)
+  : L ≤ M :=
+by
+  by_contra hL
+  -- hL : ¬L ≤ M
+  -- ⊢ False
+  apply lt_irrefl M
+  -- ⊢ M < M
+  have h1 : L > M := not_le.mp hL
+  have h2 : L - M > 0 := sub_pos.mpr h1
+  obtain ⟨k, hk⟩ := ha (L - M) h2
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < L - M
+  calc M
+       = L - (L - M)    := by grind
+     _ < L - |a k - L|  := by grind
+     _ ≤ L - (L - a k)  := by grind
+     _ = a k            := by grind
+     _ ≤ M              := hM k
+
+-- 3ª solución
+-- ===========
+
+example
+  (ha : LimSuc a L)
+  (hM : CotaSup a M)
+  : L ≤ M :=
+by
+  by_contra hL
+  -- hL : ¬L ≤ M
+  -- ⊢ False
+  apply lt_irrefl M
+  -- ⊢ M < M
+  have h1 : L - M > 0 := sub_pos.mpr (not_le.mp hL)
+  obtain ⟨k, hk⟩ := ha (L - M) h1
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < L - M
+  have h2 : |a k - L| < L - M := hk k (le_refl k)
+  have h3 : L - a k ≤ |a k - L| := by
+    calc L - a k
+         = -(a k - L) := by ring
+       _ ≤ |a k - L|  := neg_le_abs (a k - L)
+  calc M
+       = L - (L - M)    := by ring
+     _ < L - |a k - L|  := sub_lt_sub_left h2 L
+     _ ≤ L - (L - a k)  := by gcongr
+     _ = a k            := by ring
+     _ ≤ M              := hM k
+
+-- 4ª solución
+-- ===========
+
+example
+  (ha : LimSuc a L)
+  (hM : CotaSup a M)
+  : L ≤ M :=
+by
+  by_contra hL
+  -- hL : ¬L ≤ M
+  -- ⊢ False
+  apply lt_irrefl M
+  -- ⊢ M < M
+  obtain ⟨k, hk⟩ := ha (L - M) (sub_pos.mpr (not_le.mp hL))
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < L - M
+  have h1 : |a k - L| < L - M := hk k (le_refl k)
+  have h2 : L - a k ≤ |a k - L| := by
+    calc L - a k
+         = -(a k - L) := (neg_sub (a k) L).symm
+       _ ≤ |a k - L|  := neg_le_abs (a k - L)
+  calc M
+       = L - (L - M)    := (sub_sub_self L M).symm
+     _ < L - |a k - L|  := sub_lt_sub_left h1 L
+     _ ≤ L - (L - a k)  := sub_le_sub_left h2 L
+     _ = a k            := sub_sub_self L (a k)
+     _ ≤ M              := hM k
+
+-- Solución del libro
+-- ==================
+
+example
+  (ha : LimSuc a L)
+  (hM : CotaSup a M)
+  : L ≤ M :=
+by
+  by_contra hL
+  -- hL : ¬L ≤ M
+  -- ⊢ False
+  have hL' : M < L := by bound
+  have hLM : 0 < (L - M) := by linarith [hL']
+  obtain ⟨k, hk⟩ := ha (L - M) hLM
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n - L| < L - M
+  specialize hk k (by bound)
+  -- hk : |a k - L| < L - M
+  rewrite [abs_lt] at hk
+  -- hk : -(L - M) < a k - L ∧ a k - L < L - M
+  have f1 : L - (L - M) < a k := by linarith [hk.1]
+  have f2 : M = L - (L - M) := by ring_nf
+  specialize hM k
+  -- hM : a k ≤ M
+  linarith [f2, hM, f1]
+
+-- Lemas usados
+-- ============
+
+variable (x y : ℝ)
+#check (le_refl x : x ≤ x)
+#check (lt_irrefl x : ¬x < x)
+#check (neg_le_abs x : -x ≤ |x|)
+#check (neg_sub x y : -(x - y) = y - x)
+#check (not_le : ¬x ≤ y ↔ y < x)
+#check (sub_le_sub_left : x ≤ y → ∀ z, z - y ≤ z - x)
+#check (sub_lt_sub_left : x < y → ∀ z, z - y < z - x)
+#check (sub_pos : 0 < x - y ↔ y < x)
+#check (sub_sub_self x y : x - (x - y) = y)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -340,17 +680,207 @@ $|a(\sigma(n))-L|<\varepsilon$.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean}
-Statement SubseqConv (a : N → R) (L : R) (ha : SeqLim a L)
-    (σ : N → N) (hσ : Subseq σ) :
-    SeqLim (a ∘ σ) L := by
-  intro ε hε
-  choose N hN using ha ε hε
-  use N
-  intro n hn
-  have f1 : n ≤ σ n := by apply SubseqGe hσ n
-  have f2 : N ≤ σ n := by linarith [f1, hn]
-  specialize hN (σ n) f2
-  apply hN
+-- ---------------------------------------------------------------
+-- Una subsucesión se obtiene aplicando a la sucesión original una
+-- función de extracción; es decir, una función φ : ℕ → ℕ
+-- estrictamente creciente. Por ejemplo, la subsucesión
+--    u₀, u₂, u₄, u₆, ...
+-- se obtiene con la función de extracción φ definida por
+-- φ(n) = 2n.
+--
+-- Las definiciones anteriores se formalizan en Lean 4 como:
+--
+--    -- φ es una función de extracción.
+--    def extraccion (φ : ℕ → ℕ) :=
+--      StrictMono φ
+--
+--    -- v es una subsucesión de u.
+--    def subsucesion (v u : ℕ → ℝ) :=
+--      ∃ φ, extraccion φ ∧ v = u ∘ φ
+--
+--    -- a es el límite de u.
+--    def LimSuc (u : ℕ → ℝ) (a : ℝ) :=
+--      ∀ ε > 0, ∃ k : ℕ, ∀ n ≥ k, |u n - a| < ε
+--
+-- Demostrar que toda subsucesión de una sucesión convergente
+-- converge al mismo límite que la sucesión.
+-- ---------------------------------------------------------------
+
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Usaremos el siguiente lema: Si φ es una función de extracción,
+-- entonces
+--    ∀ n, n ≤ φ(n)
+--
+-- Por ser v una subsucesión de u, existe una función de
+-- extracción φ tal que
+--    v = u ∘ φ                                                (3)
+--
+-- Tenemos que demostrar que para cada ε > 0, existe un k ∈ ℕ tal
+-- que
+--     ∀ n ≥ k, |v(n) - a| < ε                                 (1)
+--
+-- Puesto que a es el límite de u, , existe un k ∈ ℕ tal
+-- que
+--     ∀ n ≥ k, |u(n) - a| < ε                                 (2)
+--
+-- Veamos que k verifica (1). Para ello, sea n ≥ k. Entonces,
+--    φ(n) ≥ k                                                 (4)
+-- ya que
+--    φ(n) ≥ n    [por el Lema]
+--         ≥ k
+-- Luego,
+--    |v(n) - a| = |(u ∘ φ )(n) - a|    [por (3)]
+--               = |u(φ(n)) - a|
+--               < ε                    [por (2) y (4)]
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+
+open Nat
+
+variable {u v : ℕ → ℝ}
+variable {a : ℝ}
+variable {φ : ℕ → ℕ}
+
+-- φ es una función de extracción.
+def extraccion (φ : ℕ → ℕ):=
+  StrictMono φ
+
+-- v es una subsucesión de u.
+def subsucesion (v u : ℕ → ℝ) :=
+  ∃ φ, extraccion φ ∧ v = u ∘ φ
+
+-- 1ª demostración
+-- ===============
+
+example
+  (hv : subsucesion v u)
+  (ha : LimSuc u a)
+  : LimSuc v a :=
+by
+  obtain ⟨φ, hφ, hφ'⟩ := hv
+  -- φ : ℕ → ℕ
+  -- hφ : extraccion φ
+  -- hφ' : v = u ∘ φ
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |v n - a| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |v n - a| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |v n - a| < ε
+  have h1 : φ n ≥ k :=
+    calc φ n
+         ≥ n := StrictMono.le_apply hφ
+       _ ≥ k := hn
+  calc |v n - a|
+       = |(u ∘ φ ) n  - a| := by rw [hφ']
+     _ = |u (φ n) - a|     := rfl
+     _ < ε                 := hk (φ n) h1
+
+-- 2ª demostración
+-- ===============
+
+example
+  (hv : subsucesion v u)
+  (ha : LimSuc u a)
+  : LimSuc v a :=
+by
+  obtain ⟨φ, hφ, rfl⟩ := hv
+  -- φ : ℕ → ℕ
+  -- hφ : extraccion φ
+  -- ⊢ LimSuc (u ∘ φ) a
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |(u ∘ φ) n - a| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |(u ∘ φ) n - a| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |(u ∘ φ) n - a| < ε
+  have h1 : φ n ≥ k :=
+    calc φ n
+         ≥ n := hφ.le_apply
+       _ ≥ k := hn
+  calc |(u ∘ φ) n  - a|
+     _ = |u (φ n) - a|     := rfl
+     _ < ε                 := hk (φ n) h1
+
+-- 3ª demostración
+-- ===============
+
+example
+  (hv : subsucesion v u)
+  (ha : LimSuc u a)
+  : LimSuc v a :=
+by
+  obtain ⟨φ, hφ, rfl⟩ := hv
+  -- φ : ℕ → ℕ
+  -- hφ : extraccion φ
+  -- ⊢ LimSuc (u ∘ φ) a
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |(u ∘ φ) n - a| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε
+  use k
+  -- ⊢ ∀ n ≥ k, |(u ∘ φ) n - a| < ε
+  intros n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |(u ∘ φ) n - a| < ε
+  apply hk
+  -- ⊢ φ n ≥ k
+  apply le_trans hn
+  -- ⊢ n ≤ φ n
+  exact hφ.le_apply
+
+-- 4ª demostración
+-- ===============
+
+example
+  (hv : subsucesion v u)
+  (ha : LimSuc u a)
+  : LimSuc v a :=
+by
+  obtain ⟨φ, hφ, rfl⟩ := hv
+  -- φ : ℕ → ℕ
+  -- hφ : extraccion φ
+  -- ⊢ LimSuc (u ∘ φ) a
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |(u ∘ φ) n - a| < ε
+  obtain ⟨k, hk⟩ := ha ε hε
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε
+  exact ⟨k, fun n hn ↦ hk (φ n) (le_trans hn hφ.le_apply)⟩
+
+-- Lemas usados
+-- ============
+
+variable (m n x y z : ℕ)
+#check (Nat.zero_le n : 0 ≤ n)
+#check (le_trans : x ≤ y → y ≤ z → x ≤ z)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -444,24 +974,129 @@ $\varepsilon>0$, $|1-1|=0<\varepsilon$.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean}
-Statement (a : N → R) (ha : ∀ n, a n = (-1) ^ n) :
-    ∃ σ L, Subseq σ ∧ SeqLim (a ∘ σ) L := by
-  let σ : N → N := fun n ↦ 2 * n
-  use σ, 1
-  split_ands
-  · intro i j hij
-    change 2 * i < 2 * j
-    linarith [hij]
-  · intro ε hε
-    use 0
-    intro n hn
-    change |a (2 * n) - 1| < ε
-    specialize ha (2 * n)
-    rewrite [ha]
-    have f1 : (-1 : R) ^ (2 * n) = 1 := by bound
-    rewrite [f1]
-    norm_num
-    apply hε
+-- ---------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Por el Reto 22, basta demostrar que la sucesión a tiene dos
+-- subsucesiones que convergen a límites distintos. Para ello,
+-- consideramos las funciones φ₁ y φ₂ de ℕ en ℕ definidas por
+--    φ₁(n) = 2n
+--    φ₂(n) = 2n + 1
+-- Ambas son funciones de extracción ya que, para todo i, j ∈ ℕ
+-- con i < j, se tiene que
+--    φ₁(i) = 2i < 2j = φ₁(j)
+--    φ₂(i) = 2i + 1 < 2j + 1 = φ₂(j)
+-- Definimos las subsucesiones de a
+--    b₁ = a ∘ φ₁
+--    b₂ = a ∘ φ₂
+-- Ambas subsucesiones son constantes (b₁ vale 1 y b₂ vale -1), ya
+-- que para todo n ∈ ℕ
+--    b₁(n) = a(2n) = (-1)²ⁿ = 1
+--    b₂(n) = a(2n + 1) = (-1)²ⁿ⁺¹ = -1
+-- Luego, aplicando el Reto 23 que dice "toda sucesión constante
+-- converge a su valor", b₁ converge a 1 y b₂ converge a -1. Como
+-- 1 ≠ -1, a tiene dos subsucesiones con límites distintos y, por
+-- el Reto 22, no es convergente.
+
+-- Demostraciones en Lean 4
+-- ========================
+
+import Mathlib.Tactic
+import RetosLean4.Defs -- LimSuc, SucConvergente, extraccion, subsucesion
+import RetosLean4.Reto_9 -- unicidad_limite
+import RetosLean4.Reto_21 -- limite_subsucesion
+import RetosLean4.Reto_22 -- no_convergencia_subsucesiones
+import RetosLean4.Reto_23 -- limSuc_const
+
+variable {a : ℕ → ℝ}
+
+-- 1ª demostración
+-- ===============
+
+lemma extraccion_par : extraccion (fun n => 2 * n) :=
+by
+  intro i j hij
+  -- i j : ℕ
+  -- hij : i < j
+  -- ⊢ (fun n => 2 * n) i < (fun n => 2 * n) j
+  dsimp
+  -- ⊢ 2 * i < 2 * j
+  omega
+
+lemma extraccion_impar : extraccion (fun n => 2 * n + 1) :=
+by
+  intro i j hij
+  -- i j : ℕ
+  -- hij : i < j
+  -- ⊢ (fun n => 2 * n + 1) i < (fun n => 2 * n + 1) j
+  dsimp
+  -- ⊢ 2 * i + 1 < 2 * j + 1
+  omega
+
+lemma suc_par
+  (ha : ∀ n, a n = (-1)^n)
+  (n : ℕ)
+  : a (2 * n) = 1 :=
+by
+  calc a (2 * n)
+         = (-1) ^ (2 * n) := ha (2 * n)
+       _ = 1              := by simp
+
+lemma suc_impar
+  (ha : ∀ n, a n = (-1)^n)
+  (n : ℕ)
+  : a (2 * n + 1) = -1 :=
+by
+  calc a (2 * n + 1)
+         = (-1) ^ (2 * n + 1) := ha (2 * n + 1)
+       _ = -1                 := by simp [pow_succ]
+
+example
+  (ha : ∀ n, a n = (-1)^n)
+  : ¬SucConvergente a :=
+by
+  let φ₁ := fun n : ℕ => 2 * n
+  let φ₂ := fun n : ℕ => 2 * n + 1
+  have hb₁ : subsucesion (a ∘ φ₁) a := ⟨φ₁, extraccion_par, rfl⟩
+  have hb₂ : subsucesion (a ∘ φ₂) a  := ⟨φ₂, extraccion_impar, rfl⟩
+  have hL₁ : LimSuc (a ∘ φ₁) 1 :=
+    limSuc_const (fun n => suc_par ha n)
+  have hL₂ : LimSuc (a ∘ φ₂) (-1) :=
+    limSuc_const (fun n => suc_impar ha n)
+  have h : (1:ℝ) ≠ -1 := by norm_num
+  exact no_convergencia_subsucesiones hb₁ hL₁ hb₂ hL₂ h
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : ∀ n, a n = (-1)^n)
+  : ¬SucConvergente a :=
+by
+  have h1 : extraccion (fun n => 2 * n) := extraccion_par
+  have hb₁ : subsucesion (a ∘ fun n => 2 * n) a := ⟨_, h1, rfl⟩
+  have hL₁ : LimSuc (a ∘ fun n => 2 * n) 1 :=
+    limSuc_const (fun n => suc_par ha n)
+  have h2 : extraccion (fun n => 2 * n + 1) := extraccion_impar
+  have hb₂ : subsucesion (a ∘ fun n => 2 * n + 1) a := ⟨_, h2, rfl⟩
+  have hL₂ : LimSuc (a ∘ fun n => 2 * n + 1) (-1) :=
+    limSuc_const (fun n => suc_impar ha n)
+  exact no_convergencia_subsucesiones hb₁ hL₁ hb₂ hL₂ (by norm_num)
+
+-- 3ª demostración
+-- ===============
+
+theorem no_convergente_pot_menos_uno
+  (ha : ∀ n, a n = (-1)^n)
+  : ¬SucConvergente a :=
+no_convergencia_subsucesiones
+  ⟨_, extraccion_par, rfl⟩
+  (limSuc_const (fun n => suc_par ha n))
+  ⟨_, extraccion_impar, rfl⟩
+  (limSuc_const (fun n => suc_impar ha n))
+  (by norm_num)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -505,6 +1140,10 @@ no puede converger.
 
 Esta técnica —mostrar la divergencia exhibiendo dos subsucesiones con límites
 distintos— es una herramienta poderosa en el análisis.
+
+\section{Ejercicios}
+
+
 
 %%% Local Variables:
 %%% mode: LaTeX

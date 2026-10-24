@@ -1,0 +1,24 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Statement}\PYG{+w}{ }\PYG{n}{SqueezeThm}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{aToL}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{cToL}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{aLeb}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{bLec}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{SeqLim}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{aToL}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{cToL}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{choose}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{using}\PYG{+w}{ }\PYG{n}{aToL}
+\PYG{+w}{  }\PYG{n}{choose}\PYG{+w}{ }\PYG{n}{Nc}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{using}\PYG{+w}{ }\PYG{n}{cToL}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{Nc}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{bound}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Nc}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{bound}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hna}
+\PYG{+w}{  }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hnc}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hNa}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hNc}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n}{split\PYGZus{}ands}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{aLeb}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{    }\PYG{n}{bound}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{n}{specialize}\PYG{+w}{ }\PYG{n}{bLec}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{    }\PYG{n}{bound}
+\end{Verbatim}

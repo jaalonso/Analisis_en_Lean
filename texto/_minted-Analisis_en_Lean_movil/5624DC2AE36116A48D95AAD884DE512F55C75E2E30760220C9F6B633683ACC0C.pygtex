@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{\PYGZsh{}eval}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{7}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Nat}\PYG{o}{)}\PYG{+w}{   }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} resultado: 0}
+\PYG{k+kd}{example}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Nat}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{l+m+mi}{7}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{7}\PYG{+w}{ }\PYG{n+nb+bp}{≠}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{decide}
+\end{Verbatim}

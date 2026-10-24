@@ -35,7 +35,12 @@
 -- curso "Introduction to formal real analysis" de Alex Kontorovich que
 -- se encuentra en https://youtu.be/TN51-1RRenY
 
-import Mathlib.Tactic
+module
+
+import Mathlib.Basic.Real.Basic
+import Mathlib.Tactic.Ring        -- ring, ring_nf
+import Mathlib.Tactic.NormNum     -- norm_num
+import Aesop                      -- aesop
 
 variable (x y : ℝ)
 

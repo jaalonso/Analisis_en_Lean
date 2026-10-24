@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Esbozo en Lean 4: cociente de ℕ × ℕ por la relación de equivalencia}
+\PYG{k+kd}{def}\PYG{+w}{ }\PYG{n}{IntRel}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{×}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{×}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{k+kt}{Prop}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{  }\PYG{k}{fun}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{c}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{d}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{d}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{c}
+
+\PYG{k+kd}{theorem}\PYG{+w}{ }\PYG{n}{IntRel\PYGZus{}equiv}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Equivalence}\PYG{+w}{ }\PYG{n}{IntRel}\PYG{+w}{ }\PYG{n}{where}
+\PYG{+w}{  }\PYG{n}{refl}\PYG{+w}{  }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{IntRel}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n}{symm}\PYG{+w}{  }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{h}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{IntRel}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n+nb+bp}{*;}\PYG{+w}{ }\PYG{n}{omega}
+\PYG{+w}{  }\PYG{n}{trans}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{h₁}\PYG{+w}{ }\PYG{n}{h₂}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{IntRel}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n+nb+bp}{*;}\PYG{+w}{ }\PYG{n}{omega}
+\end{Verbatim}

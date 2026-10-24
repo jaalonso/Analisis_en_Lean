@@ -1,0 +1,348 @@
+\chapter{Los números reales}
+
+\noindent\textbf{SIMPLICIO:} Bien, ¿ahora puedes decirme qué son exactamente los números reales, $\mathbb{R}$?
+
+\medskip
+\noindent\textbf{SÓCRATES:} Casi. Primero: ¿qué son los enteros, $\mathbb{Z}$? ¿Qué «problema» intentan resolver los enteros?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Hmm\ldots{} ¿La resta?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Muy bien! Sí, de hecho, en Lean, ¿sabes cuánto es $3 - 7$?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Supongo que no es $-4$, ya que eso no es un número natural. Ya me has dicho que las funciones son «totales», así que si $3 : \mathbb{N}$ es un número natural y $7 : \mathbb{N}$ es un número natural, entonces $3 - 7$ también será un número natural. No sé, ¿será\ldots{} $0$?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Exacto! En Lean, $3 - 7 = 0$. Por lo tanto, ¡el «teorema» de que $N - 7 + 7 = N$ es literalmente \textbf{falso}! Cuando $N = 3$, obtenemos:
+\[
+  3 - 7 + 7 = (3 - 7) + 7 = 0 + 7 = 7 \neq 3
+\]
+En Lean esto se puede verificar así:
+
+\begin{minted}[frame=single, bgcolor=gray!10]{lean}
+#eval (3 - 7 : Nat)   -- resultado: 0
+example : (3 : Nat) - 7 + 7 ≠ 3 := by decide
+\end{minted}
+
+Así que tenemos que arreglar la resta. He aquí una forma de hacerlo, un «modelo» para $\mathbb{Z}$:
+
+Quiero pensar en $\mathbb{Z}$ como diferencias de naturales (pero hecho correctamente esta vez); así que empecemos con $\mathbb{N} \times \mathbb{N}$, simplemente un par de números naturales.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Bien, y supongo que lo que me estás diciendo es que debo imaginar un par $(m, n) : \mathbb{N} \times \mathbb{N}$ como representando el entero $m - n$?
+
+\medskip
+\noindent\textbf{SÓCRATES:} Sí, pero no quiero que escribas literalmente $m - n$, ya que eso aún no tiene el «significado» correcto. Simplemente conserva el par $(m, n)$. ¿Cómo debería verse la adición en $\mathbb{N} \times \mathbb{N}$ de modo que «represente» lo que entendemos por adición de enteros, pero en este modelo?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Hmm\ldots{} Me estás diciendo que si tenemos, por ejemplo, $(7, 2)$, que representa el entero $7 - 2 = 5$, y $(4, 8)$, que pretende representar el entero $4 - 8 = -4$, entonces quiero definir una operación $+: (\mathbb{N} \times \mathbb{N}) \to (\mathbb{N} \times \mathbb{N}) \to (\mathbb{N} \times \mathbb{N})$ que represente la adición. ¡Ah! ¿Por qué no simplemente sumar las componentes? Entonces
+\[
+  (7, 2) + (4, 8) = (7+4,\; 2+8) = (11, 10)
+\]
+que, en nuestro modelo mental, se supone que significa $11 - 10 = 1 = 5 + (-4)$. ¡Funciona!
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Genial! Entiendes por qué funciona, ¿verdad? Bien, ¿qué operación deberíamos intentar construir a continuación?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿La multiplicación?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Claro, adelante!
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Tengo la sensación de que esto no será tan sencillo. Oh, espera, no: solo tengo que hacer un pequeño cálculo primero en mi modelo. Para multiplicar $(a, b)$ por $(c, d)$, debería multiplicar $(a - b) \cdot (c - d) = ac - bc - ad + bd$. ¡Ya lo tengo; agrupo los positivos y los negativos!
+\[
+  (a, b) \times (c, d) \;:=\; (ac + bd,\; ad + bc)
+\]
+¡Esto es divertido!
+
+\medskip
+\noindent\textbf{SÓCRATES:} Me alegra escucharlo. Pero espera, quería hablar de otra operación en $\mathbb{Z}$, la que no puedes hacer «correctamente» en $\mathbb{N}$\ldots
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Ah, perdón, la resta.
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Eso no existe! :)
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Cómo? Claro que existe. Pero obviamente intentas que yo diga algo\ldots{} ¡Ya veo! Si tienes adición y negación, entonces tienes resta. Así que la resta no es una operación «fundamental», sino simplemente la combinación de otras dos. ¿Entonces necesitamos definir la negación?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Lo has captado! ¿Y bien?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Cuál debería ser la negación de $a - b$? ¡Fácil! $b - a$. Ah, entonces la operación es: ¡simplemente intercambiar las entradas!
+\[
+  -(a, b) = (b, a)
+\]
+¡Qué elegante!
+
+\medskip
+\noindent\textbf{SÓCRATES:} En efecto. Estoy seguro de que en este punto podrías continuar así, trabajando todas las propiedades habituales —conmutatividad, asociatividad, distributividad, etc.—, simplemente a partir de las propiedades que ya conoces sobre los números naturales y sus operaciones. Pero quiero avanzar hacia los números reales. Solo hay un problema con tu modelo de los enteros.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Ah sí?
+
+\medskip
+\noindent\textbf{SÓCRATES:} Hay demasiados. ¿Qué podría querer decir con eso?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Ya veo\ldots{} El par $(7, 2)$ representa el $5$, pero también lo hace el par $(8, 3)$, y $(5, 0)$, e infinitos otros. ¿Entonces qué hacemos?
+
+\medskip
+\noindent\textbf{SÓCRATES:} Resulta que no es demasiado difícil resolver este problema. Simplemente declaramos que dos pares $(a, b)$ y $(c, d)$ son «iguales» (los matemáticos dirían «equivalentes», y escribirían $(a, b) \approx (c, d)$) si su diferencia es cero. ¡El manejo flexible de la igualdad en Lean nos permite hacer esto!
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Oooh, genial! Espera, ¿entonces simplemente vamos a decir que el par $(a, a)$, para cualquier número natural $a$, es cero? ¿Y que dos pares $(a, b)$ y $(c, d)$ son «equivalentes» si:
+\[
+  (a, b) - (c, d) = (a, b) + (d, c) = (a+d,\; b+c)
+\]
+tiene dos entradas iguales, es decir, cuando $a + d = b + c$?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Sí, exactamente! Técnicamente, hay que verificar algunas cosas. Esta operación de llamar equivalentes a ciertos elementos debe ser una «relación de equivalencia». Esto significa que se satisfacen tres condiciones:
+
+\begin{itemize}
+  \item \textbf{Reflexividad:} $x \approx x$ para cualquier $x : \mathbb{N} \times \mathbb{N}$,
+  \item \textbf{Simetría:} $x \approx y$ si y solo si $y \approx x$, y
+  \item \textbf{Transitividad:} $x \approx y$ e $y \approx z$ implica que $x \approx z$.
+\end{itemize}
+
+Te dejo que compruebes por tu cuenta que esas propiedades se cumplen para nuestra noción de equivalencia: $(a, b) \approx (c, d)$ si y solo si $a + d = b + c$. Así que aquí está nuestra definición «oficial» de los enteros:
+
+\begin{quote}
+  Son las «clases de equivalencia» de $\mathbb{N} \times \mathbb{N}$ bajo la «relación» $\approx$.
+\end{quote}
+
+Bastante interesante, ¿verdad?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Sí! Pero espera\ldots{} Habíamos definido la adición sobre pares como $(a, b) + (c, d) = (a+c, b+d)$. Pero estás diciendo que los enteros son en realidad clases de equivalencia de pares. ¿Cuál par de la clase de equivalencia debería usar cuando calculo una suma?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Excelente pregunta! ¿Qué crees que deberíamos hacer?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Hmm\ldots{} Lo ideal sería que no importara qué representante escojo de cada clase de equivalencia. El resultado debería ser el mismo de cualquier forma. ¡De lo contrario, toda la construcción sería ambigua!
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Muy bien! ¿Y qué significa eso, con precisión?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Déjame pensar\ldots{} Supongamos que tengo dos pares $(a, b)$ y $(a', b')$ que representan el mismo entero, de modo que $(a, b) \approx (a', b')$. Y supongamos que tengo otros dos pares $(c, d)$ y $(c', d')$ que también representan el mismo entero, de modo que $(c, d) \approx (c', d')$.
+
+Entonces necesito verificar que al sumarlos:
+\[
+  (a, b) + (c, d) \quad\text{es equivalente a}\quad (a', b') + (c', d')
+\]
+¡De lo contrario, la «suma» dependería de qué representantes escogemos, lo cual sería un desastre!
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Exacto! Esto es lo que los matemáticos llaman «buena definición» (\textit{well-definedness}). ¿Puedes verificar que esto se cumple realmente para nuestra definición de adición?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Déjame intentarlo\ldots{} Estoy suponiendo que $(a, b) \approx (a', b')$, lo que significa $a + b' = b + a'$. Y estoy suponiendo que $(c, d) \approx (c', d')$, lo que significa $c + d' = d + c'$.
+
+Ahora, calculamos que $(a, b) + (c, d) = (a+c, b+d)$ y $(a', b') + (c', d') = (a'+c', b'+d')$.
+
+Para que sean equivalentes, necesito que: $(a+c) + (b'+d') = (b+d) + (a'+c')$.
+
+Reordenando el lado izquierdo: $(a+c) + (b'+d') = a + b' + c + d'$.
+
+Y el lado derecho: $(b+d) + (a'+c') = b + a' + d + c'$.
+
+¡Pero espera! Por mis suposiciones, tengo $a + b' = b + a'$ y $c + d' = d + c'$. Así que:
+\[
+  a + b' + c + d' = (a + b') + (c + d') = (b + a') + (d + c') = b + a' + d + c'
+\]
+¡Son iguales! Así que la adición está bien definida.
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Excelente trabajo! Y, por supuesto, tendrías que verificar la misma propiedad para la multiplicación y la negación. En Lean, cuando «elevas» una operación de $\mathbb{N} \times \mathbb{N}$ al cociente $\mathbb{Z}$, debes proporcionar exactamente este tipo de demostración de que la operación respeta la relación de equivalencia.
+
+\begin{minted}[frame=single, bgcolor=gray!10]{lean}
+-- Esbozo en Lean 4: cociente de ℕ × ℕ por la relación de equivalencia
+def IntRel : ℕ × ℕ → ℕ × ℕ → Prop :=
+  fun (a, b) (c, d) => a + d = b + c
+
+theorem IntRel_equiv : Equivalence IntRel where
+  refl  := fun (a, b) => by simp [IntRel]
+  symm  := fun h => by simp [IntRel] at *; omega
+  trans := fun h₁ h₂ => by simp [IntRel] at *; omega
+\end{minted}
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Está bien. Y entonces\ldots{} ¿qué tiene que ver todo esto con los números reales?
+
+\medskip
+\noindent\textbf{SÓCRATES:} Bueno, ¿recuerdas que probamos que si tienes una sucesión acotada (por arriba y por abajo), entonces tiene una subsucesión de Cauchy?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Sí, Bolzano-Weierstrass. ¿Y?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¿Y que seguí dando pistas bastante evidentes de que una sucesión ser de Cauchy iba a ser equivalente a ser convergente? (De hecho, demostramos una dirección: si una sucesión converge, entonces es de Cauchy.)
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Sí!
+
+\medskip
+\noindent\textbf{SÓCRATES:} Así que solo falta demostrar que si una sucesión es de Cauchy, entonces converge a un número real.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Síiii!
+
+\medskip
+\noindent\textbf{SÓCRATES:} Bien, aquí está, aquí va la definición. Es tu última oportunidad. Toma la píldora azul y los números reales vuelven a ser una recta numérica, y todo sigue igual que siempre. Toma la píldora roja, y ya no hay vuelta atrás; nunca volverás a ver los números reales de la misma manera.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Deja ya el suspenso y continúa de una vez!
+
+\medskip
+\noindent\textbf{SÓCRATES:} Bien, lo siento; solo intentaba crear algo de expectativa.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Sí, me di cuenta.
+
+\medskip
+\noindent\textbf{SÓCRATES:} De acuerdo. La razón por la que las sucesiones de Cauchy convergen a números reales es\ldots{} que:
+\begin{center}
+  \Large\textbf{¡Las sucesiones de Cauchy \emph{son} los números reales!}
+\end{center}
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Vaya, lo telegrafíaste desde kilómetros de distancia.
+
+\medskip
+\noindent\textbf{SÓCRATES:} Estás\ldots{} completamente impasible?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Completamente.
+
+\medskip
+\noindent\textbf{SÓCRATES:} Hmm, bien. Pero\ldots{} ¿de verdad lo entiendes?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Qué hay que entender? Estás diciendo que los números reales son sucesiones de Cauchy. Incluso recuerdo nuestra discusión sobre cómo queremos que los números reales sean límites de sucesiones racionales, pero la forma en que definimos los límites presupone la existencia de los números reales. Esa fue nuestra justificación para definir las sucesiones de Cauchy en primer lugar. Todo encaja, lo entiendo.
+
+\medskip
+\noindent\textbf{SÓCRATES:} Bueno, eso es casi correcto.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Qué está mal entonces?
+
+\medskip
+\noindent\textbf{SÓCRATES:} Dímelo tú.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} \ldots{} Bien, mmm\ldots{} Me contaste una historia muy larga sobre $\mathbb{Z}$ y $\mathbb{N} \times \mathbb{N}$. Probablemente estabas preparando algo. Oh, vaya. Ahora lo veo. ¡Vaya, eso es\ldots{} TAN genial!
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¿Qué es, qué ves?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Hay demasiadas sucesiones de Cauchy! Igual que había demasiados elementos de $\mathbb{N} \times \mathbb{N}$. Podría tener muchas sucesiones racionales distintas, todas siendo de Cauchy y convergiendo al mismo número real, y no querría llamarlas números reales distintos. ¿Entonces qué hacemos?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¿Sí?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Decimos que las sucesiones de Cauchy son «iguales»\ldots
+
+\medskip
+\noindent\textbf{SÓCRATES:} Quieres decir «equivalentes».
+
+\medskip
+\noindent\textbf{SIMPLICIO:} \ldots{} sí, como quieras, equivalentes, si su límite es el mismo número real.
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Ay! ¡Lo hiciste de nuevo! ¡No puedes usar los números reales para definir los números reales!
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Vaya, tienes razón. Ahora sí lo veo claro. Simplemente restamos las dos sucesiones de Cauchy. ¡Hay un número real que conocemos con certeza: el \textbf{CERO}!
+
+Así que: dos sucesiones de Cauchy son equivalentes si su diferencia (que demostramos que también es una sucesión de Cauchy) converge a cero (un número que conocemos, por lo que podemos fácilmente hablar de que una sucesión tiene límite cero).
+
+\medskip
+\noindent\textbf{SÓCRATES:} Ahora tienes todo el panorama. Los números reales son:
+
+\begin{quote}
+  \centering
+  \large\textbf{Clases de equivalencia de sucesiones de Cauchy de números racionales.}
+\end{quote}
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Pues haberlo dicho desde el principio! :)
+
+\medskip
+\noindent\textbf{SÓCRATES:} Supongo que debería haberlo hecho. Oye, ¿recuerdas que demostramos que la suma de dos sucesiones de Cauchy es también de Cauchy?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Sí?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¿Alguna idea de qué significa eso?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Oh! ¡Obtenemos todas las operaciones sobre los números reales a partir de las operaciones que demostramos sobre sucesiones de Cauchy! ¡Qué maravilla! Simplemente sumas dos sucesiones de Cauchy término a término, y obtienes otra. Como acabas de explicar, habría que verificar que esto está «bien definido»: que si tomásemos otras dos sucesiones de Cauchy que difieren de nuestras dos originales en sucesiones que tienden a cero, entonces el límite también difiere en una sucesión que tiende a cero. Creo que podría trabajar todos los detalles con bastante facilidad.
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Maravilloso, ahora realmente lo has entendido! Oye, ¿recuerdas todos esos dolores de cabeza con las conversiones entre números naturales y reales? ¿De qué crees que se trataba todo eso?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Ah, ya veo! Dado que, a diferencia de nosotros los humanos, Lean no puede «hacer trampa», ¡tiene que pasar por todos los pasos que acabamos de describir! Así que digamos que empiezas con un número natural como $3$, que recuerdo que es secretamente $\text{succ}(\text{succ}(\text{succ}(\text{zero})))$. Para llegar a los números reales, supongo que primero tienes que forzar $3 : \mathbb{Z}$, lo cual, como acabamos de ver, significa algo como crear el par $(3, 0)$ en $\mathbb{N} \times \mathbb{N}$ (o cualquier otra cosa equivalente a él). Luego hay que llevar $(3, 0)$ hasta los racionales, que probablemente son algo como $\mathbb{Z} \times \mathbb{N}$ donde el primer factor se supone que es el numerador y el segundo el denominador, y hay que preocuparse por dividir entre cero y fracciones equivalentes, etc. Así que como número racional, debería pensar realmente en $3 : \mathbb{Q}$ como habiéndose convertido en la fracción $3/1$. Y finalmente, para enviarlo hasta los reales, necesito hacer una sucesión de Cauchy que converja a $3$. ¡Pero eso es fácil, simplemente hago la sucesión constante! ¡Así que eso es lo que significan todas esas molestas flechas hacia arriba!
+
+La aplicación $\uparrow : \mathbb{N} \to \mathbb{R}$ funciona así:
+\[
+  \uparrow\;:\;\mathbb{N} \to \mathbb{R}
+  \;:\;
+  3 \;\mapsto\; \bigl(3/1,\;3/1,\;3/1,\;3/1,\;3/1,\;\ldots\bigr)
+\]
+En Lean esto se puede ver así:
+
+\begin{minted}[frame=single, bgcolor=gray!10]{lean}
+-- La inclusión ℕ → ℝ en Lean 4 pasa por ℤ y ℚ
+#check (Nat.cast : ℕ → ℝ)
+-- 3 : ℝ es, conceptualmente, la sucesión de Cauchy constante (3/1, 3/1, ...)
+example : (3 : ℝ) = ((3 : ℕ) : ℝ) := by norm_cast
+\end{minted}
+
+¡Es verdaderamente asombroso, ¡todo funciona de verdad!
+
+\medskip
+\noindent\textbf{SÓCRATES:} Así es :) ¿Y sabes qué es aún más asombroso?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Qué?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Esta construcción que acabamos de hacer —tomar sucesiones de Cauchy y hacer el cociente por la relación de equivalencia— es completamente general! Funciona para cualquier espacio métrico (sea lo que sea), no solo para los racionales.
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿En serio?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Sí! Dado cualquier espacio que tenga una noción de distancia, de modo que puedas decir qué significa ser una sucesión de Cauchy, puedes «completarlo» tomando clases de equivalencia de sucesiones de Cauchy. Los racionales con la métrica del valor absoluto usual te dan los números reales $\mathbb{R}$. ¡Pero si tomas los racionales con una métrica diferente —digamos, la «métrica $p$-ádica» (sea lo que sea)— obtienes los números $p$-ádicos $\mathbb{Q}_p$!
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¿Entonces la misma construcción te da sistemas numéricos completamente distintos simplemente cambiando la métrica?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Exactamente! Y no solo sistemas numéricos. Cualquier espacio métrico puede ser completado de esta manera. Si empiezas con, digamos, el espacio de funciones continuas en un intervalo (con una métrica apropiada), obtienes lo que se llama un «espacio de Banach». Si empiezas con el espacio de funciones Riemann-integrables, obtienes un espacio de Lebesgue. Todos tienen completaciones exactamente de la misma manera. ¡La construcción está en todas partes dentro de las matemáticas!
+
+Si quieres ver un poco más sobre qué son esos números $p$-ádicos, puedes ver este vídeo de Veritasium (haz clic derecho en el enlace para que se abra en una ventana nueva y no pierdas tu lugar):
+
+\begin{center}
+  \url{https://youtu.be/tRaq4aYPzCc}
+\end{center}
+
+Ahora sigamos jugando.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

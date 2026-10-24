@@ -1,8 +1,6 @@
 \chapter{Teoremas avanzados de límites e inducción}
 
-%----------------------------------------------------------------------
-\section{Introducción: Inducción Matemática}
-%----------------------------------------------------------------------
+\section{Introducción: Inducción matemática}
 
 \textbf{Simplicio:} Oye, Sócrates, he estado pensando en algo que me ha
 estado molestando. Cuando demostramos cosas en matemáticas, normalmente
@@ -144,9 +142,7 @@ demostración legítima. ¿Puedes darme un ejemplo?
 
 \textbf{Sócrates:} Por supuesto.
 
-%----------------------------------------------------------------------
-\section{Jefe Final: Recíprocos de Sucesiones Convergentes}
-%----------------------------------------------------------------------
+\section{Juego final: Recíprocos de sucesiones convergentes}
 
 Uno de los teoremas de límites más importantes concierne a los recíprocos:
 si una sucesión converge a un límite no nulo, entonces la sucesión de
@@ -175,7 +171,7 @@ $y \neq 0$), se tiene $|x/y| = |x|/|y|$.
 
 \textbf{nonzero\_of\_abs\_pos:} Si $0 < |x|$, entonces $x \neq 0$.
 
-\subsection{Enfoque Estratégico}
+\subsection{Enfoque estratégico}
 
 Los desafíos clave son:
 
@@ -196,49 +192,374 @@ precisamente para que las desigualdades finales funcionen.
 \subsection{Solución en Lean}
 
 \begin{minted}{lean}
-Statement InvLim (a : ℕ → ℝ) (L : ℝ) (aToL : SeqLim a L)
-    (LneZero : L ≠ 0) (b : ℕ → ℝ)
-    (bEqInva : ∀ n, b n = 1 / a n) :
-    SeqLim b (1 / L) := by
-  choose NhalfL hNhalfL using EventuallyGeHalfLimPos a L
-    aToL LneZero
+-- ---------------------------------------------------------------------
+-- Demostrar que si aₙ converge a L con L ≠ 0, entonces 1/aₙ converge a
+-- 1/L.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea bₙ la sucesión definida por
+--    ∀ n, bₙ = 1/aₙ                                               (1)
+-- Tenemos que demostrar que bₙ converge a 1/L. Para ello, sea ε > 0
+-- dado y hay que probar que existe un k tal que
+--    ∀ n ≥ k, |bₙ - 1/L| < ε                                      (2)
+--
+-- Por el teorema EventualmenteMayorIgMitadAbsLimite,
+-- existe k₁ tal que
+--    ∀ n ≥ k₁, |aₙ| ≥ |L|/2                                       (3)
+--
+-- Como L ≠ 0, se tiene que
+--    |L| > 0                                                      (4)
+-- y, por tanto,
+--    ε|L|²/2 > 0.                                                 (5)
+-- Por la convergencia de aₙ, existe k₂ tal que
+--    ∀ n ≥ k₂, |aₙ - L| < ε|L|²/2                                 (6)
+--
+-- Sea                                                             (7)
+--    k = máx(k₁, k₂).
+-- Veamos que se verifica (2). Para ello, sea
+--    n ≥ k                                                        (8)
+-- Por (6), se tiene
+--    n ≥ k₁
+-- y, por (3), se tiene
+--    |aₙ| ≥ |L|/2                                                 (9)
+-- que, junto con (4), asegura que
+--    |aₙ| > 0
+-- así que
+--    aₙ ≠ 0
+-- y bₙ = 1/aₙ está bien definido.
+--
+-- Además, de (7) también se tiene que
+--    n ≥ k₂
+-- y, por (6), se tiene
+--    |aₙ - L| < ε|L|²/2                                          (10)
+--
+-- Finalmente,
+--   |bₙ - 1/L| = |1/aₙ - 1/L|              [por (1)]
+--              = |(L - aₙ) / (aₙL)|
+--              = |L - aₙ| / |aₙL|
+--              = |aₙ - L| / (|aₙ||L|)
+--              < (ε|L|²/2) / (|aₙ||L|)     [por (10)]
+--              ≤ (ε|L|²/2) / (|L|/2)|L|)   [por (9)]
+--              = (ε|L|²/2) / (|L|²/2)
+--              = ε.
+-- con lo que se prueba (2).
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C7B_Eventualmente_alejadas
+import Mathlib.Tactic
+
+variable {a b : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
   intro ε hε
-  have : 0 < |L| := by apply abs_pos_of_nonzero LneZero
-  specialize aToL (ε * |L| * |L| / 2) (by bound)
-  choose Na hNa using aToL
-  use Na + NhalfL
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimite ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  set cota := ε * (|L| ^ 2 / 2)
+  obtain ⟨k2, hk2⟩ := ha cota (by positivity)
+  use max k1 k2
+  -- ⊢ ∀ n ≥ max k1 k2, |b n - 1 / L| < ε
   intro n hn
-  specialize bEqInva n
-  rewrite [bEqInva]
-  have hnHalfL : NhalfL ≤ n := by bound
-  have hna : Na ≤ n := by bound
-  specialize hNhalfL n hnHalfL
-  specialize hNa n hna
-  have : 0 < |a n| := by bound
-  have : a n ≠ 0 := by apply nonzero_of_abs_pos this
-  have l1 : |1 / a n - 1 / L| = |(L - a n) / (a n * L)| :=
-    by field_simp
-  have l2 : |(L - a n) / (a n * L)| = |L - a n| / |a n * L| :=
-    by apply abs_div
-  have l3 : |L - a n| / |a n * L| = |L - a n| / (|a n| * |L|) :=
-    by bound
-  have l4 : |L - a n| = |-(a n - L)| := by ring_nf
-  have l5 : |-(a n - L)| = |a n - L| := by apply abs_neg
-  have l6 : |a n - L| / (|a n| * |L|) <
-      (ε * |L| * |L| / 2) / (|a n| * |L|) := by
-    field_simp; bound
-  have l10 : |L - a n| / (|a n| * |L|) =
-      |-(a n - L)| / (|a n| * |L|) := by rewrite [l4]; rfl
-  have l11 : |-(a n - L)| / (|a n| * |L|) =
-      |a n - L| / (|a n| * |L|) := by rewrite [l5]; rfl
-  have l13 : ε * |L| * |L| / 2 / (|a n| * |L|) =
-      ε * |L| / 2 / |a n| := by field_simp
-  have l14 : ε * |L| / 2 / |a n| ≤ ε := by
-    field_simp; bound
-  linarith [l1, l2, l3, l10, l11, l6, l13, l14]
+  -- n : ℕ
+  -- hn : n ≥ ka + k
+  -- ⊢ |b n - 1 / L| < ε
+  have abs_an_ge_mitad_abs_L : |L| / 2 ≤ |a n| := by grind
+  have an_ne_cero : a n ≠ 0 := by grind
+  calc |b n - 1/L|
+       = |1/(a n) - 1/L|           := by grind
+     _ = |(L - a n) / (a n * L)|   := by grind
+     _ = |L - a n| / |a n * L|     := by grind
+     _ = |a n - L| / (|a n| * |L|) := by grind
+     _ < cota / (|a n| * |L|)      := by field_simp ; grind
+     _ ≤ cota / ((|L| / 2) * |L|)  := by gcongr
+     _ = cota / (|L| ^ 2 / 2)      := by grind
+     _ = ε                         := by grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  set cota := ε * (|L| ^ 2 / 2)
+  have abs_L_pos : |L| > 0 := by positivity
+  have cota_pos : cota > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimite ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  obtain ⟨k2, hk2⟩ := ha cota cota_pos
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < ε * |L| ^ 2 / 2
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - 1 / L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - 1 / L| < ε
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have abs_an_ge_mitad_abs_L : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_an_pos : |a n| > 0 := by calc
+     0 < |L| / 2 := half_pos abs_L_pos
+     _ ≤ |a n|   := abs_an_ge_mitad_abs_L
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp abs_an_pos
+  have abs_dif_an_L_lt_cota : |a n - L| < cota := hk2 n n_ge_k2
+  calc |b n - 1/L|
+       = |1/(a n) - 1/L| :=
+           by congr ; exact hb n
+     _ = |(L - a n) / (a n * L)| :=
+           by congr ; field_simp
+     _ = |L - a n| / |a n * L| :=
+           abs_div (L - a n) (a n * L)
+     _ = |a n - L| / |a n * L| :=
+           by congr 1 ; exact abs_sub_comm L (a n)
+     _ = |a n - L| / (|a n| * |L|) :=
+           by congr ; exact abs_mul (a n) L
+     _ < cota / (|a n| * |L|) :=
+           by gcongr
+     _ ≤ cota / ((|L| / 2) * |L|) :=
+           by gcongr
+     _ = cota / (|L| ^ 2 / 2) :=
+           by field_simp
+     _ = ε :=
+           by field
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  set cota := ε * (|L| ^ 2 / 2)
+  have abs_L_pos : |L| > 0 := by positivity
+  have medio_abs_L_pos : |L| / 2 > 0 := half_pos abs_L_pos
+  have medio_cuad_abs_L_pos : |L| ^ 2 / 2 > 0 := by positivity
+  have cota_pos : cota > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimite ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  obtain ⟨k2, hk2⟩ := ha (cota) cota_pos
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < cota
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - 1 / L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - 1 / L| < ε
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have cota_inf_abs_a : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_an_pos : |a n| > 0 := by calc
+    0 < |L| / 2 := medio_abs_L_pos
+    _ ≤ |a n|   := cota_inf_abs_a
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp abs_an_pos
+  have abs_dif_an_L_lt_cota : |a n - L| < cota := hk2 n n_ge_k2
+  have prod_abs_pos : |a n| * |L| > 0 := mul_pos abs_an_pos abs_L_pos
+  have prod_abs_ge_cota_den : |a n| * |L| ≥ (|L| / 2) * |L| :=
+    (mul_le_mul_iff_of_pos_right abs_L_pos).mpr cota_inf_abs_a
+  have cota_den_pos : (|L| / 2) * |L| > 0 := mul_pos (half_pos abs_L_pos) abs_L_pos
+  have medio_cuad_abs_L_ne_cero : (|L| ^ 2) / 2 ≠ 0 := (ne_of_lt medio_cuad_abs_L_pos).symm
+  calc |b n - 1/L|
+       = |1/(a n) - 1/L| :=
+           by congr ; exact hb n
+     _ = |(L - a n) / (a n * L)| :=
+           by congr ; field_simp
+     _ = |L - a n| / |a n * L| :=
+           abs_div (L - a n) (a n * L)
+     _ = |a n - L| / |a n * L| :=
+           by congr 1 ; exact abs_sub_comm L (a n)
+     _ = |a n - L| / (|a n| * |L|) :=
+           by congr ; exact abs_mul (a n) L
+     _ < cota / (|a n| * |L|) :=
+           (div_lt_div_iff_of_pos_right prod_abs_pos).mpr abs_dif_an_L_lt_cota
+     _ ≤ cota / ((|L| / 2) * |L|) :=
+           (div_le_div_iff_of_pos_left cota_pos prod_abs_pos cota_den_pos).mpr prod_abs_ge_cota_den
+     _ = cota / (|L| ^ 2 / 2) :=
+           by congr 1 ; ring
+     _ = ε :=
+           mul_div_cancel_right₀ ε medio_cuad_abs_L_ne_cero
+
+-- 4ª demostración
+-- ===============
+
+variable {x y z : ℝ}
+
+lemma RestaFracciones
+  (hx : x ≠ 0)
+  (hy : y ≠ 0)
+  : 1/x - 1/y = (y - x) / (x * y) :=
+by
+  calc 1/x - 1/y
+       = (1 * y - x * 1) / (x * y) := div_sub_div 1 1 hx hy
+     _ = (y - x) / (x * y)         := by rw [one_mul, mul_one]
+
+lemma DesigualdadDenominador
+  (hx : x > 0)
+  (hy : y ≥ z)
+  (hz : z > 0)
+  : x / y ≤ x / z :=
+(div_le_div_iff_of_pos_left hx (lt_of_lt_of_le hz hy) hz).mpr hy
+
+lemma SimplificarDenominador
+   : (x / 2) * x = x ^ 2 / 2 :=
+by
+  calc (x / 2) * x
+       = (x * x) / 2 := div_mul_eq_mul_div x 2 x
+     _ = x ^ 2 / 2   := congrArg (· / 2) (pow_two x).symm
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ n ≥ k, |b n - 1 / L| < ε
+  set cota := ε * (|L| ^ 2 / 2)
+  have abs_L_pos : |L| > 0 := abs_pos.mpr hL
+  have medio_abs_L_pos : |L| / 2 > 0 := half_pos abs_L_pos
+  have medio_cuad_abs_L_pos : |L| ^ 2 / 2 > 0 := half_pos (sq_pos_of_pos abs_L_pos)
+  have cota_pos : cota > 0 := mul_pos hε medio_cuad_abs_L_pos
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimite ha hL
+  -- k1 : ℕ
+  -- hk1 : ∀ n ≥ k1, |L| / 2 ≤ |a n|
+  obtain ⟨k2, hk2⟩ := ha cota cota_pos
+  -- k2 : ℕ
+  -- hk2 : ∀ n ≥ k2, |a n - L| < cota
+  set k := max k1 k2
+  use k
+  -- ⊢ ∀ n ≥ k, |b n - 1 / L| < ε
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |b n - 1 / L| < ε
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have cota_inf_abs_a : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_an_pos : |a n| > 0 := by calc
+    0 < |L| / 2 := medio_abs_L_pos
+    _ ≤ |a n|   := cota_inf_abs_a
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp abs_an_pos
+  have abs_dif_an_L_lt_cota : |a n - L| < cota := hk2 n n_ge_k2
+  have prod_abs_pos : |a n| * |L| > 0 := mul_pos abs_an_pos abs_L_pos
+  have prod_abs_ge_cota_den : |a n| * |L| ≥ (|L| / 2) * |L| :=
+    (mul_le_mul_iff_of_pos_right abs_L_pos).mpr cota_inf_abs_a
+  have cota_den_pos : (|L| / 2) * |L| > 0 := mul_pos (half_pos abs_L_pos) abs_L_pos
+  have medio_cuad_abs_L_ne_cero : (|L| ^ 2) / 2 ≠ 0 := (ne_of_lt medio_cuad_abs_L_pos).symm
+  calc |b n - 1/L|
+     = |1/(a n) - 1/L| :=
+         congrArg (|· - 1/L|) (hb n)
+   _ = |(L - a n) / (a n * L)| :=
+         congrArg abs (RestaFracciones an_ne_cero hL)
+   _ = |L - a n| / |a n * L| :=
+         abs_div (L - a n) (a n * L)
+   _ = |a n - L| / (|a n| * |L|) :=
+         congrArg₂ (· / ·) (abs_sub_comm L (a n)) (abs_mul (a n) L)
+   _ < cota / (|a n| * |L|) :=
+         (div_lt_div_iff_of_pos_right prod_abs_pos).mpr abs_dif_an_L_lt_cota
+   _ ≤ cota / ((|L| / 2) * |L|) :=
+         DesigualdadDenominador cota_pos prod_abs_ge_cota_den cota_den_pos
+   _ = cota / ((|L| ^ 2 / 2)) :=
+         congrArg (cota / ·) SimplificarDenominador
+   _ = ε :=
+         mul_div_cancel_right₀ ε medio_cuad_abs_L_ne_cero
+
+-- 5ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  (hL : L ≠ 0)
+  (hb : ∀ n, b n = 1 / a n)
+  : LimSuc b (1 / L) := by
+  intro ε hε
+  let cota := ε * (|L| ^ 2 / 2)
+  have cota_pos : cota > 0 := by positivity
+  obtain ⟨k1, hk1⟩ := EventualmenteMayorIgMitadAbsLimite ha hL
+  obtain ⟨k2, hk2⟩ := ha cota cota_pos
+  use max k1 k2
+  intro n hn
+  have n_ge_k1 : n ≥ k1 := le_of_max_le_left hn
+  have n_ge_k2 : n ≥ k2 := le_of_max_le_right hn
+  have abs_an_ge : |L| / 2 ≤ |a n| := hk1 n n_ge_k1
+  have abs_dif_lt : |a n - L| < cota := hk2 n n_ge_k2
+  have an_ne_cero : a n ≠ 0 := abs_pos.mp (by grind)
+  calc |b n - 1 / L|
+      = |1 / a n - 1 / L|           := by rw [hb]
+    _ = |(L - a n) / (a n * L)|     := by field_simp [an_ne_cero, hL]
+    _ = |L - a n| / |a n * L|       := by rw [abs_div]
+    _ = |a n - L| / |a n * L|       := by rw [abs_sub_comm]
+    _ = |a n - L| / (|a n| * |L|)   := by rw [abs_mul]
+    _ < cota / (|a n| * |L|)        := by gcongr
+    _ ≤ cota / ((|L| / 2) * |L|)    := by gcongr
+    _ = cota / (|L| ^ 2 / 2)        := by ring
+    _ = ε                           := by field
+
+-- Lemas usados
+-- ============
+
+variable (x y z u : ℝ)
+#check (EventualmenteMayorIgMitadAbsLimite : LimSuc a L → L ≠ 0 → ∃ k, ∀ n ≥ k, |L| / 2 ≤ |a n|)
+#check (abs_div x y : |x / y| = |x| / |y|)
+#check (abs_mul x y : |x * y| = |x| * |y|)
+#check (abs_pos : 0 < |x| ↔ x ≠ 0)
+#check (abs_sub_comm x y : |x - y| = |y - x|)
+#check (div_le_div_iff_of_pos_left : 0 < x → 0 < y → 0 < z → (x / y ≤ x / z ↔ z ≤ y))
+#check (div_lt_div_iff_of_pos_right : 0 < z → (x / z < y / z ↔ x < y))
+#check (div_mul_eq_mul_div x y z)
+#check (div_sub_div x z : y ≠ 0 → u ≠ 0 → x / y - z / u = (x * u - y * z) / (y * u))
+#check (half_pos : 0 < x → 0 < x / 2)
+#check (le_of_max_le_left : max x y ≤ z → x ≤ z)
+#check (le_of_max_le_right : max x y ≤ z → y ≤ z)
+#check (lt_of_lt_of_le : x < y → y ≤ z → x < z)
+#check (mul_div_cancel_right₀ x : y ≠ 0 → x * y / y = x)
+#check (mul_le_mul_iff_of_pos_right : 0 < x → (y * x ≤ z * x ↔ y ≤ z))
+#check (mul_one x : x * 1 = x)
+#check (mul_pos : 0 < x → 0 < y → 0 < x * y)
+#check (ne_of_lt : x < y → x ≠ y)
+#check (one_mul x : 1 * x = x)
+#check (pow_two x : x ^ 2 = x * x)
+#check (sq_pos_of_pos : 0 < x → 0 < x ^ 2)
 \end{minted}
 
-\subsection{Demostración en Lenguaje Natural}
+\subsection{Demostración en lenguaje natural}
 
 \begin{proof}
 Supongamos que $a(n) \to L$ con $L \neq 0$, y sea $b(n) = 1/a(n)$.
@@ -270,7 +591,7 @@ Sea $N = N_1 + N_2$. Para cualquier $n \geq N$:
 Por lo tanto, $b(n) \to 1/L$.
 \end{proof}
 
-\subsection{Aplicaciones y Extensiones}
+\subsection{Aplicaciones y extensiones}
 
 Con este teorema, ahora disponemos de un conjunto completo de herramientas
 para los límites de funciones racionales. Combinado con los resultados
@@ -289,16 +610,14 @@ Esto completa la aritmética fundamental de los límites: sumas, productos y
 cocientes—los bloques de construcción para analizar polinomios, funciones
 racionales y expresiones complejas a lo largo del cálculo y el análisis.
 
-%----------------------------------------------------------------------
-\section{Por Casos: Análisis de Casos Sin Hipótesis}
-%----------------------------------------------------------------------
+\section{Por casos: Análisis de casos sin hipótesis}
 
 Cuando ya tienes una hipótesis \texttt{h : P ∨ Q}, puedes usar
 \texttt{cases'} para dividir el objetivo en dos sub-objetivos. Pero,
 ¿cómo divides en casos cuando no tienes una hipótesis de ese tipo? Ahí es
 donde entra la táctica \texttt{by\_cases}.
 
-\subsection{La Táctica \texttt{by\_cases}}
+\subsection{La táctica \texttt{by\_cases}}
 
 La táctica \texttt{by\_cases} tiene la sintaxis
 \texttt{by\_cases h : hecho}, donde \texttt{h} es el nombre para una
@@ -313,7 +632,7 @@ nueva hipótesis y \texttt{hecho} es el hecho afirmado en ella. Llamar a
 Esto permite realizar un análisis de casos sobre cualquier proposición,
 no solo aquellas que ya tienes como hipótesis.
 
-\subsection{Aplicación: Eventualmente Mayor que la Mitad del Límite}
+\subsection{Aplicación: Eventualmente mayor que la mitad del límite}
 
 Podemos usar \texttt{by\_cases} para demostrar una versión más general de
 \texttt{EventuallyGeHalfLimPos} que no requiere la suposición $L \neq 0$.
@@ -327,18 +646,214 @@ $n \geq N$ se tiene $|a(n)| \geq |L|/2$.
 \subsection{Solución en Lean}
 
 \begin{minted}{lean}
-Statement EventuallyGeHalfLim (a : ℕ → ℝ) (L : ℝ)
-    (aToL : SeqLim a L) :
-    ∃ N, ∀ n ≥ N, |L| / 2 ≤ |a n| := by
+-- ---------------------------------------------------------------------
+-- Demostrar que si una sucesión es convergente, entonces sus términos
+-- están eventualmente acotados inferiormente por la mitad del valor
+-- absoluto del límite; es decir, si una sucesión a converge a L con L ≠
+-- 0, entonces existe k tal que para todo n ≥ k se tiene que
+-- |aₙ| ≥ |L|/2.
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Se distinguen dos casos según (L = 0).
+--
+-- Primer caso: Supongamos que L = 0. Entonces, basta tomar el índice 0
+-- ya que
+--    ∀ n ≥ 0, |a n| ≥ 0 = |0| / 2 = |L| / 2
+--
+-- Sefundo caso: Supongamos que L ≠ 0. Entonces se tiene que
+--    |L| / 2 > 0
+-- y, como a converge a L, existe un k tal que
+--    ∀ n ≥ k, |aₙ - L| < |L| / 2                                    (1)
+-- Veamos que
+--    ∀ n ≥ k, |aₙ| ≥ |L|/2.
+-- En efecto, sea n ≥ k. Entonces, por (1),
+--    |aₙ - L| < |L| / 2                                             (2)
+-- Además,
+--    |L| = |aₙ + (L - aₙ)|
+--        ≤ |aₙ| + |L - aₙ|
+--        = |aₙ| + |-(aₙ - L)|
+--        = |aₙ| + |aₙ - L|
+--        ≤ |aₙ| + |L| / 2      [por (2)]
+-- Luego,
+--    |L| ≤ |aₙ| + |L| / 2
+-- y, por tanto,
+--    |aₙ| ≥ |L|/2
+
+-- Demostraciones con Lean4
+-- ========================
+
+import Mathlib.Data.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi
+import Mathlib.Tactic
+
+variable {a : ℕ → ℝ}
+variable {L : ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
   by_cases h : L = 0
-  · use 1
+  · -- h : L = 0
+    use 0
+    -- ⊢ ∀ n ≥ 0, |a n| ≥ |L| / 2
+    grind
+  · -- h : ¬L = 0
+    obtain ⟨k, hk⟩ := ha (|L| / 2) (by grind)
+    -- k : ℕ
+    -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+    use k
+    -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
     intro n hn
-    rewrite [h]
-    bound
-  · apply EventuallyGeHalfLimPos a L aToL h
+    -- n : ℕ
+    -- hn : n ≥ k
+    -- ⊢ |L| / 2 ≤ |a n|
+    grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  : ∃ k, ∀ n ≥ k,  |a n| ≥ |L| / 2 :=
+by
+  by_cases h : L = 0
+  · -- h : L = 0
+    use 0
+    -- ⊢ ∀ n ≥ 0, |a n| ≥ |L| / 2
+    grind
+  · -- h : ¬L = 0
+    obtain ⟨k, hk⟩ := ha (|L| / 2) (by grind)
+    -- k : ℕ
+    -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+    use k
+    -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
+    intro n hn
+    -- n : ℕ
+    -- hn : n ≥ k
+    -- ⊢ |L| / 2 ≤ |a n|
+    have h3 : |a n - L| < |L| / 2 := hk n hn
+    have h4 : |L| ≤ |a n| + |L| / 2 := by
+      calc |L|
+           = |a n + (L - a n)|    := by grind
+         _ ≤ |a n| + |L - a n|    := by grind
+         _ = |a n| + |-(a n - L)| := by grind
+         _ = |a n| + |a n - L|    := by grind
+         _ ≤ |a n| + |L| / 2      := by grind
+    grind
+
+-- 3ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  by_cases h : L = 0
+  · -- h : L = 0
+    use 0
+    -- ⊢ ∀ n ≥ 0, |a n| ≥ |L| / 2
+    intro n hn
+    -- n : ℕ
+    -- hn : n ≥ 0
+    -- ⊢ |a n| ≥ |L| / 2
+    simp [h]
+  · -- h : ¬L = 0
+    obtain ⟨k, hk⟩ := ha (|L| / 2) (by positivity)
+    -- k : ℕ
+    -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+    use k
+    -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
+    intro n hn
+    -- n : ℕ
+    -- hn : n ≥ k
+    -- ⊢ |L| / 2 ≤ |a n|
+    have h3 : |a n - L| < |L| / 2 := hk n hn
+    have h4 : |L| ≤ |a n| + |L| / 2 := by
+      calc |L|
+           = |a n + (L - a n)|    := by ring_nf
+         _ ≤ |a n| + |L - a n|    := abs_add_le (a n) (L - a n)
+         _ = |a n| + |-(a n - L)| := by ring_nf
+         _ = |a n| + |a n - L|    := by congr 1 ; exact abs_neg (a n - L)
+         _ ≤ |a n| + |L| / 2      := by gcongr
+    linarith [h4]
+
+-- 4ª demostración
+-- ===============
+
+example
+  (ha : LimSuc a L)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  by_cases h : L = 0
+  · -- h : L = 0
+    use 0
+    -- ⊢ ∀ n ≥ 0, |a n| ≥ |L| / 2
+    intro n hn
+    -- n : ℕ
+    -- hn : n ≥ 0
+    -- ⊢ |a n| ≥ |L| / 2
+    simp [h]
+  · -- h : ¬L = 0
+    have h1 : 0 < |L| := abs_pos.mpr h
+    have h2 : 0 < |L| / 2 := half_pos h1
+    obtain ⟨k, hk⟩ := ha (|L| / 2) h2
+    -- k : ℕ
+    -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+    use k
+    -- ⊢ ∀ n ≥ k, |L| / 2 ≤ |a n|
+    intro n hn
+    -- n : ℕ
+    -- hn : n ≥ k
+    -- ⊢ |L| / 2 ≤ |a n|
+    have h3 : |a n - L| < |L| / 2 := hk n hn
+    have h4 : |L| ≤ |a n| + |L| / 2 := by calc
+      |L| = |a n + (L - a n)|    := by ring_nf
+        _ ≤ |a n| + |L - a n|    := abs_add_le (a n) (L - a n)
+        _ = |a n| + |-(a n - L)| := congrArg (|a n| + |·|) (neg_sub (a n) L).symm
+        _ = |a n| + |a n - L|    := congrArg (|a n| + ·) (abs_neg (a n - L))
+        _ ≤ |a n| + |L| / 2      := add_le_add_right (le_of_lt h3) |a n|
+    calc |L| / 2
+         = |L| - |L| / 2 := (sub_half |L|).symm
+       _ ≤ |a n|         := tsub_le_iff_right.mpr h4
+
+-- 5ª demostración
+-- ===============
+
+lemma EventualmenteMayorIgMitadAbsLimite
+  (ha : LimSuc a L)
+  : ∃ k, ∀ n ≥ k, |a n| ≥ |L| / 2 :=
+by
+  by_cases h : L = 0
+  · -- h : L = 0
+    refine ⟨0, fun _ _ => by grind⟩
+  · -- h : ¬L = 0
+    obtain ⟨k, hk⟩ := ha (|L| / 2) (by grind)
+    -- k : ℕ
+    -- hk : ∀ n ≥ k, |a n - L| < |L| / 2
+    refine ⟨k, fun _ _ => by grind⟩
+
+-- Lemas usados
+-- ============
+
+variable (x y z : ℝ)
+#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+#check (abs_neg x : |(-x)| = |x|)
+#check (abs_pos : 0 < |x| ↔ x ≠ 0)
+#check (add_le_add_right : y ≤ z → ∀ x, x + y ≤ x + z)
+#check (half_pos : 0 < x → 0 < x / 2)
+#check (neg_sub x y : -(x - y) = y - x)
+#check (sub_half x : x - x / 2 = x / 2)
+#check (tsub_le_iff_right : x - y ≤ z ↔ x ≤ z + y)
 \end{minted}
 
-\subsection{Demostración en Lenguaje Natural}
+\subsection{Demostración en lenguaje natural}
 
 \begin{proof}
 Procedemos por casos según si $L = 0$ o no.
@@ -366,16 +881,14 @@ valor de verdad importa pero no se conoce de antemano. Nos permite:
 Esta técnica es omnipresente en el razonamiento matemático, desde el
 análisis hasta el álgebra y la combinatoria.
 
-%----------------------------------------------------------------------
-\section{Inducción Matemática}
-%----------------------------------------------------------------------
+\section{Inducción matemática}
 
 La inducción es una de las técnicas de demostración más poderosas para
 enunciados sobre números naturales. Permite demostrar infinitos enunciados
 (uno para cada número natural) usando solo dos pasos: un caso base y un
 paso inductivo.
 
-\subsection{El Principio de Inducción Matemática}
+\subsection{El principio de inducción matemática}
 
 Para demostrar que una propiedad $P(n)$ se cumple para todos los números
 naturales $n$, basta con demostrar:
@@ -407,7 +920,7 @@ La sintaxis de la inducción en Lean es:
 Si un número natural $n \neq 0$, entonces $1 \leq n$. Este lema sencillo
 es útil para manejar el caso en que hemos superado el caso base.
 
-\subsection{Ejemplo: Crecimiento Exponencial}
+\subsection{Ejemplo: Crecimiento exponencial}
 
 \begin{theorem}
 Para todo número natural $n$, se tiene $n < 2^n$.
@@ -420,17 +933,167 @@ la matemática y la informática.
 \subsection{Solución en Lean}
 
 \begin{minted}{lean}
-Statement (n : ℕ) : n < 2 ^ n := by
-  induction' n with k hk
-  · norm_num
-  · by_cases hk0 : k = 0
-    · rewrite [hk0]
-      norm_num
-    · have : 1 ≤ k := by apply ge_one_of_nonzero hk0
-      have f1 : k + 1 ≤ 2 * k := by bound
-      have f2 : 2 * k < 2 * 2 ^ k := by linarith [hk]
-      have f3 : 2 * 2 ^ k = 2 ^ (k + 1) := by ring_nf
-      linarith [f1, f2, f3]
+-- ---------------------------------------------------------------------
+-- Demostrar que, para todo número natural n,
+--    n < 2ⁿ
+-- ---------------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Por inducción en n.
+--
+-- Caso base: Para n = 0 se tiene:
+--    n = 0 < 1 = 2⁰ = 2ⁿ
+--
+-- Paso inductivo: Suponiendo la hipótesis de inducción
+--   k < 2ᵏ                                             (HI)
+-- tenemos que demostrar que
+--   k+1 < 2ᵏ⁺¹
+-- La demostración es
+--    k + 1 ≤ k + 2ᵏ
+--          < 2ᵏ + 2ᵏ    [por la HI]
+--          = 2 · 2ᵏ
+--          = 2ᵏ⁺¹
+
+-- Demostraciones con Lean 4
+-- =========================
+
+import Mathlib.Tactic
+
+variable (n : ℕ)
+
+open Nat
+
+-- 1ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 0 < 2 ^ 0
+    grind
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : k < 2 ^ k
+    -- ⊢ k + 1 < 2 ^ (k + 1)
+    grind
+
+-- 2ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 0 < 2 ^ 0
+    grind
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : k < 2 ^ k
+    -- ⊢ k + 1 < 2 ^ (k + 1)
+    calc k + 1
+         ≤ k + 2 ^ k     := by grind
+    _    < 2 ^ k + 2 ^ k := by grind
+    _    = 2 * 2 ^ k     := by grind
+    _    = 2 ^ (k + 1)   := by grind
+
+-- 3ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 0 < 2 ^ 0
+    norm_num
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : k < 2 ^ k
+    -- ⊢ k + 1 < 2 ^ (k + 1)
+    calc k + 1
+         ≤ k + 2 ^ k     := by gcongr ; exact Nat.one_le_two_pow
+    _    < 2 ^ k + 2 ^ k := by gcongr
+    _    = 2 * 2 ^ k     := by ring
+    _    = 2 ^ (k + 1)   := by rw [← pow_succ']
+
+-- 4ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 0 < 2 ^ 0
+    exact Nat.two_pow_pos 0
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : k < 2 ^ k
+    -- ⊢ k + 1 < 2 ^ (k + 1)
+    calc k + 1
+         ≤ k + 2 ^ k     := (add_le_add_iff_left k).mpr Nat.one_le_two_pow
+    _    < 2 ^ k + 2 ^ k := (add_lt_add_iff_right (2 ^ k)).mpr HI
+    _    = 2 * 2 ^ k     := (two_mul (2 ^ k)).symm
+    _    = 2 ^ (k + 1)   := pow_succ'.symm
+
+-- 5ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 0 < 2 ^ 0
+    exact Nat.two_pow_pos 0
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : k < 2 ^ k
+    -- ⊢ k + 1 < 2 ^ (k + 1)
+    apply Nat.lt_of_lt_of_le
+    · -- k + 1 < 2 ^ k + 1
+      exact Nat.add_lt_add_right HI 1
+    · -- 2 ^ k + 1 ≤ 2 ^ (k + 1)
+      have h : 2 ^ k < 2 ^ (k + 1) := Nat.pow_lt_pow_succ (one_lt_two)
+      exact add_one_le_iff.mpr h
+
+-- 6ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 0 < 2 ^ 0
+    exact Nat.two_pow_pos 0
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : k < 2 ^ k
+    -- ⊢ k + 1 < 2 ^ (k + 1)
+    exact Nat.lt_of_lt_of_le (Nat.add_lt_add_right HI 1)
+                             (add_one_le_iff.mpr (Nat.pow_lt_pow_succ (one_lt_two)))
+
+-- 7ª demostración
+-- ===============
+
+example : n < 2 ^ n :=
+Nat.lt_two_pow_self
+
+-- Lemas usados
+-- ============
+
+variable (k m : ℕ)
+#check (Nat.add_le_add_iff_left : n + m ≤ n + k ↔ m ≤ k)
+#check (Nat.add_lt_add_iff_right : n + k < m + k ↔ n < m)
+#check (Nat.add_lt_add_right : n < m → ∀ k, n + k < m + k)
+#check (Nat.lt_of_lt_of_le : n < m → m ≤ k → n < k)
+#check (Nat.lt_two_pow_self : n < 2 ^ n)
+#check (Nat.one_le_two_pow : 1 ≤ 2 ^ n)
+#check (Nat.one_lt_two : 1 < 2)
+#check (Nat.pow_lt_pow_succ : 1 < k → k ^ n < k ^ (n + 1))
+#check (Nat.two_mul n : 2 * n = n + n)
+#check (Nat.two_pow_pos n : 0 < 2 ^ n)
+#check (pow_succ' : m ^ n.succ = m * m ^ n)
 \end{minted}
 
 \subsection{Demostración en Lenguaje Natural}
@@ -475,7 +1138,7 @@ La combinación de la inducción con otras técnicas de demostración (como el
 análisis de casos) crea un poderoso conjunto de herramientas para las
 matemáticas discretas y la informática.
 
-\subsection{Idea Clave}
+\subsection{Idea clave}
 
 Esta demostración ilustra una estrategia importante: dentro de una
 demostración inductiva, puede ser necesario realizar análisis de casos
@@ -483,6 +1146,758 @@ adicionales (usando \texttt{by\_cases}). La hipótesis de inducción te da
 ventaja, pero a menudo hay que ser ingenioso en cómo aplicarla,
 especialmente cuando se tratan casos frontera o cuando el álgebra requiere
 restricciones adicionales.
+
+\section{Ejercicios}
+
+\begin{ejercicio}
+Demostrar que para todo \(n ∈ ℕ\),
+   \[2n + 9 ≤ 2^{n+4}\]
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Por inducción en n.
+--
+-- Caso base: Para n = 0 se tiene:
+--    2n + 9 = 2·0 + 9
+--           = 9
+--           < 16
+--           = 2⁴
+--           = 2⁰⁺⁴
+--           = 2ⁿ⁺⁴
+--
+-- Paso inductivo: Suponiendo la hipótesis de inducción
+--   2k + 9 ≤ 2ᵏ⁺⁴                                             (HI)
+-- tenemos que demostrar que
+--   2(k+1) + 9 < 2⁽ᵏ⁺¹⁾⁺⁴
+-- Entonces, puesto que k ≥ 0, se tiene que
+--   2 ≤ 2ᵏ⁺⁴                                                  (1)
+-- Efectivamente,
+--    2 ≤ 16
+--      = 2⁴
+--      ≤ 2ᵏ⁺⁴
+-- Por tanto,
+--    2(k + 1) + 9 = (2k + 9) + 2
+--                 ≤ 2ᵏ⁺⁴ + 2              [por HI]
+--                 ≤ 2ᵏ⁺⁴ + 2ᵏ⁺⁴           [por (1)]
+--                 = 2 · 2ᵏ⁺⁴
+--                 = 2⁽ᵏ⁺¹⁾⁺⁴
+
+-- Demostraciones con Lean 4
+-- =========================
+
+import Mathlib.Tactic
+
+variable (n : ℕ)
+
+-- 1ª demostración
+-- ===============
+
+example : 2 * n + 9 ≤ 2 ^ (n + 4) :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 2 * 0 + 9 ≤ 2 ^ (0 + 4)
+    grind
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : 2 * k + 9 ≤ 2 ^ (k + 4)
+    -- ⊢ 2 * (k + 1) + 9 ≤ 2 ^ (k + 1 + 4)
+    grind
+
+-- 2ª demostración
+-- ===============
+
+example : 2 * n + 9 ≤ 2 ^ (n + 4) :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 2 * 0 + 9 ≤ 2 ^ (0 + 4)
+    grind
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : 2 * k + 9 ≤ 2 ^ (k + 4)
+    -- ⊢ 2 * (k + 1) + 9 ≤ 2 ^ (k + 1 + 4)
+    calc 2 * (k + 1) + 9
+         = (2 * k + 9) + 2           := by grind
+    _    ≤ 2 ^ (k + 4) + 2           := by grind
+    _    ≤ 2 ^ (k + 4) + 2 ^ (k + 4) := by grind
+    _    = 2 * 2 ^ (k + 4)           := by grind
+    _    = 2 ^ (k + 1 + 4)           := by grind
+
+-- 3ª demostración
+-- ===============
+
+example : 2 * n + 9 ≤ 2 ^ (n + 4) :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 2 * 0 + 9 ≤ 2 ^ (0 + 4)
+    norm_num
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : 2 * k + 9 ≤ 2 ^ (k + 4)
+    -- ⊢ 2 * (k + 1) + 9 ≤ 2 ^ (k + 1 + 4)
+    calc 2 * (k + 1) + 9
+         = (2 * k + 9) + 2           := by ring
+    _    ≤ 2 ^ (k + 4) + 2           := Nat.add_le_add_right HI 2
+    _    ≤ 2 ^ (k + 4) + 2 ^ (k + 4) := Nat.add_le_add_left (by bound) (2 ^ (k + 4))
+    _    = 2 * 2 ^ (k + 4)           := by ring
+    _    = 2 ^ (k + 1 + 4)           := by ring
+
+-- 4ª demostración
+-- ===============
+
+example : 2 * n + 9 ≤ 2 ^ (n + 4) :=
+by
+  induction n with
+  | zero =>
+    -- ⊢ 2 * 0 + 9 ≤ 2 ^ (0 + 4)
+    calc 2 * 0 + 9
+         = 9           := by norm_num
+    _    ≤ 16          := by norm_num
+    _    = 2 ^ (0 + 4) := by norm_num
+  | succ k HI =>
+    -- k : ℕ
+    -- HI : 2 * k + 9 ≤ 2 ^ (k + 4)
+    -- ⊢ 2 * (k + 1) + 9 ≤ 2 ^ (k + 1 + 4)
+    have h1 : 2 ≤ 2 ^ (k + 4) := by
+      calc 2
+           ≤ 16          := by norm_num
+      _    = 2 ^ 4       := by norm_num
+      _    ≤ 2 ^ (k + 4) := pow_le_pow_right' one_le_two (Nat.le_add_left 4 k)
+    calc 2 * (k + 1) + 9
+         = (2 * k + 9) + 2           := Nat.add_left_inj.mpr rfl
+    _    ≤ 2 ^ (k + 4) + 2           := Nat.add_le_add_right HI 2
+    _    ≤ 2 ^ (k + 4) + 2 ^ (k + 4) := Nat.add_le_add_left h1 (2 ^ (k + 4))
+    _    = 2 * 2 ^ (k + 4)           := (Nat.two_mul (2 ^ (k + 4))).symm
+    _    = 2 ^ (k + 1 + 4)           := Nat.pow_succ'.symm
+
+-- Lemas usados
+-- ============
+
+variable (k m : ℕ)
+#check (Nat.add_le_add_left : n ≤ m → ∀ k, k + n ≤ k + m)
+#check (Nat.add_le_add_right : n ≤ m → ∀ k, n + k ≤ m + k)
+#check (Nat.add_left_inj : m + n = k + n ↔ m = k)
+#check (Nat.le_add_left n m : n ≤ m + n)
+#check (Nat.pow_succ' : m ^ n.succ = m * m ^ n)
+#check (Nat.two_mul n : 2 * n = n + n)
+#check (one_le_two : 1 ≤ 2)
+#check (pow_le_pow_right'  : 1 ≤ k → n ≤ m → k ^ n ≤ k ^ m)
+\end{minted}
+
+\begin{ejercicio}
+Demostrar que
+\[ (∃ k ∈ ℕ)(∀ n ∈ N)[(n + k)² ≤ 2ⁿ⁺ᵏ] \]
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- 1ª demostración
+-- ===============
+
+-- En primer lugar demostraremos el siguiente lema auxiliar:
+-- Para todo m ≥ 4, se tiene m² ≤ 2ᵐ. Sea m ∈ ℕ, tenemos que
+-- demostrar que
+--    m ≥ 4 → m ^ 2 ≤ 2 ^ m
+-- lo demostraremos por inducción en m.
+--
+-- Caso base: Para m = 0 se tiene, trivialmente que
+--    0 ≥ 4 → 0 ^ 2 ≤ 2 ^ 0
+--
+-- Paso de inducción: Sea n ∈ ℕ que cumple la hipótesis de
+-- inducción; es decir,
+--    n ≥ 4 → n ^ 2 ≤ 2 ^ n                               (HI)
+-- y tenemos que demostrar que
+--    n + 1 ≥ 4 → (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+-- Suponiendo que
+--    n + 1 ≥ 4                                            (1)
+-- tenemos que demostrar que
+--    (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+-- Lo haremmos por caso según (4 ≤ n).
+--
+-- Primer caso: Supongamos que
+--    4 ≤ n                                                (2)
+-- Entonces, demostramos que
+--    2 * n + 1 ≤ n ^ 2                                    (3)
+-- Efectivamente,
+--    2 * n + 1 ≤ 2 * n + 8
+--              ≤ 2 * n + 2 * n   [por (2)]
+--              = 4 * n
+--              ≤ n * n           [por (2)]
+--              = n ^ 2
+-- Por tanto,
+--    (n + 1) ^ 2 = n ^ 2 + 2 * n + 1
+--                ≤ n ^ 2 + n ^ 2       [por (3)]
+--                = 2 * n ^ 2
+--                ≤ 2 * 2 ^ n           [por HI y (2)]
+--                = 2 ^ (n + 1)
+--
+-- Segundo caso: Supongamos que
+--    ¬(4 ≤ n)
+-- Entonces, por (1), se tiene que
+--    n = 3
+-- y
+--    (n + 1) ^ 2 = (3 + 1) ^ 2
+--                = 16
+--                ≤ 2 ^ (3 + 1)
+--                = 2 ^ (n + 1)
+--
+-- Para concluir la demostración del ejercicio
+--    ∃ k, ∀ n, (n + k) ^ 2 ≤ 2 ^ (n + k)
+-- basta usar 4 como k y queda
+--    ∀ n, (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+-- que se demuestra con el lema auxiliar. En efecto,
+-- sea n ∈ ℕ. Entonces,
+--    n + 4 ≥ 4
+-- y, por el lema auxiliar,
+--    (n + 4) ^ 2 ≤ 2 ^ (n + 4).
+
+-- 2ª demostración
+-- ===============
+
+-- En primer lugar demostraremos el siguiente lema auxiliar:
+-- Para todo m ≥ 4, se tiene m² ≤ 2ᵐ. Sea m ∈ ℕ tal que
+--    m ≥ 4
+-- tenemos que demostrar que
+--    m ^ 2 ≤ 2 ^ m
+-- lo demostraremos por inducción generalizada en m a partir
+-- de 4.
+--
+-- Caso base: Para m = 4 se tiene, trivialmente que
+--    4 ^ 2 ≤ 2 ^ 4
+--
+-- Paso de inducción: Sea n ∈ ℕ tal que
+--    4 ≤ n                                                (1)
+-- y que cumple la hipótesis de inducción; es decir,
+--    n ^ 2 ≤ 2 ^ n                                       (HI)
+-- y tenemos que demostrar que
+--    (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+-- Antes, demostramos que
+--    2 * n + 1 ≤ n ^ 2                                    (2)
+-- Efectivamente,
+--    2 * n + 1 ≤ 2 * n + 8
+--              ≤ 2 * n + 2 * n   [por (1)]
+--              = 4 * n
+--              ≤ n * n           [por (1)]
+--              = n ^ 2
+-- Por tanto,
+--    (n + 1) ^ 2 = n ^ 2 + 2 * n + 1
+--                ≤ n ^ 2 + n ^ 2       [por (2)]
+--                = 2 * n ^ 2
+--                ≤ 2 * 2 ^ n           [por HI]
+--                = 2 ^ (n + 1)
+--
+-- Para concluir la demostración del ejercicio
+--    ∃ k, ∀ n, (n + k) ^ 2 ≤ 2 ^ (n + k)
+-- basta usar 4 como k y queda
+--    ∀ n, (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+-- que se demuestra con el lema auxiliar. En efecto,
+-- sea n ∈ ℕ. Entonces,
+--    n + 4 ≥ 4
+-- y, por el lema auxiliar,
+--    (n + 4) ^ 2 ≤ 2 ^ (n + 4).
+
+-- Demostraciones con Lean 4
+-- =========================
+
+import Mathlib.Tactic
+
+-- 1ª solución
+-- ===========
+
+namespace Solucion1
+
+lemma aux : ∀ m ≥ 4, m ^ 2 ≤ 2 ^ m := by
+  intro m
+  -- m : ℕ
+  -- ⊢ m ≥ 4 → m ^ 2 ≤ 2 ^ m
+  induction m with
+  | zero =>
+    -- ⊢ 0 ≥ 4 → 0 ^ 2 ≤ 2 ^ 0
+    grind
+  | succ n hi =>
+    -- n : ℕ
+    -- hi : n ≥ 4 → n ^ 2 ≤ 2 ^ n
+    -- ⊢ n + 1 ≥ 4 → (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+    intro hn1
+    -- hn1 : n + 1 ≥ 4
+    by_cases hn : 4 ≤ n
+    · -- hn : 4 ≤ n
+      have h1 : 2 * n + 1 ≤ n ^ 2 := by
+        calc 2 * n + 1
+             ≤ 2 * n + 8     := by grind
+        _    ≤ 2 * n + 2 * n := by grind
+        _    = 4 * n         := by grind
+        _    ≤ n * n         := by gcongr
+        _    = n ^ 2         := by grind
+      calc (n + 1) ^ 2
+           = n ^ 2 + 2 * n + 1 := by grind
+      _    ≤ n ^ 2 + n ^ 2     := Nat.add_le_add_left h1 (n ^ 2)
+      _    = 2 * n ^ 2         := by grind
+      _    ≤ 2 * 2 ^ n         := Nat.mul_le_mul_left 2 (hi hn)
+      _    = 2 ^ (n + 1)       := by ring
+    · -- hn : ¬4 ≤ n
+      have hn3 : n = 3 := by grind
+      subst hn3
+      -- ⊢ (3 + 1) ^ 2 ≤ 2 ^ (3 + 1)
+      norm_num
+
+example : ∃ k : ℕ, ∀ n : ℕ, (n + k) ^ 2 ≤ 2 ^ (n + k) := by
+  use 4
+  -- ⊢ ∀ (n : ℕ), (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+  intro n
+  -- ⊢ (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+  exact aux (n + 4) (by grind)
+
+end Solucion1
+
+-- 2ª solución
+-- ===========
+
+namespace Solucion2
+
+lemma aux : ∀ m ≥ 4, m ^ 2 ≤ 2 ^ m := by
+  intro m hm
+  -- m : ℕ
+  -- hm : m ≥ 4
+  -- ⊢ m ^ 2 ≤ 2 ^ m
+  induction m, hm using Nat.le_induction with
+  | base =>
+    -- ⊢ 4 ^ 2 ≤ 2 ^ 4
+    grind
+  | succ n hn hi =>
+    -- n : ℕ
+    -- hn : 4 ≤ n
+    -- hi : n ^ 2 ≤ 2 ^ n
+    -- ⊢ (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+    have h1 : 2 * n + 1 ≤ n ^ 2 := by
+      calc 2 * n + 1
+           ≤ 2 * n + 8     := by grind
+      _    ≤ 2 * n + 2 * n := by grind
+      _    = 4 * n         := by grind
+      _    ≤ n * n         := by gcongr
+      _    = n ^ 2         := by grind
+    calc (n + 1) ^ 2
+         = n ^ 2 + 2 * n + 1 := by grind
+    _    ≤ n ^ 2 + n ^ 2     := Nat.add_le_add_left h1 (n ^ 2)
+    _    = 2 * n ^ 2         := by grind
+    _    ≤ 2 * 2 ^ n         := Nat.mul_le_mul_left 2 hi
+    _    = 2 ^ (n + 1)       := by ring
+
+example : ∃ k : ℕ, ∀ n : ℕ, (n + k) ^ 2 ≤ 2 ^ (n + k) := by
+  use 4
+  -- ⊢ ∀ (n : ℕ), (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+  intro n
+  -- ⊢ (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+  exact aux (n + 4) (by grind)
+
+end Solucion2
+
+-- 3ª solución
+-- ===========
+
+namespace Solucion3
+
+lemma aux : ∀ m ≥ 4, m ^ 2 ≤ 2 ^ m := by
+  intro m hm
+  -- m : ℕ
+  -- hm : m ≥ 4
+  -- ⊢ m ^ 2 ≤ 2 ^ m
+  induction m, hm using Nat.le_induction with
+  | base =>
+    -- ⊢ 4 ^ 2 ≤ 2 ^ 4
+    norm_num
+  | succ n hn hi =>
+    -- n : ℕ
+    -- hn : 4 ≤ n
+    -- hi : n ^ 2 ≤ 2 ^ n
+    -- ⊢ (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+    have h1 : 2 * n + 1 ≤ n ^ 2 := by
+      calc 2 * n + 1
+           ≤ 2 * n + 8     := by omega
+      _    ≤ 2 * n + 2 * n := by omega
+      _    = 4 * n         := by ring
+      _    ≤ n * n         := by gcongr
+      _    = n ^ 2         := by ring
+    calc (n + 1) ^ 2
+         = n ^ 2 + 2 * n + 1 := by ring
+    _    ≤ n ^ 2 + n ^ 2     := Nat.add_le_add_left h1 (n ^ 2)
+    _    = 2 * n ^ 2         := by ring
+    _    ≤ 2 * 2 ^ n         := Nat.mul_le_mul_left 2 hi
+    _    = 2 ^ (n + 1)       := by ring
+
+example : ∃ k : ℕ, ∀ n : ℕ, (n + k) ^ 2 ≤ 2 ^ (n + k) := by
+  use 4
+  -- ⊢ ∀ (n : ℕ), (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+  intro n
+  -- ⊢ (n + 4) ^ 2 ≤ 2 ^ (n + 4)
+  exact aux (n + 4) (by omega)
+
+end Solucion3
+
+-- 4ª solución
+-- ===========
+
+namespace Solucion4
+
+lemma aux : ∀ m ≥ 4, m ^ 2 ≤ 2 ^ m := by
+  intro m hm
+  -- m : ℕ
+  -- hm : m ≥ 4
+  -- ⊢ m ^ 2 ≤ 2 ^ m
+  induction m, hm using Nat.le_induction with
+  | base =>
+    -- ⊢ 4 ^ 2 ≤ 2 ^ 4
+    norm_num
+  | succ n hn hi =>
+    -- n : ℕ
+    -- hn : 4 ≤ n
+    -- hi : n ^ 2 ≤ 2 ^ n
+    -- ⊢ (n + 1) ^ 2 ≤ 2 ^ (n + 1)
+    have h1 : 2 * n + 1 ≤ n ^ 2 := by
+      calc 2 * n + 1
+           ≤ 2 * n + 8     := Nat.add_le_add_iff_left.mpr (by norm_num)
+      _    = 2 * n + 2 * 4 := Nat.add_left_inj.mpr rfl
+      _    ≤ 2 * n + 2 * n := Nat.add_le_add_iff_left.mpr (Nat.mul_le_mul_left 2 hn)
+      _    = (2 + 2) * n   := (Nat.add_mul 2 2 n).symm
+      _    = 4 * n         := congrArg (· * n) (Nat.succ_add 1 2)
+      _    ≤ n * n         := Nat.mul_le_mul_right n hn
+      _    = n ^ 2         := (Nat.pow_two n).symm
+    calc (n + 1) ^ 2
+         = n ^ 2 + 2 * n + 1 := by ring
+    _    ≤ n ^ 2 + n ^ 2     := Nat.add_le_add_left h1 (n ^ 2)
+    _    = 2 * n ^ 2         := (Nat.two_mul (n ^ 2)).symm
+    _    ≤ 2 * 2 ^ n         := Nat.mul_le_mul_left 2 hi
+    _    = 2 ^ (n + 1)       := Nat.pow_succ'.symm
+
+example : ∃ k : ℕ, ∀ n : ℕ, (n + k) ^ 2 ≤ 2 ^ (n + k) :=
+  ⟨4, fun n => aux (n + 4) (by omega)⟩
+
+end Solucion4
+
+-- Lemas usados
+-- ============
+
+variable (n m k : ℕ)
+#check (Nat.add_le_add_iff_left : n + m ≤ n + k ↔ m ≤ k)
+#check (Nat.add_le_add_left : n ≤ m → ∀ k, k + n ≤ k + m)
+#check (Nat.add_left_inj : m + n = k + n ↔ m = k)
+#check (Nat.add_mul n m k : (n + m) * k = n * k + m * k)
+#check (Nat.mul_le_mul_left k : n ≤ m → k * n ≤ k * m)
+#check (Nat.mul_le_mul_right k : n ≤ m → n * k ≤ m * k)
+#check (Nat.pow_succ' : m ^ n.succ = m * m ^ n)
+#check (Nat.pow_two n : n ^ 2 = n * n)
+#check (Nat.succ_add n m : n.succ + m = (n + m).succ)
+#check (Nat.two_mul n : 2 * n = n + n)
+\end{minted}
+
+\begin{ejercicio}
+Demostrar que, para todo \(n ∈ N\), \(n(n+1)(2n+1)\) es divisible
+por 6.
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- 1ª demostración
+-- ===============
+
+-- Como 2 y 3 son primos entre sí, para demostrar que
+-- n(n+1)(2n+1) es divisible por 6 basta demostrar que lo es
+-- por 2 y por 3.
+--
+-- Para demostrar que n(n+1)(2n+1) es divisible por 2,
+-- consideramos dos casos según el resto de dividir n entre
+-- 2; es decir, según el valor de n % 2.
+--
+-- Caso 1: Si n % 2 = 0, entonces n es divible entre 2 y, por
+-- tanto, también lo es n(n+1)(2n+1).
+--
+-- Caso 2: Si n % 2 = 1, entonces n+1 es divible entre 2 y,
+-- por tanto, también lo es n(n+1)(2n+1).
+--
+-- Para demostrar que n(n+1)(2n+1) es divisible por 3,
+-- consideramos tres casos según el resto de dividir n entre
+-- 3; es decir, según el valor de n % 3.
+--
+-- Caso 1: Si n % 3 = 0, entonces n es divible entre 3 y, por
+-- tanto, también lo es n(n+1)(2n+1)
+--
+-- Caso 2: Si n % 3 = 1, entonces 2n+1 es divible entre 3 y,
+-- por tanto, también lo es n(n+1)(2n+1).
+--
+-- Caso 3: Si n % 3 = 2, entonces n+1 es divible entre 3 y,
+-- por tanto, también lo es n(n+1)(2n+1).
+
+-- 2ª demostración
+-- ===============
+
+-- Demostraremos, por inducción en n, que
+--    6 ∣ n(n+1)(2n+1)
+--
+-- Base: Para n = 0, se tiene trivialmente que
+--    6 | 0 * (0 + 1) * (2 * 0 + 1)
+--
+-- Paso de inducción: Supongamos que n verifica la hipótesis
+-- de inducción:
+--    6 ∣ n(n+1)(2n+1)                                    (HI)
+-- Tenemos que demostrar que
+--    6 ∣ (n+1)((n+1)+1)(2(n+1)+1)
+--
+-- Por la HI, existe un k tal que
+--    n(n+1)(2n+1) = 6k                                   (1)
+--
+-- La diferencia es
+--    (n+1)((n+1)+1)(2(n+1)+1) - n(n+1)(2n+1)
+--    = (n+1)(n+2)(2n+3) - n(n+1)(2n+1)
+--    = (n+1)[(n+2)(2n+3) - n(2n+1)]
+--    = (n+1)[2n² + 7n + 6 - 2n² - n]
+--    = (n+1)(6n + 6)
+--    = 6(n+1)²
+--
+-- Por tanto,
+--    (n+1)((n+1)+1)(2(n+1)+1)
+--    = n(n+1)(2n+1) + 6(n+1)²
+--    = 6k + 6(n+1)²             [por (1)]
+--    = 6(k + (n+1)²)
+-- que es divisible por 6.
+
+-- 3ª demostración
+-- ===============
+
+-- Usando aritmética modular en ℤ₆, demostrar que
+--    6 ∣ n * (n + 1) * (2 * n + 1)
+-- se reduce a
+--    n * (n + 1) * (2 * n + 1) ≡ 0 (mod 6)
+-- lo que se verifica trivialmente.
+
+-- Demostraciones en Lean 4
+-- ========================
+
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic
+
+variable (n : ℕ)
+
+-- 1ª demostración
+-- ===============
+
+example : 6 ∣ n * (n + 1) * (2 * n + 1) := by
+  have h1 : Nat.Coprime 2 3 := by norm_num
+  apply Nat.Coprime.mul_dvd_of_dvd_of_dvd h1
+  · -- ⊢ 2 ∣ n * (n + 1) * (2 * n + 1)
+    have h2 : n % 2 < 2 := by omega
+    interval_cases h4 : n % 2
+    · -- h4 : n % 2 = 0
+      have h5 : 2 ∣ n := by omega
+      have h6 : 2 ∣ n * (n + 1) := dvd_mul_of_dvd_left h5 (n + 1)
+      exact dvd_mul_of_dvd_left h6 (2 * n + 1)
+    · -- h4 : n % 2 = 1
+      have h5 : 2 ∣ n + 1 := by omega
+      have h6 : 2 ∣ n * (n + 1) := dvd_mul_of_dvd_right h5 n
+      exact dvd_mul_of_dvd_left h6 (2 * n + 1)
+  · -- ⊢ 3 ∣ n * (n + 1) * (2 * n + 1)
+    have h3 : n % 3 < 3 := by omega
+    interval_cases h4 : n % 3
+    · -- h4 : n % 3 = 0
+      have h5 : 3 ∣ n := by omega
+      have h6 : 3 ∣ n * (n + 1) := dvd_mul_of_dvd_left h5 (n + 1)
+      exact dvd_mul_of_dvd_left h6 (2 * n + 1)
+    · -- h4 : n % 3 = 1
+      have h5 : 3 ∣ 2 * n + 1 := by omega
+      exact dvd_mul_of_dvd_right h5 (n * (n + 1))
+    · -- h4 : n % 3 = 2
+      have h5 : 3 ∣ n + 1 := by omega
+      have h6 : 3 ∣ n * (n + 1) := dvd_mul_of_dvd_right h5 n
+      exact dvd_mul_of_dvd_left h6 (2 * n + 1)
+
+-- 2ª demostración
+-- ===============
+
+example : 6 ∣ n * (n + 1) * (2 * n + 1) := by
+  have h1 : Nat.Coprime 2 3 := by norm_num
+  apply Nat.Coprime.mul_dvd_of_dvd_of_dvd h1
+  · -- ⊢ 2 ∣ n * (n + 1) * (2 * n + 1)
+    have h2 : n % 2 < 2 := by omega
+    interval_cases h4 : n % 2
+    · -- h4 : n % 2 = 0
+      have h5 : 2 ∣ n := by omega
+      exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_left h5 (n + 1)) (2 * n + 1)
+    · -- h4 : n % 2 = 1
+      have h5 : 2 ∣ n + 1 := by omega
+      exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_right h5 n) (2 * n + 1)
+  · -- ⊢ 3 ∣ n * (n + 1) * (2 * n + 1)
+    have h3 : n % 3 < 3 := by omega
+    interval_cases h4 : n % 3
+    · -- h4 : n % 3 = 0
+      have h5 : 3 ∣ n := by omega
+      exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_left h5 (n + 1)) (2 * n + 1)
+    · -- h4 : n % 3 = 1
+      have h5 : 3 ∣ 2 * n + 1 := by omega
+      exact dvd_mul_of_dvd_right h5 (n * (n + 1))
+    · -- h4 : n % 3 = 2
+      have h5 : 3 ∣ n + 1 := by omega
+      exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_right h5 n) (2 * n + 1)
+
+-- 3ª demostración
+-- ===============
+
+example : 6 ∣ n * (n + 1) * (2 * n + 1) := by
+  induction n with
+  | zero =>
+    -- ⊢ 6 ∣ 0 * (0 + 1) * (2 * 0 + 1)
+    use 0
+  | succ n ih =>
+    -- n : ℕ
+    -- ih : 6 ∣ n * (n + 1) * (2 * n + 1)
+    -- ⊢ 6 ∣ (n + 1) * (n + 1 + 1) * (2 * (n + 1) + 1)
+    have h1 : (n + 1) * ((n + 1) + 1) * (2 * (n + 1) + 1)
+              = n * (n + 1) * (2 * n + 1) + 6 * (n + 1) ^ 2 := by ring
+    obtain ⟨k, hk⟩ := ih
+    -- k : ℕ
+    -- hk : n * (n + 1) * (2 * n + 1) = 6 * k
+    use k + (n + 1) ^ 2
+    -- ⊢ (n + 1) * (n + 1 + 1) * (2 * (n + 1) + 1) = 6 * (k +
+    -- (n + 1) ^ 2)
+    calc (n + 1) * (n + 1 + 1) * (2 * (n + 1) + 1)
+       _ = n * (n + 1) * (2 * n + 1) + 6 * (n + 1) ^ 2 := by ring
+       _ = 6 * k + 6 * (n + 1) ^ 2                     := by rw [hk]
+       _ = 6 * (k + (n + 1) ^ 2)                       := by grind
+
+-- 4ª demostración
+-- ===============
+
+example : 6 ∣ n * (n + 1) * (2 * n + 1) := by
+  rw [← ZMod.natCast_eq_zero_iff]
+  -- ⊢ ↑(n * (n + 1) * (2 * n + 1)) = 0
+  push_cast
+  -- ⊢ ↑n * (↑n + 1) * (2 * ↑n + 1) = 0
+  have h : ∀ r : ZMod 6, r * (r + 1) * (2 * r + 1) = 0 := by decide
+  exact h n
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar que si una sucesión \(σ : ℕ → ℕ\) es estrictamente
+  creciente, entonces crece al menos linealmente. Es decir,
+  que si
+  \[ ∀ i j, i < j → σ(i) < σ(j) \]
+  entonces
+  \[ ∀ n, n ≤ σ(n) \]
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Lo demostraremos por inducción en n.
+--
+-- Caso base: Para n = 0 se tiene que
+--    0 ≤ σ(0)
+-- porque 0 es el menor número natural.
+--
+-- Paso de inducción: Supongamos que la propiedad se cumple
+-- para n; es decir,
+--    n ≤ σ(n)                                            (HI)
+-- tenemos que demostrarla para n+1
+--    n+1 ≤ σ(n+1)
+-- Para ello, basta demostrar que
+--    n < σ(n+1)
+-- que se prueba con
+--    n ≤ σ(n)       [por (HI)]
+--      < σ(n+1)     [porque σ es estictamente creciente]
+
+-- Demostraciones con Lean 4
+-- =========================
+
+import Mathlib.Tactic
+
+-- 1ª demostración
+-- ===============
+
+example
+  {σ : ℕ → ℕ}
+  (h : ∀ i j, i < j → σ i < σ j) :
+  (∀ n, n ≤ σ n) :=
+by
+  intro n
+  -- n : ℕ
+  -- ⊢ n ≤ σ n
+  induction n with
+  | zero =>
+    -- ⊢ 0 ≤ σ 0
+    exact Nat.zero_le (σ 0)
+  | succ n hi =>
+    -- n : ℕ
+    -- hi : n ≤ σ n
+    -- ⊢ n + 1 ≤ σ (n + 1)
+    apply Nat.succ_le_of_lt
+    -- ⊢ n < σ (n + 1)
+    calc n ≤ σ n       := hi
+         _ < σ (n + 1) := h n (n + 1) (lt_add_one n)
+
+-- 2ª demostración
+-- ===============
+
+example
+  {σ : ℕ → ℕ}
+  (h : ∀ i j, i < j → σ i < σ j) :
+  (∀ n, n ≤ σ n) :=
+by
+  intro n
+  -- n : ℕ
+  -- ⊢ n ≤ σ n
+  induction n with
+  | zero =>
+    -- ⊢ 0 ≤ σ 0
+    exact Nat.zero_le (σ 0)
+  | succ n hi =>
+    -- n : ℕ
+    -- hi : n ≤ σ n
+    -- ⊢ n + 1 ≤ σ (n + 1)
+    exact Nat.succ_le_of_lt
+            (Nat.lt_of_le_of_lt hi
+              (h n (n + 1) (lt_add_one n)))
+
+-- 3ª demostración
+-- ===============
+
+example
+  {σ : ℕ → ℕ}
+  (hσ : ∀ i j, i < j → σ i < σ j) :
+  ∀ n, n ≤ σ (n) :=
+by
+  intro n
+  -- n : ℕ
+  -- ⊢ n ≤ σ n
+  induction n with
+  | zero =>
+    -- ⊢ 0 ≤ σ 0
+    bound
+  | succ n hi =>
+    -- n : ℕ
+    -- hn : n ≤ σ n
+    -- ⊢ n + 1 ≤ σ (n + 1)
+    have h1 : n < n + 1 := by bound
+    specialize hσ n (n + 1) h1
+    -- hσ : σ n < σ (n + 1)
+    linarith
+
+-- Lemas usados
+-- ============
+
+variable (n m k : ℕ)
+#check (Nat.lt_of_le_of_lt : n ≤ m → m < k → n < k)
+#check (Nat.succ_le_of_lt : n < m → n + 1 ≤ m)
+#check (Nat.zero_le n : 0 ≤ n)
+#check (lt_add_one n : n < n + 1)
+\end{minted}
 
 %%% Local Variables:
 %%% mode: LaTeX
