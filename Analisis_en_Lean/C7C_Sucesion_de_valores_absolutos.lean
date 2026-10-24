@@ -28,7 +28,9 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
+module
+
+import Mathlib.Basic.Real.Basic
 import Analisis_en_Lean.C2_El_calculo_de_pi
 import Mathlib.Tactic
 
@@ -188,5 +190,5 @@ by
 -- Lemas usados
 -- ============
 
-variable (x y : ℝ)
-#check (abs_abs_sub_abs_le x y : |(|x|) - (|y|)| ≤ |x - y|)
+-- variable (x y : ℝ)
+-- #check (abs_abs_sub_abs_le x y : |(|x|) - (|y|)| ≤ |x - y|)

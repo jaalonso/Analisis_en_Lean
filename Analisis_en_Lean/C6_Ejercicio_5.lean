@@ -14,9 +14,11 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
+module
+
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic
-import Analisis_en_Lean.C6g_Teorema_del_emparedado
+public import Analisis_en_Lean.C6G_Teorema_del_emparedado -- teorema_emparedado
 
 variable (a b c d e : ℕ → ℝ)
 variable (L : ℝ)

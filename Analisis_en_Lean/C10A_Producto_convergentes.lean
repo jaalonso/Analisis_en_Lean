@@ -67,10 +67,14 @@
 -- Demostraciones en Lean 4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
-import Analisis_en_Lean.C9B_Acotacion_de_convergentes
+module
+
+import Mathlib.Basic.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
+import Analisis_en_Lean.C9B_Acotacion_de_convergentes -- AcotadaSiConvergente
 import Mathlib.Tactic
+
+set_option linter.privateModule false
 
 variable {a b c : ℕ → ℝ}
 variable {L M : ℝ}

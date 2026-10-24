@@ -13,26 +13,30 @@
 -- Demostración en lenguaje natural
 -- ================================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
-import Analisis_en_Lean.C7_Ejercicio_1
-import Analisis_en_Lean.C9A_Termino_menor_o_igual_que_suma
+module
+
+import Mathlib.Basic.Real.Basic
+public import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
+import Analisis_en_Lean.C7_Ejercicio_1 -- EventAcotadaSiConvNoCero
+import Analisis_en_Lean.C9A_Termino_menor_o_igual_que_suma -- Termino_menor_o_igual_que_suma
 import Mathlib.Tactic
 
 open Finset
 
 variable {a : ℕ → ℝ}
 
+@[expose] public
 def SeqConv (a : ℕ → ℝ) : Prop :=
   ∃ L, SeqLim a L
 
+@[expose] public
 def SeqBdd (a : ℕ → ℝ) : Prop :=
   ∃ M, ∀ n, |a n| ≤ M
 
 -- 1ª demostración
 -- ===============
 
-theorem AcotadaSiConvergente
+public theorem AcotadaSiConvergente
   (ha : SeqConv a) :
   SeqBdd a :=
 by

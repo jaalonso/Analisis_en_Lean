@@ -87,6 +87,8 @@
 -- Demostraciones en Lean 4
 -- ========================
 
+module
+
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 

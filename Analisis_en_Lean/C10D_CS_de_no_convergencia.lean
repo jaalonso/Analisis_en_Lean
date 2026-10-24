@@ -26,10 +26,12 @@
 -- Demostraciones en Lean 4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C7A_Unicidad_del_limite
-import Analisis_en_Lean.C9B_Acotacion_de_convergentes
-import Analisis_en_Lean.C10C_Las_subsucesiones_tienen_el_mismo_limite_que_la_sucesion
+module
+
+import Mathlib.Basic.Real.Basic
+import Analisis_en_Lean.C7A_Unicidad_del_limite -- seqLim_unique
+public import Analisis_en_Lean.C9B_Acotacion_de_convergentes -- SeqConv, AcotadaSiConvergente
+public import Analisis_en_Lean.C10C_Las_subsucesiones_tienen_el_mismo_limite_que_la_sucesion -- Subseq, seqLim_of_subseq
 
 variable {a b₁ b₂ : ℕ → ℝ}
 variable {L L₁ L₂ : ℝ}
@@ -43,7 +45,7 @@ example
   (hb₂ : Subseq b₂ a)
   (hL₂ : SeqLim b₂ L₂)
   (h : L₁ ≠ L₂)
-  : ¬SucConvergente a :=
+  : ¬SeqConv a :=
 by
   intro h1
   -- h1 : SeqConv a
@@ -67,7 +69,7 @@ example
   (hb₂ : Subseq b₂ a)
   (hL₂ : SeqLim b₂ L₂)
   (h : L₁ ≠ L₂)
-  : ¬SucConvergente a :=
+  : ¬SeqConv a :=
 by
   rintro ⟨L, hL⟩
   -- L : ℝ
@@ -80,13 +82,13 @@ by
 -- 3ª demostración
 -- ===============
 
-theorem not_seqConv_of_subseq_seqLim_ne
+public theorem not_seqConv_of_subseq_seqLim_ne
   (hb₁ : Subseq b₁ a)
   (hL₁ : SeqLim b₁ L₁)
   (hb₂ : Subseq b₂ a)
   (hL₂ : SeqLim b₂ L₂)
   (h : L₁ ≠ L₂)
-  : ¬SucConvergente a :=
+  : ¬SeqConv a :=
 by
   rintro ⟨L, hL⟩
   -- L : ℝ

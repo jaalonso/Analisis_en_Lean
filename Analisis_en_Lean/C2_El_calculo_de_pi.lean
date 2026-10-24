@@ -16,7 +16,8 @@ import Mathlib.Tactic.Ring.RingNF        -- ring_nf
 -- ℕ tal que, para todo n ≥ k, tenemos |a(n)−L|<ϵ.
 -- ---------------------------------------------------------------------
 
-@[expose] public def SeqLim (a : ℕ → ℝ) (L : ℝ) : Prop :=
+@[expose] public
+def SeqLim (a : ℕ → ℝ) (L : ℝ) : Prop :=
   ∀ ε > 0, ∃ k : ℕ, ∀ n ≥ k, |a n - L| < ε
 
 -- ---------------------------------------------------------------------

@@ -22,7 +22,7 @@
 -- 0.
 --
 -- Paso de inducción: Supongamos que N verifica la propiedad;
---es decir,
+-- es decir,
 --    ∀ n < N, |a n| ≤ ∑ k ∈ range N, |a k|               (HI)
 -- Tenmos que demostrar que
 --    ∀ n < N + 1, |a n| ≤ ∑ k ∈ range (N + 1), |a k|
@@ -52,7 +52,10 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Tactic
 
 open Finset
@@ -276,7 +279,7 @@ by
 -- 7ª demostración
 -- ===============
 
-theorem Termino_menor_o_igual_que_suma
+public theorem Termino_menor_o_igual_que_suma
   (a : ℕ → ℝ)
   (N : ℕ) :
   ∀ n < N, |a n| ≤ ∑ k ∈ range N, |a k| :=

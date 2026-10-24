@@ -62,8 +62,10 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
 
 open Nat
 
@@ -71,10 +73,12 @@ variable {u v : ℕ → ℝ}
 variable {a : ℝ}
 
 -- φ es una función de extracción.
+@[expose] public
 def IsExtraction (φ : ℕ → ℕ):=
   StrictMono φ
 
 -- v es una subsucesión de u.
+@[expose] public
 def Subseq (v u : ℕ → ℝ) :=
   ∃ φ, IsExtraction φ ∧ v = u ∘ φ
 
@@ -179,7 +183,7 @@ by
 -- 4ª demostración
 -- ===============
 
-theorem seqLim_of_subseq
+public theorem seqLim_of_subseq
   (hv : Subseq v u)
   (ha : SeqLim u a)
   : SeqLim v a :=
@@ -200,6 +204,6 @@ by
 -- Lemas usados
 -- ============
 
-variable (m n x y z : ℕ)
-#check (Nat.zero_le n : 0 ≤ n)
-#check (le_trans : x ≤ y → y ≤ z → x ≤ z)
+-- variable (m n x y z : ℕ)
+-- #check (Nat.zero_le n : 0 ≤ n)
+-- #check (le_trans : x ≤ y → y ≤ z → x ≤ z)

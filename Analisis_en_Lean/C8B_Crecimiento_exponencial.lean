@@ -30,6 +30,8 @@
 -- Demostraciones con Lean 4
 -- =========================
 
+module
+
 import Mathlib.Tactic
 
 variable (n : ℕ)
@@ -153,15 +155,15 @@ Nat.lt_two_pow_self
 -- Lemas usados
 -- ============
 
-variable (k m : ℕ)
-#check (Nat.add_le_add_iff_left : n + m ≤ n + k ↔ m ≤ k)
-#check (Nat.add_lt_add_iff_right : n + k < m + k ↔ n < m)
-#check (Nat.add_lt_add_right : n < m → ∀ k, n + k < m + k)
-#check (Nat.lt_of_lt_of_le : n < m → m ≤ k → n < k)
-#check (Nat.lt_two_pow_self : n < 2 ^ n)
-#check (Nat.one_le_two_pow : 1 ≤ 2 ^ n)
-#check (Nat.one_lt_two : 1 < 2)
-#check (Nat.pow_lt_pow_succ : 1 < k → k ^ n < k ^ (n + 1))
-#check (Nat.two_mul n : 2 * n = n + n)
-#check (Nat.two_pow_pos n : 0 < 2 ^ n)
-#check (pow_succ' : m ^ n.succ = m * m ^ n)
+-- variable (k m : ℕ)
+-- #check (Nat.add_le_add_iff_left : n + m ≤ n + k ↔ m ≤ k)
+-- #check (Nat.add_lt_add_iff_right : n + k < m + k ↔ n < m)
+-- #check (Nat.add_lt_add_right : n < m → ∀ k, n + k < m + k)
+-- #check (Nat.lt_of_lt_of_le : n < m → m ≤ k → n < k)
+-- #check (Nat.lt_two_pow_self : n < 2 ^ n)
+-- #check (Nat.one_le_two_pow : 1 ≤ 2 ^ n)
+-- #check (Nat.one_lt_two : 1 < 2)
+-- #check (Nat.pow_lt_pow_succ : 1 < k → k ^ n < k ^ (n + 1))
+-- #check (Nat.two_mul n : 2 * n = n + n)
+-- #check (Nat.two_pow_pos n : 0 < 2 ^ n)
+-- #check (pow_succ' : m ^ n.succ = m * m ^ n)

@@ -44,8 +44,10 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+module
+
+import Mathlib.Basic.Real.Basic
+public import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
 import Mathlib.Tactic
 
 variable (a b c : ℕ → ℝ)
@@ -281,7 +283,7 @@ by
 -- 7ª demostración
 -- ===============
 
-theorem teorema_emparedado
+public theorem teorema_emparedado
   (ha : SeqLim a L)
   (hc : SeqLim c L)
   (hab : ∀ n, a n ≤ b n)
@@ -325,9 +327,9 @@ by
 -- Lemas usados
 -- ============
 
-variable (a b c : ℝ)
-#check (abs_lt : |a| < b ↔ -b < a ∧ a < b)
-#check (le_of_max_le_left : max a b ≤ c → a ≤ c)
-#check (le_of_max_le_right : max a b ≤ c → b ≤ c)
-#check (sub_add_cancel a b : (a - b) + b = a)
-#check (tsub_le_iff_right : a - b ≤ c ↔ a ≤ c + b)
+-- variable (a b c : ℝ)
+-- #check (abs_lt : |a| < b ↔ -b < a ∧ a < b)
+-- #check (le_of_max_le_left : max a b ≤ c → a ≤ c)
+-- #check (le_of_max_le_right : max a b ≤ c → b ≤ c)
+-- #check (sub_add_cancel a b : (a - b) + b = a)
+-- #check (tsub_le_iff_right : a - b ≤ c ↔ a ≤ c + b)

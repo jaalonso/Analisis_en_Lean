@@ -40,10 +40,14 @@
 -- Demostraciones en Lean 4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+module
+
+public import Mathlib.Basic.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
 import Mathlib.Tactic
 
+
+@[expose] public
 def IsUB (a : ℕ → ℝ) (M : ℝ) : Prop :=
   ∀ n, a n ≤ M
 
@@ -181,13 +185,13 @@ by
 -- Lemas usados
 -- ============
 
-variable (x y : ℝ)
-#check (le_refl x : x ≤ x)
-#check (lt_irrefl x : ¬x < x)
-#check (neg_le_abs x : -x ≤ |x|)
-#check (neg_sub x y : -(x - y) = y - x)
-#check (not_le : ¬x ≤ y ↔ y < x)
-#check (sub_le_sub_left : x ≤ y → ∀ z, z - y ≤ z - x)
-#check (sub_lt_sub_left : x < y → ∀ z, z - y < z - x)
-#check (sub_pos : 0 < x - y ↔ y < x)
-#check (sub_sub_self x y : x - (x - y) = y)
+-- variable (x y : ℝ)
+-- #check (le_refl x : x ≤ x)
+-- #check (lt_irrefl x : ¬x < x)
+-- #check (neg_le_abs x : -x ≤ |x|)
+-- #check (neg_sub x y : -(x - y) = y - x)
+-- #check (not_le : ¬x ≤ y ↔ y < x)
+-- #check (sub_le_sub_left : x ≤ y → ∀ z, z - y ≤ z - x)
+-- #check (sub_lt_sub_left : x < y → ∀ z, z - y < z - x)
+-- #check (sub_pos : 0 < x - y ↔ y < x)
+-- #check (sub_sub_self x y : x - (x - y) = y)

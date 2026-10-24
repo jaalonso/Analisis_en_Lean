@@ -36,8 +36,10 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+module
+
+import Mathlib.Basic.Real.Basic
+public import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
 import Mathlib.Tactic
 
 variable {a : ℕ → ℝ}
@@ -109,7 +111,7 @@ by
 -- 4ª demostración
 -- ===============
 
-theorem EventAcotadaSiConvNoCero
+public theorem EventAcotadaSiConvNoCero
   (ha : SeqLim a L)
   (hL : L ≠ 0)
   : ∃ k, ∀ n ≥ k, |a n| ≤ 2 * |L| := by
@@ -133,9 +135,9 @@ theorem EventAcotadaSiConvNoCero
 -- Lemas usados
 -- ============
 
-variable (x y z : ℝ)
-#check (abs_add_le x y : |x + y| ≤ |x| + |y|)
-#check (abs_pos : 0 < |x| ↔ x ≠ 0)
-#check (add_lt_add_iff_right x : y + x < z + x ↔ y < z)
-#check (sub_add_cancel x y : x - y + y = x)
-#check (two_mul x : 2 * x = x + x)
+-- variable (x y z : ℝ)
+-- #check (abs_add_le x y : |x + y| ≤ |x| + |y|)
+-- #check (abs_pos : 0 < |x| ↔ x ≠ 0)
+-- #check (add_lt_add_iff_right x : y + x < z + x ↔ y < z)
+-- #check (sub_add_cancel x y : x - y + y = x)
+-- #check (two_mul x : 2 * x = x + x)

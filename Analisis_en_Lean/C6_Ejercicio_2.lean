@@ -8,6 +8,8 @@
 -- Demostrar que si `x = 2 ∧ y = 3 ∧ z = 4`, entonces `z=4`.
 -- ---------------------------------------------------------------------
 
+module
+
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic
 

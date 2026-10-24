@@ -52,8 +52,10 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C2_El_calculo_de_pi
+module
+
+import Mathlib.Basic.Real.Basic
+import Analisis_en_Lean.C2_El_calculo_de_pi -- SeqLim
 import Mathlib.Tactic
 
 variable {a b : ℕ → ℝ}

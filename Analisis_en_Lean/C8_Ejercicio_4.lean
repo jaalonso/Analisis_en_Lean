@@ -36,6 +36,8 @@
 -- Demostraciones con Lean 4
 -- =========================
 
+module
+
 import Mathlib.Tactic
 
 -- 1ª demostración
@@ -112,8 +114,8 @@ by
 -- Lemas usados
 -- ============
 
-variable (n m k : ℕ)
-#check (Nat.lt_of_le_of_lt : n ≤ m → m < k → n < k)
-#check (Nat.succ_le_of_lt : n < m → n + 1 ≤ m)
-#check (Nat.zero_le n : 0 ≤ n)
-#check (lt_add_one n : n < n + 1)
+-- variable (n m k : ℕ)
+-- #check (Nat.lt_of_le_of_lt : n ≤ m → m < k → n < k)
+-- #check (Nat.succ_le_of_lt : n < m → n + 1 ≤ m)
+-- #check (Nat.zero_le n : 0 ≤ n)
+-- #check (lt_add_one n : n < n + 1)

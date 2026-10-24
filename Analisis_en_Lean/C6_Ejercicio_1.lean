@@ -9,7 +9,9 @@
 --    x = 2 ∧ y = 3 ∧ z = 4
 -- ---------------------------------------------------------------------
 
-import Mathlib.Data.Real.Basic
+module
+
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic
 
 variable (x y z : ℝ)

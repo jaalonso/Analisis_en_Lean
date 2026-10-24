@@ -62,9 +62,13 @@
 -- Demostraciones con Lean4
 -- ========================
 
-import Mathlib.Data.Real.Basic
-import Analisis_en_Lean.C7B_Eventualmente_alejadas
+module
+
+import Mathlib.Basic.Real.Basic
+public import Analisis_en_Lean.C7B_Eventualmente_alejadas_pos -- exists_half_abs_le_abs_of_seqLim_of_ne_zero
 import Mathlib.Tactic
+
+set_option linter.privateModule false
 
 variable {a b : ℕ → ℝ}
 variable {L : ℝ}
@@ -349,25 +353,25 @@ example
 -- Lemas usados
 -- ============
 
-variable (x y z u : ℝ)
-#check (exists_half_abs_le_abs_of_seqLim_of_ne_zero : SeqLim a L → L ≠ 0 → ∃ k, ∀ n ≥ k, |L| / 2 ≤ |a n|)
-#check (abs_div x y : |x / y| = |x| / |y|)
-#check (abs_mul x y : |x * y| = |x| * |y|)
-#check (abs_pos : 0 < |x| ↔ x ≠ 0)
-#check (abs_sub_comm x y : |x - y| = |y - x|)
-#check (div_le_div_iff_of_pos_left : 0 < x → 0 < y → 0 < z → (x / y ≤ x / z ↔ z ≤ y))
-#check (div_lt_div_iff_of_pos_right : 0 < z → (x / z < y / z ↔ x < y))
-#check (div_mul_eq_mul_div x y z)
-#check (div_sub_div x z : y ≠ 0 → u ≠ 0 → x / y - z / u = (x * u - y * z) / (y * u))
-#check (half_pos : 0 < x → 0 < x / 2)
-#check (le_of_max_le_left : max x y ≤ z → x ≤ z)
-#check (le_of_max_le_right : max x y ≤ z → y ≤ z)
-#check (lt_of_lt_of_le : x < y → y ≤ z → x < z)
-#check (mul_div_cancel_right₀ x : y ≠ 0 → x * y / y = x)
-#check (mul_le_mul_iff_of_pos_right : 0 < x → (y * x ≤ z * x ↔ y ≤ z))
-#check (mul_one x : x * 1 = x)
-#check (mul_pos : 0 < x → 0 < y → 0 < x * y)
-#check (ne_of_lt : x < y → x ≠ y)
-#check (one_mul x : 1 * x = x)
-#check (pow_two x : x ^ 2 = x * x)
-#check (sq_pos_of_pos : 0 < x → 0 < x ^ 2)
+-- variable (x y z u : ℝ)
+-- #check (exists_half_abs_le_abs_of_seqLim_of_ne_zero : SeqLim a L → L ≠ 0 → ∃ k, ∀ n ≥ k, |L| / 2 ≤ |a n|)
+-- #check (abs_div x y : |x / y| = |x| / |y|)
+-- #check (abs_mul x y : |x * y| = |x| * |y|)
+-- #check (abs_pos : 0 < |x| ↔ x ≠ 0)
+-- #check (abs_sub_comm x y : |x - y| = |y - x|)
+-- #check (div_le_div_iff_of_pos_left : 0 < x → 0 < y → 0 < z → (x / y ≤ x / z ↔ z ≤ y))
+-- #check (div_lt_div_iff_of_pos_right : 0 < z → (x / z < y / z ↔ x < y))
+-- #check (div_mul_eq_mul_div x y z)
+-- #check (div_sub_div x z : y ≠ 0 → u ≠ 0 → x / y - z / u = (x * u - y * z) / (y * u))
+-- #check (half_pos : 0 < x → 0 < x / 2)
+-- #check (le_of_max_le_left : max x y ≤ z → x ≤ z)
+-- #check (le_of_max_le_right : max x y ≤ z → y ≤ z)
+-- #check (lt_of_lt_of_le : x < y → y ≤ z → x < z)
+-- #check (mul_div_cancel_right₀ x : y ≠ 0 → x * y / y = x)
+-- #check (mul_le_mul_iff_of_pos_right : 0 < x → (y * x ≤ z * x ↔ y ≤ z))
+-- #check (mul_one x : x * 1 = x)
+-- #check (mul_pos : 0 < x → 0 < y → 0 < x * y)
+-- #check (ne_of_lt : x < y → x ≠ y)
+-- #check (one_mul x : 1 * x = x)
+-- #check (pow_two x : x ^ 2 = x * x)
+-- #check (sq_pos_of_pos : 0 < x → 0 < x ^ 2)
