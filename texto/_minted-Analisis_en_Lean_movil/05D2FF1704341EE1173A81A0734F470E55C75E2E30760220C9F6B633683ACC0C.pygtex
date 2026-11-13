@@ -1,0 +1,109 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostración en lenguaje natural}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ================================}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Supongamos que la sucesión a es de Cauchy. Tenemos que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} demostrar que \PYGZhy{}a también lo es. Para ello, sea ε \PYGZgt{} 0. Tenemos}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} que demostrar que existe un N ∈ ℕ tal que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ≥ N, ∀ m ≥ N, |(\PYGZhy{}a)(m) \PYGZhy{} (\PYGZhy{}a)(n)| \PYGZlt{} ε                 (1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Puesto que a es de Cauchy, existe un N ∈ ℕ tal que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ≥ N, ∀ m ≥ N, |a(m) \PYGZhy{} a(n)| \PYGZlt{} ε                       (2)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Veamos que con el mismo N se verifica la condición (1). Para}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ello, sean n y m tales que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    n ≥ N                                                     (3)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    m ≥ N                                                     (4)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Entonces}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    |(\PYGZhy{}a)(m) \PYGZhy{} (\PYGZhy{}a)(n)| = |(\PYGZhy{}a(m)) \PYGZhy{} (\PYGZhy{}a(n))|}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                        = |\PYGZhy{}(a(m) \PYGZhy{} a(n))|}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                        = |a(m) \PYGZhy{} a(n)|}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                        \PYGZlt{} ε                  [por (2), (3) y (4)]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostraciones en Lean 4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ========================}
+
+\PYG{n}{module}
+
+\PYG{n}{public}\PYG{+w}{ }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{Mathlib.Tactic}
+\PYG{n}{public}\PYG{+w}{ }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4.Defs}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} IsCauchy}
+
+\PYG{k+kd}{variable}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{n}{X}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{Type}\PYG{n+nb+bp}{*}\PYG{o}{\PYGZcb{}}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{AddCommGroup}\PYG{+w}{ }\PYG{n}{X}\PYG{o}{]}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{Lattice}\PYG{+w}{ }\PYG{n}{X}\PYG{o}{]}
+\PYG{k+kd}{variable}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{X}\PYG{o}{\PYGZcb{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsCauchy}\PYG{+w}{ }\PYG{n}{a}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsCauchy}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : X}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : 0 \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, ∀ m ≥ N, |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hN}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} N : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hN : ∀ n ≥ N, ∀ m ≥ N, |a m \PYGZhy{} a n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ n ≥ N, ∀ m ≥ N, |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n}{hm}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} m : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hm : m ≥ N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{calc}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{n}\PYG{n+nb+bp}{|}
+\PYG{+w}{       }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{rfl}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|\PYGZhy{}}\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{n+nb+bp}{|}\PYG{+w}{      }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{neg\PYGZus{}sub\PYGZsq{}}\PYG{o}{]}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{n+nb+bp}{|}\PYG{+w}{         }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{abs\PYGZus{}neg}\PYG{+w}{ }\PYG{n}{\PYGZus{}}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{                   }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n}{hm}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsCauchy}\PYG{+w}{ }\PYG{n}{a}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsCauchy}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : X}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : 0 \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, ∀ m ≥ N, |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hN}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} N : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hN : ∀ n ≥ N, ∀ m ≥ N, |a m \PYGZhy{} a n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{refine}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n}{hm}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} m : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hm : m ≥ N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{calc}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{n}\PYG{n+nb+bp}{|}
+\PYG{+w}{       }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{rfl}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|\PYGZhy{}}\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{n+nb+bp}{|}\PYG{+w}{      }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{congrArg}\PYG{+w}{ }\PYG{n}{abs}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{neg\PYGZus{}sub\PYGZsq{}}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{))}\PYG{n+nb+bp}{.}\PYG{n}{symm}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{n+nb+bp}{|}\PYG{+w}{         }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{abs\PYGZus{}neg}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{                   }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n}{hm}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{n}{public}\PYG{+w}{ }\PYG{k+kd}{theorem}\PYG{+w}{ }\PYG{n}{isCauchy\PYGZus{}neg}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsCauchy}\PYG{+w}{ }\PYG{n}{a}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsCauchy}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{a}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : X}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : 0 \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, ∀ m ≥ N, |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hN}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} N : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hN : ∀ n ≥ N, ∀ m ≥ N, |a m \PYGZhy{} a n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{refine}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n}{hm}\PYG{+w}{ }\PYG{n+nb+bp}{↦}\PYG{+w}{ }\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} m : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hm : m ≥ N}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |(\PYGZhy{}a) m \PYGZhy{} (\PYGZhy{}a) n| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{k}{Pi}\PYG{n+nb+bp}{.}\PYG{n}{neg\PYGZus{}apply}\PYG{o}{,}\PYG{+w}{ }\PYG{k}{Pi}\PYG{n+nb+bp}{.}\PYG{n}{neg\PYGZus{}apply}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{neg\PYGZus{}sub\PYGZus{}neg}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{abs\PYGZus{}sub\PYGZus{}comm}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n}{exact}\PYG{+w}{ }\PYG{n}{hN}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n}{hm}
+\end{Verbatim}

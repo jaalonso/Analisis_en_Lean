@@ -118,14 +118,273 @@ deseada.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean4}
-Statement Subseq_of_Iterate (σ : ℕ → ℕ) (hσ : ∀ n, n < σ n) (n₀ : ℕ) :
-    Subseq (fun n ↦ σ^[n] n₀) := by
-  apply subseq_of_succ
+-- ---------------------------------------------------------------
+-- Una función φ : ℕ → ℕ es una función de extracción si es
+-- estrictamente creciente; es decir, si
+--    ∀ i j ∈ ℕ, i < j → φ(i) < φ(j)
+--
+-- Demostrar que, para comprobar que φ es una función de
+-- extracción, basta con verificar que cada término es menor que el
+-- siguiente; es decir,
+--    ∀ n ∈ ℕ, φ(n) < φ(n+1)
+--
+-- Para ello, completar la siguiente teoría en Lean 4:
+--    import Mathlib.Basic.Real.Basic
+--
+--    def IsExtraction (φ : ℕ → ℕ) : Prop :=
+--      StrictMono φ
+--
+--    example
+--      (φ : ℕ → ℕ)
+--      (hφ : ∀ n, φ n < φ (n + 1)) :
+--      IsExtraction φ :=
+--    by
+--      sorry
+-- ---------------------------------------------------------------
+
+-- Demostraciones en lenguaje natural
+-- ==================================
+
+-- Sea φ : ℕ → ℕ tal que
+--    ∀ n ∈ ℕ, φ(n) < φ(n+1)                                    (1)
+-- Hay que demostrar que φ es una función de extracción: es decir,
+--    ∀ i j ∈ ℕ, i < j → φ(i) < φ(j)
+--
+-- 1ª demostración (inducción sobre j)
+-- ===================================
+--
+-- Sean i, j ∈ ℕ con i < j. Probamos por inducción sobre j que
+-- φ(i) < φ(j).
+--
+-- Caso j = 0. La hipótesis i < 0 es imposible, ya que ningún
+-- natural es menor que 0. Por tanto, el resultado se cumple
+-- trivialmente.
+--
+-- Paso j = n + 1. Supongamos como hipótesis de inducción que,
+--    i < n → φ(i) < φ(n)                                      (ih)
+-- y tenemos que demostrar que
+--    i < n+1 → φ(i) < φ(n+1)
+-- Para ello, sea
+--    i < n+1                                                   (2)
+-- y tenemos que demostrar que
+--    φ(i) < φ(n+1)
+-- Lo haremos distinguiendo dos casos, ya que de (2) se sigue que
+--    i < n ∨ i = n
+-- Caso i < n. Entonces,
+--    φ(i) < φ(n)    [por ih, ya que i < n]
+--         < φ(n+1)  [por (1)]
+-- Caso i = n. Entonces,
+--    φ(i) = φ(n)    [porque i = n]
+--         < φ(n+1)  [por (1)]
+--
+-- 2ª demostración (inducción sobre la desigualdad)
+-- ================================================
+--
+-- Sean i, j ∈ ℕ con i < j, o, equivalentemente, i + 1 ≤ j.
+-- Probamos por inducción sobre j, a partir de j = i + 1, que
+-- φ(i) < φ(j).
+--
+-- Caso base j = i + 1. Hay que probar φ(i) < φ(i+1), que es (1)
+-- para n = i.
+--
+-- Paso inductivo. Sea m ≥ i + 1 y supongamos que
+--    φ(i) < φ(m)                                             (ih)
+-- Entonces,
+--    φ(i) < φ(m)    [por ih]
+--         < φ(m+1)  [por (1)]
+--
+-- 3ª demostración (lema de Mathlib)
+-- =================================
+--
+-- Basta aplicar el lema strictMono_nat_of_lt_succ de Mathlib, que
+-- afirma que una función f : ℕ → α, con α un preorden, es
+-- estrictamente creciente si f(n) < f(n+1) para todo n. Como φ
+-- cumple (1), es estrictamente creciente, y por definición, una
+-- función de extracción.
+
+-- Demostraciones en Lean 4
+-- ========================
+
+module
+
+import Mathlib.Basic.Real.Basic
+public import RetosLean4.Defs -- IsExtraction
+
+/-
+def IsExtraction (φ : ℕ → ℕ) : Prop :=
+  StrictMono φ
+-/
+
+variable (φ : ℕ → ℕ)
+
+-- 1ª demostración
+-- ===============
+
+example
+  (hφ : ∀ n, φ n < φ (n + 1)) :
+  IsExtraction φ :=
+by
+  intro i j hij
+  -- i j : ℕ
+  -- hij : i < j
+  -- ⊢ φ i < φ j
+  induction j with
+  | zero =>
+    -- hij : i < 0
+    -- ⊢ φ i < φ 0
+    exact absurd hij (Nat.not_lt_zero i)
+  | succ n ih =>
+    -- n : ℕ
+    -- ih : i < n → φ i < φ n
+    -- hij : i < n + 1
+    -- ⊢ φ i < φ (n + 1)
+    rcases lt_or_eq_of_le (Nat.lt_succ_iff.mp hij) with h1 | h2
+    · -- h1 : i < n
+      calc φ i
+           < φ n       := ih h1
+         _ < φ (n + 1) := hφ n
+    · -- h2 : i = n
+      calc φ i
+           = φ n := by rw [h2]
+         _ < φ (n + 1) := hφ n
+
+-- 2ª demostración
+-- ===============
+
+example
+  (hφ : ∀ n, φ n < φ (n + 1))
+  : IsExtraction φ :=
+by
+  intro i j hij
+  -- i j : ℕ
+  -- hij : i < j
+  -- ⊢ φ i < φ j
+  have h : i + 1 ≤ j := hij
+  clear hij
+  induction j, h using Nat.le_induction with
+  | base =>
+    -- ⊢ φ i < φ (i + 1)
+    exact hφ i
+  | succ m _ ih =>
+    -- m : ℕ
+    -- ih : φ i < φ m
+    -- ⊢ φ i < φ (m + 1)
+    calc φ i
+         < φ m        := ih
+       _ < φ (m + 1)  := hφ m
+
+-- 3ª demostración
+-- ===============
+
+public theorem isExtraction_of_lt_succ
+  (hφ : ∀ n, φ n < φ (n + 1))
+  : IsExtraction φ :=
+strictMono_nat_of_lt_succ hφ
+
+-- ---------------------------------------------------------------
+-- Sea φ : ℕ → ℕ una función que crece más que la identidad; es
+-- decir, tal que n < φ(n) para todo n. Demostrar que, para
+-- cualquier punto inicial n₀ ∈ ℕ, su órbita por φ
+--    n₀, φ(n₀), φ²(n₀), φ³(n₀), ...
+-- es una función de extracción (es decir, es estrictamente
+-- creciente).
+--
+-- Para ello, completar la siguiente teoría en Lean 4, donde
+-- (φ^[n] n₀) representa la iterada φⁿ(n₀):
+--    import Mathlib.Basic.Real.Basic
+--
+--    variable (φ : ℕ → ℕ)
+--
+--    def IsExtraction (φ : ℕ → ℕ) : Prop :=
+--      StrictMono φ
+--
+--    lemma isExtraction_of_lt_succ -- Reto 32
+--      (hφ : ∀ n, φ n < φ (n + 1))
+--      : IsExtraction φ :=
+--    strictMono_nat_of_lt_succ hφ
+--
+--    example
+--      (hφ : ∀ n, n < φ n)
+--      (n₀ : ℕ)
+--      : IsExtraction (fun n ↦ φ^[n] n₀) :=
+--    by sorry
+-- ---------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Por el criterio del sucesor (Reto 32), basta probar que
+--    ∀ n ∈ ℕ, φⁿ(n₀) < φⁿ⁺¹(n₀)                               (1)
+--
+-- Sea n ∈ ℕ. Entonces,
+--    φⁿ(n₀) < φ(φⁿ(n₀))   [por la hipótesis, aplicada a φⁿ(n₀)]
+--           = φⁿ⁺¹(n₀)    [por definición de iterada]
+-- que es (1).
+
+module
+
+import Mathlib.Basic.Real.Basic
+-- public import RetosLean4.Defs -- IsExtraction
+-- public import RetosLean4.Reto_32 -- isExtraction_of_lt_succ
+
+variable (φ : ℕ → ℕ)
+
+def IsExtraction (φ : ℕ → ℕ) : Prop :=
+  StrictMono φ
+
+lemma isExtraction_of_lt_succ -- Reto 32
+  (hφ : ∀ n, φ n < φ (n + 1))
+  : IsExtraction φ :=
+strictMono_nat_of_lt_succ hφ
+
+-- 1ª demostración
+-- ===============
+
+example
+  (hφ : ∀ n, n < φ n)
+  (n₀ : ℕ)
+  : IsExtraction (fun n ↦ φ^[n] n₀) :=
+by
+  apply isExtraction_of_lt_succ
+  -- ⊢ ∀ (n : ℕ), φ^[n] n₀ < φ^[n + 1] n₀
   intro n
-  specialize hσ (σ^[n] n₀)
-  have f : σ (σ^[n] n₀) = σ^[n+1] n₀ := by apply succ_iterate
-  rewrite [f] at hσ
-  apply hσ
+  -- n : ℕ
+  -- ⊢ φ^[n] n₀ < φ^[n + 1] n₀
+  calc φ^[n] n₀
+       < φ (φ^[n] n₀) := hφ (φ^[n] n₀)
+     _ = φ^[n + 1] n₀ := (Function.iterate_succ_apply' φ n n₀).symm
+
+-- 2ª demostración
+-- ===============
+
+example
+  (hφ : ∀ n, n < φ n)
+  (n₀ : ℕ)
+  : IsExtraction (fun n ↦ φ^[n] n₀) :=
+by
+  apply isExtraction_of_lt_succ
+  -- ⊢ ∀ (n : ℕ), φ^[n] n₀ < φ^[n + 1] n₀
+  intro n
+  -- n : ℕ
+  -- ⊢ φ^[n] n₀ < φ^[n + 1] n₀
+  rw [Function.iterate_succ_apply']
+  -- ⊢ φ^[n] n₀ < φ (φ^[n] n₀)
+  exact hφ (φ^[n] n₀)
+
+-- 3ª demostración
+-- ===============
+
+example
+  (hφ : ∀ n, n < φ n)
+  (n₀ : ℕ)
+  : IsExtraction (fun n ↦ φ^[n] n₀) :=
+by
+  apply isExtraction_of_lt_succ
+  -- ⊢ ∀ (n : ℕ), φ^[n] n₀ < φ^[n + 1] n₀
+  intro n
+  -- n : ℕ
+  -- ⊢ φ^[n] n₀ < φ^[n + 1] n₀
+  simpa [Function.iterate_succ_apply'] using hφ (φ^[n] n₀)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -269,17 +528,158 @@ preservan la propiedad $p$.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean4}
-Statement (p : ℕ → Prop) (h : ∀ N, ∃ n > N, p n) :
-    ∃ σ, Subseq σ ∧ ∀ n, p (σ n) := by
+-- ---------------------------------------------------------------
+-- Sea P : ℕ → Prop una propiedad de los números naturales que p
+-- se cumple para números arbitrariamente grandes; es decir,
+--    ∀ N, ∃ n > N, P(n)
+--
+-- Demuestrar que existe una función de extracción (es decir, una
+-- función φ : ℕ → ℕ estrictamente creciente) a lo largo de la
+-- cual P siempre se cumple; es decir,
+--    ∀ n, P(φ(n))
+--
+-- Para ello, completar la siguiente teoría en Lean 4:
+--    import Mathlib.Basic.Real.Basic
+--
+--    open Function
+--
+--    def IsExtraction (φ : ℕ → ℕ) : Prop :=
+--      StrictMono φ
+--
+--    lemma isExtraction_of_Iterate -- Reto 33
+--      (φ : ℕ → ℕ)
+--      (hφ : ∀ n, n < φ n)
+--      (n₀ : ℕ)
+--      : IsExtraction (fun n ↦ φ^[n] n₀) :=
+--    by
+--      apply strictMono_nat_of_lt_succ
+--      -- ⊢ ∀ (n : ℕ), φ^[n] n₀ < φ^[n + 1] n₀
+--      intro n
+--      -- n : ℕ
+--      -- ⊢ φ^[n] n₀ < φ^[n + 1] n₀
+--      simpa [Function.iterate_succ_apply'] using hφ (φ^[n] n₀)
+--
+--    variable (P : ℕ → Prop)
+--
+--    example
+--      (h : ∀ N, ∃ n > N, P n)
+--      : ∃ φ : ℕ → ℕ, IsExtraction φ ∧ ∀ n, P (φ n) :=
+--    by sorry
+-- ---------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Por hipótesis, para cada N existe un n > N que cumple
+-- P. Eligiendo uno de esos n para cada N, obtenemos una función
+--    τ : ℕ → ℕ
+-- con dos propiedades:
+--    ∀ n, τ(n) > n                                            (1)
+--    ∀ n, P(τ(n))                                             (2)
+--
+-- Definimos
+--    φ(n) = τⁿ(τ(0)),
+-- donde τⁿ denota la composición de τ consigo misma n veces; es
+-- decir,
+--    φ(0) = τ(0),
+--    φ(1) = τ(τ(0)),
+--    φ(2) = τ(τ(τ(0))),
+-- y así sucesivamente. (Se parte de τ(0) y no de 0 porque P(0)
+-- podría no cumplirse.)
+--
+-- Veamos que φ cumple lo pedido.
+--
+-- (a) φ es una función de extracción, por el lema del Reto 33
+-- (aplicado a τ, con valor inicial n₀ := τ(0)) y (1).
+--
+-- (b) P(φ(n)) se cumple para todo n. Sea n un natural cualquiera.
+-- Aplicar τ n veces a τ(0) equivale a aplicarlo n+1 veces a 0, y
+-- esto equivale a aplicar τ una vez más al resultado de aplicarlo
+-- n veces a 0:
+--    φ(n) = τⁿ(τ(0)) = τⁿ⁺¹(0) = τ(τⁿ(0))                      (3)
+-- Por (2), se tiene P(τ(τⁿ(0))) y, por (3), se tiene P(φ(n)).
+
+-- Demostraciones en Lean 4
+-- ========================
+
+module
+
+import Mathlib.Basic.Real.Basic
+public import RetosLean4.Defs -- IsExtraction
+public import RetosLean4.Reto_33 -- isExtraction_of_Iterate
+
+open Function
+
+variable (P : ℕ → Prop)
+
+/-
+def IsExtraction (φ : ℕ → ℕ) : Prop :=
+  StrictMono φ
+
+lemma isExtraction_of_Iterate -- Reto 33
+  (φ : ℕ → ℕ)
+  (hφ : ∀ n, n < φ n)
+  (n₀ : ℕ)
+  : IsExtraction (fun n ↦ φ^[n] n₀) :=
+by
+  apply strictMono_nat_of_lt_succ
+  -- ⊢ ∀ (n : ℕ), φ^[n] n₀ < φ^[n + 1] n₀
+  intro n
+  -- n : ℕ
+  -- ⊢ φ^[n] n₀ < φ^[n + 1] n₀
+  simpa [Function.iterate_succ_apply'] using hφ (φ^[n] n₀)
+-/
+
+-- 1ª demostración
+-- ===============
+
+example
+  (h : ∀ N, ∃ n > N, P n)
+  : ∃ φ : ℕ → ℕ, IsExtraction φ ∧ ∀ n, P (φ n) :=
+by
   choose τ hτBnd hτP using h
-  let σ : ℕ → ℕ := fun n ↦ τ^[n] (τ 0)
-  use σ
-  split_ands
-  · apply Subseq_of_Iterate τ hτBnd (τ 0)
-  · intro n
-    change p (τ^[n] (τ 0))
-    rewrite [← show τ (τ^[n-1] (τ 0)) = τ^[n] (τ 0) by apply succ_iterate]
-    apply hτP (τ^[n-1] (τ 0))
+  -- τ : ℕ → ℕ
+  -- hτBnd : ∀ (N : ℕ), τ N > N
+  -- hτP : ∀ (N : ℕ), P (τ N)
+  let φ : ℕ → ℕ := fun n ↦ τ^[n] (τ 0)
+  use φ
+  -- ⊢ IsExtraction φ ∧ ∀ (n : ℕ), P (φ n)
+  constructor
+  · -- ⊢ IsExtraction φ
+    apply isExtraction_of_Iterate τ hτBnd (τ 0)
+  · -- ⊢ ∀ (n : ℕ), P (φ n)
+    intro n
+    -- n : ℕ
+    -- ⊢ P (φ n)
+    have h1 : φ n = τ (τ^[n] 0) := by
+      calc φ n
+           = τ^[n] (τ 0) := rfl
+         _ = τ^[n + 1] 0 := (iterate_succ_apply τ n 0).symm
+         _ = τ (τ^[n] 0) := iterate_succ_apply' τ n 0
+    rw [h1]
+    -- ⊢ P (τ (τ^[n] 0))
+    exact hτP (τ^[n] 0)
+
+-- 2ª demostración
+-- ===============
+
+public theorem exists_extraction_of_frequently
+  (h : ∀ N, ∃ n > N, P n)
+  : ∃ φ : ℕ → ℕ, IsExtraction φ ∧ ∀ n, P (φ n) :=
+by
+  choose τ hτBnd hτP using h
+  -- τ : ℕ → ℕ
+  -- hτBnd : ∀ (N : ℕ), τ N > N
+  -- hτP : ∀ (N : ℕ), P (τ N)
+  refine ⟨fun n ↦ τ^[n] (τ 0), isExtraction_of_Iterate τ hτBnd (τ 0), ?_⟩
+  -- ⊢ ∀ (n : ℕ), P ((fun n => τ^[n] (τ 0)) n)
+  intro n
+  -- n : ℕ
+  -- ⊢ ⊢ P ((fun n => τ^[n] (τ 0)) n)
+  show P (τ^[n + 1] 0)
+  rw [Function.iterate_succ_apply']
+  -- ⊢ P (τ (τ^[n] 0))
+  exact hτP (τ^[n] 0)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -459,29 +859,221 @@ largo de la cual se garantiza que $a$ crezca al menos $k \times
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean4}
-Statement IsCauchyOfMonotoneBdd {X : Type*}
-    [NormedField X] [LinearOrder X] [IsStrictOrderedRing X]
-    [FloorSemiring X] (a : ℕ → X) (M : X)
-    (hM : ∀ n, a n ≤ M) (ha : Monotone a)
-    : IsCauchy a := by
-  intro ε hε
-  by_contra h
-  push_neg at h
-  choose τ hτ σ hσ hgap using h
-  have f1 : ∀ k, k * ε ≤ a (σ^[k] 0) - a 0 :=
-    IterateGap a ha ε hε τ hτ σ hσ hgap
-  let k : ℕ := ⌈(M - a 0) / ε⌉₊ + 1
-  have hk' : (M - a 0) / ε ≤ ⌈(M - a 0) / ε⌉₊ := by bound
-  have hk : (M - a 0) / ε < k := by
-    change (M - a 0) / ε < (⌈(M - a 0) / ε⌉₊ + 1 : ℕ)
-    push_cast; linarith [hk']
-  specialize f1 k
-  specialize hM (σ^[k] 0)
-  have f2 : (M - a 0) < k * ε := by
-    field_simp at hk
-    rewrite [show k * ε = ε * k by ring_nf]
-    apply hk
-  linarith [f1, f2, hM]
+-- ---------------------------------------------------------------
+-- Demostrar que si a es una sucesión monótona y acotada
+-- superiormente, entonces a es de Cauchy.
+--
+-- Para ello, completar la siguiente teoría en Lean 4:
+--    import Mathlib.Basic.Real.Basic
+--    import Mathlib.Tactic
+--
+--    def IsCauchy {X : Type*} [AddGroup X] [Lattice X] (a : ℕ → X) : Prop :=
+--      ∀ (ε : X), 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ m ≥ n, |a m - a n| < ε
+--
+--    def SeqBddAbove {X : Type*} [LE X] (a : ℕ → X) : Prop :=
+--      ∃ M : X, ∀ n, a n ≤ M
+--
+--    variable {X : Type*} [Field X]
+--                         [LinearOrder X]
+--                         [IsStrictOrderedRing X]
+--                         [Archimedean X]
+--    variable {a : ℕ → X}
+--
+--    example
+--      [Archimedean X]
+--      (h1 : Monotone a)
+--      (h2 : SeqBddAbove a)
+--      : IsCauchy a :=
+--    by sorry
+-- ---------------------------------------------------------------
+
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Lo demostraremos por reducción al absurdo. Supongamos que a no
+-- es de Cauchy y que está acotada superiormente, y lleguemos a
+-- una contradicción.
+--
+-- Por estar a acotada superiormente, existe un M tal que
+--    ∀ n, a(n) ≤ M                                             (1)
+-- Por el lema del crecimiento lineal de los huecos de las
+-- sucesiones monótonas que no son de Cauchy (del Reto 35),
+-- existen ε y σ tales que
+--    0 < ε
+--    ∀ k, k · ε ≤ a(σᵏ(0)) - a(0)                              (2)
+-- Por la propiedad arquimediana, existe k ∈ ℕ tal que
+--    M - a(0) < k · ε                                          (3)
+-- Para obtener una contradicción, demostraremos que
+--    M < M
+-- En efecto,
+--    M = (M - a(0)) + a(0)          [por álgebra]
+--      < k · ε + a(0)               [por (3)]
+--      ≤ (a(σᵏ(0)) - a(0)) + a(0)   [por (2)]
+--      = a(σᵏ(0))                   [por álgebra]
+--      ≤ M                          [por (1)]
+--
+-- Variante. En lugar de la propiedad arquimediana se puede usar la
+-- función suelo: basta tomar
+--    k = ⌊(M - a(0)) / ε⌋ + 1
+-- ya que entonces (M - a(0)) / ε < k y, por tanto, se cumple (3).
+
+-- Demostraciones en Lean 4
+-- ========================
+
+module
+
+import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic
+public import RetosLean4.Defs -- IsCauchy, SeqBddAbove
+public import RetosLean4.Reto_35 -- exists_linear_growth
+
+variable {X : Type*} [Field X]
+                     [LinearOrder X]
+                     [IsStrictOrderedRing X]
+                     [Archimedean X]
+variable {a : ℕ → X}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (h1 : Monotone a)
+  (h2 : SeqBddAbove a)
+  : IsCauchy a :=
+by
+  by_contra hC
+  -- hC : ¬IsCauchy a
+  -- ⊢ False
+  obtain ⟨M, hM⟩ := h2
+  -- M : X
+  -- hM : ∀ (n : ℕ), a n ≤ M
+  obtain ⟨ε, σ, hε, hσ⟩ :=
+    exists_linear_growth h1 hC
+  -- ε : X
+  -- σ : ℕ → ℕ
+  -- hε : 0 < ε
+  -- hσ : ∀ (k : ℕ), ↑k * ε ≤ a (σ^[k] 0) - a 0
+  obtain ⟨k, hk⟩ := exists_lt_nsmul hε (M - a 0)
+  -- k : ℕ
+  -- hk : M - a 0 < k • ε
+  rw [nsmul_eq_mul] at hk
+  -- hk : M - a 0 < ↑k * ε
+  linarith [hσ k, hM (σ^[k] 0)]
+
+-- 2ª demostración
+-- ===============
+
+example
+  (h1 : Monotone a)
+  (h2 : SeqBddAbove a)
+  : IsCauchy a :=
+by
+  by_contra hC
+  -- hC : ¬IsCauchy a
+  -- ⊢ False
+  obtain ⟨M, hM⟩ := h2
+  -- M : X
+  -- hM : ∀ (n : ℕ), a n ≤ M
+  obtain ⟨ε, σ, hε, hσ⟩ :=
+    exists_linear_growth h1 hC
+  -- ε : X
+  -- σ : ℕ → ℕ
+  -- hε : 0 < ε
+  -- hσ : ∀ (k : ℕ), ↑k * ε ≤ a (σ^[k] 0) - a 0
+  obtain ⟨k, hk⟩ := exists_lt_nsmul hε (M - a 0)
+  -- k : ℕ
+  -- hk : M - a 0 < k • ε
+  rw [nsmul_eq_mul] at hk
+  -- hk : M - a 0 < ↑k * ε
+  apply lt_irrefl M
+  -- ⊢ M < M
+  calc M
+       = (M - a 0) + a 0 :=
+           (sub_add_cancel M (a 0)).symm
+     _ < k * ε + a 0 :=
+           by linarith
+     _ ≤ (a (σ^[k] 0) - a 0) + a 0 :=
+           by linarith [hσ k]
+     _ = a (σ^[k] 0) :=
+           sub_add_cancel (a (σ^[k] 0)) (a 0)
+     _ ≤ M :=
+           hM (σ^[k] 0)
+
+-- 3ª demostración
+-- ===============
+
+public theorem isCauchy_of_mono_bddAbove
+  (h1 : Monotone a)
+  (h2 : SeqBddAbove a)
+  : IsCauchy a :=
+by
+  by_contra hC
+  -- hC : ¬IsCauchy a
+  -- ⊢ False
+  obtain ⟨M, hM⟩ := h2
+  -- M : X
+  -- hM : ∀ (n : ℕ), a n ≤ M
+  obtain ⟨ε, σ, hε, hσ⟩ :=
+    exists_linear_growth h1 hC
+  -- ε : X
+  -- σ : ℕ → ℕ
+  -- hε : 0 < ε
+  -- hσ : ∀ (k : ℕ), ↑k * ε ≤ a (σ^[k] 0) - a 0
+  obtain ⟨k, hk⟩ := exists_nat_gt ((M - a 0) / ε)
+  -- k : ℕ
+  -- hk : (M - a 0) / ε < ↑k
+  have h3 : M - a 0 < k * ε := (div_lt_iff₀ hε).mp hk
+  apply lt_irrefl M
+  -- ⊢ M < M
+  calc M
+       = (M - a 0) + a 0 :=
+           (sub_add_cancel M (a 0)).symm
+     _ < k * ε + a 0 :=
+           by linarith
+     _ ≤ (a (σ^[k] 0) - a 0) + a 0 :=
+           by linarith [hσ k]
+     _ = a (σ^[k] 0) :=
+           sub_add_cancel (a (σ^[k] 0)) (a 0)
+     _ ≤ M :=
+           hM (σ^[k] 0)
+
+-- 4ª demostración
+-- ===============
+
+example
+  [FloorSemiring X]
+  (h1 : Monotone a)
+  (h2 : SeqBddAbove a)
+  : IsCauchy a :=
+by
+  by_contra hC
+  -- hC : ¬IsCauchy a
+  -- ⊢ False
+  obtain ⟨M, hM⟩ := h2
+  -- M : X
+  -- hM : ∀ (n : ℕ), a n ≤ M
+  obtain ⟨ε, σ, hε, hσ⟩ :=
+    exists_linear_growth h1 hC
+  -- ε : X
+  -- σ : ℕ → ℕ
+  -- hε : 0 < ε
+  -- hσ : ∀ (k : ℕ), ↑k * ε ≤ a (σ^[k] 0) - a 0
+  set k := ⌊(M - a 0) / ε⌋₊ + 1
+  have h3 : (M - a 0) / ε < k := Nat.lt_succ_floor ((M - a 0) / ε)
+  have h4 : M - a 0 < k * ε := (div_lt_iff₀ hε).mp h3
+  apply lt_irrefl M
+  -- ⊢ M < M
+  calc M
+       = (M - a 0) + a 0 :=
+           (sub_add_cancel M (a 0)).symm
+     _ < k * ε + a 0 :=
+           by linarith
+     _ ≤ (a (σ^[k] 0) - a 0) + a 0 :=
+           by linarith [hσ k]
+     _ = a (σ^[k] 0) :=
+           sub_add_cancel (a (σ^[k] 0)) (a 0)
+     _ ≤ M :=
+           hM (σ^[k] 0)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -587,23 +1179,236 @@ que se combina con la hipótesis inductiva.
 \subsection{Demostración en Lean}
 
 \begin{minted}{lean4}
-Statement {X : Type*} [NormedField X] [LinearOrder X]
-    [IsStrictOrderedRing X] (a : ℕ → X) (ha : Monotone a)
-    (ε : X) (εpos : ε > 0) (τ : ℕ → ℕ) (hτ : ∀ n, τ n ≥ n)
-    (σ : ℕ → ℕ) (hσ : ∀ n, σ n ≥ τ n)
-    (hgap : ∀ n, ε ≤ |a (σ n) - a (τ n)|)
-    : ∀ (k : ℕ), k * ε ≤ a (σ^[k] 0) - a 0 := by
-  intro k
-  induction' k with k hk
-  · norm_num
-  · specialize hgap (σ^[k] 0)
-    rewrite [show |a (σ (σ^[k] 0)) - a (τ (σ^[k] 0))|
-               = a (σ (σ^[k] 0)) - a (τ (σ^[k] 0))
-             by apply abs_of_nonneg (by bound)] at hgap
-    rewrite [show σ (σ^[k] 0) = σ^[k+1] 0 by apply succ_iterate] at hgap
-    have f1 : 0 ≤ a (τ (σ^[k] 0)) - a (σ^[k] 0) := by bound
+-- ---------------------------------------------------------------
+-- Demostrar que si a es una sucesión monótona que no es de Cauchy,
+-- entonces existen ε > 0 y σ : ℕ → ℕ tales que, para todo k ∈ ℕ,
+--    k · ε ≤ a(σᵏ(0)) − a(0),
+-- donde σᵏ denota la k-ésima iterada de σ.
+--
+-- Para ello, completar la siguiente teoría en Lean 4
+--    import Mathlib.Basic.Real.Basic
+--    import Mathlib.Tactic
+--
+--    def IsCauchy {X : Type*} [AddGroup X] [Lattice X] (a : ℕ → X) : Prop :=
+--      ∀ (ε : X), 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ m ≥ n, |a m - a n| < ε
+--
+--    variable {X : Type*} [CommRing X]
+--                         [LinearOrder X]
+--                         [IsStrictOrderedRing X]
+--    variable {a : ℕ → X}
+--
+--    example
+--      (ha : Monotone a)
+--      (hC : ¬ IsCauchy a)
+--      : ∃ (ε : X) (σ : ℕ → ℕ), 0 < ε ∧ ∀ k : ℕ, k * ε ≤ a (σ^[k] 0) - a 0 :=
+--    by sorry
+-- ---------------------------------------------------------------
+
+-- Demostraciones en lenguaje natural
+-- ==================================
+
+-- Puesto que a no es de Cauchy, existe un ε tal que
+--    ε > 0                                                    (1)
+--    ∀ N, ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a(m) - a(n)|
+-- y, por tanto, existen τ y σ (funciones de ℕ en ℕ) tales que
+--    ∀ k, τ(k) ≥ k                                            (2)
+--    ∀ k, σ(k) ≥ τ(k)                                         (3)
+--    ∀ k, ε ≤ |a(σ(k)) - a(τ(k))|                             (4)
+-- Veamos que ε y σ cumplen la conclusión del ejercicio. En
+-- primer lugar, se tiene que ε > 0 (por (1)). Solo falta
+-- demostrar que
+--    ∀ k, k · ε ≤ a(σᵏ(0)) - a(0)
+-- y lo probaremos por inducción sobre k.
+--
+-- Caso base (k = 0).
+--    0 · ε = 0
+--          ≤ 0
+--          = a(0) - a(0)
+--          = a(σ⁰(0)) - a(0)
+--
+-- Paso inductivo. Supongamos que se cumple, para k,
+--    k · ε ≤ a(σᵏ(0)) − a(0).                                 (HI)
+-- Queremos probar que
+--    (k + 1) · ε ≤ a(σᵏ⁺¹(0)) − a(0).
+-- Para abreviar, sea
+--    m = σᵏ(0).
+-- Entonces
+--    (k + 1) · ε
+--    = k · ε + ε
+--        [por álgebra]
+--    ≤ (a(m) - a(0)) + |a(σ(m)) - a(τ(m))|
+--        [por HI y (4)]
+--    = (a(m) - a(0)) + (a(σ(m)) - a(τ(m)))
+--        [por (3) y por ser a monótona]
+--    = (a(m) - a(τ(m))) + (a(σ(m)) - a(0))
+--        [por álgebra]
+--    ≤ 0 + (a(σ(m)) - a(0))
+--        [por (2) y por ser a monótona]
+--    = a(σ(m)) - a(0)
+--        [por álgebra]
+--    = a(σᵏ⁺¹(0)) - a(0)
+--        [porque σ(m) = σ(σᵏ(0)) = σᵏ⁺¹(0)]
+
+-- Demostraciones en Lean 4
+-- ========================
+
+module
+
+import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic
+public import RetosLean4.Defs -- IsCauchy
+
+variable {X : Type*} [CommRing X]
+                     [LinearOrder X]
+                     [IsStrictOrderedRing X]
+variable {a : ℕ → X}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : Monotone a)
+  (hC : ¬ IsCauchy a)
+  : ∃ (ε : X) (σ : ℕ → ℕ), 0 < ε ∧ ∀ k : ℕ, k * ε ≤ a (σ^[k] 0) - a 0 :=
+by
+  unfold IsCauchy at hC
+  -- hC : ¬∀ (ε : X), 0 < ε → ∃ N, ∀ n ≥ N, ∀ m ≥ n, |a m - a n| < ε
+  push Not at hC
+  -- hC : ∃ ε, 0 < ε ∧ ∀ (N : ℕ), ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a m - a n|
+  obtain ⟨ε, hε1, hε2⟩ := hC
+  -- ε : X
+  -- hε1 : 0 < ε
+  -- hε2 : ∀ (N : ℕ), ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a m - a n|
+  choose τ hτ σ hσ hgap using hε2
+  -- τ : ℕ → ℕ
+  -- hτ : ∀ (N : ℕ), τ N ≥ N
+  -- σ : ℕ → ℕ
+  -- hσ : ∀ (N : ℕ), σ N ≥ τ N
+  -- hgap : ∀ (N : ℕ), ε ≤ |a (σ N) - a (τ N)|
+  refine ⟨ε, σ, hε1, fun k => ?_⟩
+  -- ⊢ ↑k * ε ≤ a (σ^[k] 0) - a 0
+  induction k with
+  | zero =>
+    -- ⊢ ↑0 * ε ≤ a (σ^[0] 0) - a 0
+    norm_num
+  | succ k ih =>
+    -- k : ℕ
+    -- ih : ↑k * ε ≤ a (σ^[k] 0) - a 0
+    -- ⊢ ↑(k + 1) * ε ≤ a (σ^[k + 1] 0) - a 0
     push_cast
-    linarith [f1, hk, hgap]
+    -- ⊢ (↑k + 1) * ε ≤ a (σ^[k + 1] 0) - a 0
+    set m := σ^[k] 0
+    have h1 : ε ≤ a (σ m) - a (τ m) :=
+      (hgap m).trans_eq (abs_of_nonneg (sub_nonneg.mpr (ha (hσ m))))
+    have h2 : a m ≤ a (τ m) := ha (hτ m)
+    rw [Function.iterate_succ_apply']
+    -- ⊢ (↑k + 1) * ε ≤ a (σ (σ^[k] 0)) - a 0
+    linarith
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : Monotone a)
+  (hC : ¬ IsCauchy a)
+  : ∃ (ε : X) (σ : ℕ → ℕ), 0 < ε ∧ ∀ k : ℕ, k * ε ≤ a (σ^[k] 0) - a 0 :=
+by
+  unfold IsCauchy at hC
+  -- hC : ¬∀ (ε : X), 0 < ε → ∃ N, ∀ n ≥ N, ∀ m ≥ n, |a m - a n| < ε
+  push Not at hC
+  -- hC : ∃ ε, 0 < ε ∧ ∀ (N : ℕ), ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a m - a n|
+  obtain ⟨ε, hε1, hε2⟩ := hC
+  -- ε : X
+  -- hε1 : 0 < ε
+  -- hε2 : ∀ (N : ℕ), ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a m - a n|
+  choose τ hτ σ hσ hgap using hε2
+  -- τ : ℕ → ℕ
+  -- hτ : ∀ (N : ℕ), τ N ≥ N
+  -- σ : ℕ → ℕ
+  -- hσ : ∀ (N : ℕ), σ N ≥ τ N
+  -- hgap : ∀ (N : ℕ), ε ≤ |a (σ N) - a (τ N)|
+  refine ⟨ε, σ, hε1, fun k => ?_⟩
+  -- ⊢ ↑k * ε ≤ a (σ^[k] 0) - a 0
+  induction k with
+  | zero =>
+    -- ⊢ ↑0 * ε ≤ a (σ^[0] 0) - a 0
+    push_cast
+    -- ⊢ 0 * ε ≤ a (σ^[0] 0) - a 0
+    calc 0 * ε
+         = 0                  := zero_mul ε
+       _ ≤ 0                  := le_refl 0
+       _ = a 0 - a 0          := (sub_self (a 0)).symm
+       _ = a (σ^[0] 0) - a 0  := rfl
+  | succ k ih =>
+    -- k : ℕ
+    -- ih : ↑k * ε ≤ a (σ^[k] 0) - a 0
+    -- ⊢ ↑(k + 1) * ε ≤ a (σ^[k + 1] 0) - a 0
+    push_cast
+    -- ⊢ (↑k + 1) * ε ≤ a (σ^[k + 1] 0) - a 0
+    set m := σ^[k] 0
+    calc (k + 1) * ε
+         = k * ε + ε :=
+             by ring
+       _ ≤ (a m - a 0) + |a (σ m) - a (τ m)| :=
+             add_le_add ih (hgap m)
+       _ = (a m - a 0) + (a (σ m) - a (τ m)) :=
+             by rw [abs_of_nonneg (sub_nonneg.mpr (ha (hσ _)))]
+       _ = (a m - a (τ m)) + (a (σ m) - a 0) :=
+             by ring
+       _ ≤ 0 + (a (σ m) - a 0) :=
+             add_le_add_left (sub_nonpos.mpr (ha (hτ m)))
+                             (a (σ m) - a 0)
+       _ = a (σ m) - a 0 :=
+             zero_add (a (σ m) - a 0)
+       _ = a (σ^[k + 1] 0) - a 0 :=
+             by rw [Function.iterate_succ_apply']
+
+-- 3ª demostración
+-- ===============
+
+public theorem exists_linear_growth
+  (ha : Monotone a)
+  (hC : ¬ IsCauchy a)
+  : ∃ (ε : X) (σ : ℕ → ℕ), 0 < ε ∧ ∀ k : ℕ, k * ε ≤ a (σ^[k] 0) - a 0 :=
+by
+  unfold IsCauchy at hC
+  -- hC : ¬∀ (ε : X), 0 < ε → ∃ N, ∀ n ≥ N, ∀ m ≥ n, |a m - a n| < ε
+  push Not at hC
+  -- hC : ∃ ε, 0 < ε ∧ ∀ (N : ℕ), ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a m - a n|
+  obtain ⟨ε, hε1, hε2⟩ := hC
+  -- ε : X
+  -- hε1 : 0 < ε
+  -- hε2 : ∀ (N : ℕ), ∃ n ≥ N, ∃ m ≥ n, ε ≤ |a m - a n|
+  choose τ hτ σ hσ hgap using hε2
+  -- τ : ℕ → ℕ
+  -- hτ : ∀ (N : ℕ), τ N ≥ N
+  -- σ : ℕ → ℕ
+  -- hσ : ∀ (N : ℕ), σ N ≥ τ N
+  -- hgap : ∀ (N : ℕ), ε ≤ |a (σ N) - a (τ N)|
+  refine ⟨ε, σ, hε1, fun k => ?_⟩
+  -- ⊢ ↑k * ε ≤ a (σ^[k] 0) - a 0
+  induction k with
+  | zero =>
+    -- ⊢ ↑0 * ε ≤ a (σ^[0] 0) - a 0
+    norm_num
+  | succ k ih =>
+    -- k : ℕ
+    -- ih : ↑k * ε ≤ a (σ^[k] 0) - a 0
+    -- ⊢ ↑(k + 1) * ε ≤ a (σ^[k + 1] 0) - a 0
+    push_cast
+    -- ⊢ (↑k + 1) * ε ≤ a (σ^[k + 1] 0) - a 0
+    set m := σ^[k] 0
+    calc (k + 1) * ε
+        = k * ε + ε :=
+            by ring
+      _ ≤ (a m - a 0) + |a (σ m) - a (τ m)| :=
+            add_le_add ih (hgap m)
+      _ = (a m - a 0) + (a (σ m) - a (τ m)) :=
+            by rw [abs_of_nonneg (sub_nonneg.mpr (ha (hσ _)))]
+      _ ≤ a (σ m) - a 0 :=
+            by linarith [ha (hτ m)]
+      _ = a (σ^[k + 1] 0) - a 0 :=
+            by rw [Function.iterate_succ_apply']
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -671,6 +1476,217 @@ los patrones de crecimiento local (representados por la condición de
 brecha) escalan linealmente bajo iteración. Esta propiedad de escala es
 lo que nos permite construir una contradicción con el acotamiento en el
 teorema principal.
+
+\section{Ejercicios}
+
+\begin{ejercicio}
+  Demostrar que si una sucesión es de Cauchy, entonces su opuesta
+  también lo es.
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Supongamos que la sucesión a es de Cauchy. Tenemos que
+-- demostrar que -a también lo es. Para ello, sea ε > 0. Tenemos
+-- que demostrar que existe un N ∈ ℕ tal que
+--    ∀ n ≥ N, ∀ m ≥ N, |(-a)(m) - (-a)(n)| < ε                 (1)
+--
+-- Puesto que a es de Cauchy, existe un N ∈ ℕ tal que
+--    ∀ n ≥ N, ∀ m ≥ N, |a(m) - a(n)| < ε                       (2)
+-- Veamos que con el mismo N se verifica la condición (1). Para
+-- ello, sean n y m tales que
+--    n ≥ N                                                     (3)
+--    m ≥ N                                                     (4)
+-- Entonces
+--    |(-a)(m) - (-a)(n)| = |(-a(m)) - (-a(n))|
+--                        = |-(a(m) - a(n))|
+--                        = |a(m) - a(n)|
+--                        < ε                  [por (2), (3) y (4)]
+
+-- Demostraciones en Lean 4
+-- ========================
+
+module
+
+public import Mathlib.Tactic
+public import RetosLean4.Defs -- IsCauchy
+
+variable {X : Type*} [AddCommGroup X] [Lattice X]
+variable {a : ℕ → X}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : IsCauchy a)
+  : IsCauchy (-a) :=
+by
+  intro ε hε
+  -- ε : X
+  -- hε : 0 < ε
+  -- ⊢ ∃ N, ∀ n ≥ N, ∀ m ≥ N, |(-a) m - (-a) n| < ε
+  obtain ⟨N, hN⟩ := ha ε hε
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, ∀ m ≥ N, |a m - a n| < ε
+  use N
+  -- ⊢ ∀ n ≥ N, ∀ m ≥ N, |(-a) m - (-a) n| < ε
+  intro n hn m hm
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- m : ℕ
+  -- hm : m ≥ N
+  -- ⊢ |(-a) m - (-a) n| < ε
+  calc |(-a) m - (-a) n|
+       = |(- a m) - (- a n)| := rfl
+     _ = |-(a m - a n)|      := by rw [neg_sub']
+     _ = |a m - a n|         := abs_neg _
+     _ < ε                   := hN n hn m hm
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : IsCauchy a)
+  : IsCauchy (-a) :=
+by
+  intro ε hε
+  -- ε : X
+  -- hε : 0 < ε
+  -- ⊢ ∃ N, ∀ n ≥ N, ∀ m ≥ N, |(-a) m - (-a) n| < ε
+  obtain ⟨N, hN⟩ := ha ε hε
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, ∀ m ≥ N, |a m - a n| < ε
+  refine ⟨N, fun n hn m hm => ?_⟩
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- m : ℕ
+  -- hm : m ≥ N
+  -- ⊢ |(-a) m - (-a) n| < ε
+  calc |(-a) m - (-a) n|
+       = |(- a m) - (- a n)| := rfl
+     _ = |-(a m - a n)|      := congrArg abs (neg_sub' (a m) (a n)).symm
+     _ = |a m - a n|         := abs_neg (a m - a n)
+     _ < ε                   := hN n hn m hm
+
+-- 3ª demostración
+-- ===============
+
+public theorem isCauchy_neg
+  (ha : IsCauchy a)
+  : IsCauchy (-a) :=
+by
+  intro ε hε
+  -- ε : X
+  -- hε : 0 < ε
+  -- ⊢ ∃ N, ∀ n ≥ N, ∀ m ≥ N, |(-a) m - (-a) n| < ε
+  obtain ⟨N, hN⟩ := ha ε hε
+  -- N : ℕ
+  -- hN : ∀ n ≥ N, ∀ m ≥ N, |a m - a n| < ε
+  refine ⟨N, fun n hn m hm ↦ ?_⟩
+  -- n : ℕ
+  -- hn : n ≥ N
+  -- m : ℕ
+  -- hm : m ≥ N
+  -- ⊢ |(-a) m - (-a) n| < ε
+  rw [Pi.neg_apply, Pi.neg_apply, neg_sub_neg, abs_sub_comm]
+  exact hN n hn m hm
+\end{minted}
+
+\begin{ejercicio}
+  Demostrar que las sucesiones antítonas y acotadas inferiormente
+  son sucesiones de Cauchy.
+\end{ejercicio}
+
+\begin{minted}{lean}
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea a antítona y acotada inferiormente. Entonces existe un M
+-- tal que
+--    ∀ n, M ≤ a(n)                                              (1)
+-- Consideremos la sucesión -a. Veamos que es monótona y acotada
+-- superiormente:
+-- + Monótona: si m ≤ n, entonces a(n) ≤ a(m) por ser a antítona
+--   y, por tanto, -a(m) ≤ -a(n).
+-- + Acotada superiormente: por (1), -a(n) ≤ -M para todo n.
+--
+-- Por el Reto 37, -a es de Cauchy. Por el Reto 38, -(-a) también
+-- lo es. Como -(-a) = a, se concluye que a es de Cauchy.
+
+-- Demostraciones en Lean 4
+-- ========================
+
+module
+
+import Mathlib.Tactic
+import RetosLean4.Defs -- IsCauchy, SeqBddBelow
+import RetosLean4.Reto_37 -- isCauchy_of_mono_bddAbove
+import RetosLean4.Reto_38 -- isCauchy_neg
+
+variable {X : Type*} [Field X]
+                     [LinearOrder X]
+                     [IsStrictOrderedRing X]
+                     [Archimedean X]
+variable {a : ℕ → X}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha1 : Antitone a)
+  (ha2 : SeqBddBelow a)
+  : IsCauchy a :=
+by
+  obtain ⟨M, hM⟩ := ha2
+  -- M : X
+  -- hM : ∀ (n : ℕ), M ≤ a n
+  have hb1 : Monotone (-a) := Antitone.neg ha1
+  have hb2 : SeqBddAbove (-a) := by
+    refine ⟨-M, fun n => ?_⟩
+    -- n : ℕ
+    -- ⊢ (-a) n ≤ -M
+    simpa using hM n
+  have hb3 : IsCauchy (-a) := isCauchy_of_mono_bddAbove hb1 hb2
+  have hb4 : IsCauchy (-(-a)) := isCauchy_neg hb3
+  simpa using hb4
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha1 : Antitone a)
+  (ha2 : SeqBddBelow a)
+  : IsCauchy a :=
+by
+  obtain ⟨M, hM⟩ := ha2
+  -- M : X
+  -- hM : ∀ (n : ℕ), M ≤ a n
+  have hb1 : Monotone (-a) := by
+    intro m n h
+    -- m n : ℕ
+    -- h : m ≤ n
+    -- ⊢ (-a) m ≤ (-a) n
+    have h' : a n ≤ a m := ha1 h
+    calc (-a) m
+         = -(a m) := rfl
+       _ ≤ -(a n) := neg_le_neg_iff.mpr h'
+       _ = (-a) n := rfl
+  have hb2 : SeqBddAbove (-a) := by
+    refine ⟨-M, fun n => ?_⟩
+    -- n : ℕ
+    -- ⊢ (-a) n ≤ -M
+    calc (-a) n
+         = -(a n) := rfl
+       _ ≤ -M     := neg_le_neg_iff.mpr (hM n)
+  have hb3 : IsCauchy (-a) := isCauchy_of_mono_bddAbove hb1 hb2
+  have hb4 : IsCauchy (-(-a)) := isCauchy_neg hb3
+  have h5 : (-(-a)) = a := neg_neg a
+  rw [h5] at hb4
+  -- hb4 : IsCauchy a
+  exact hb4
+\end{minted}
 
 %%% Local Variables:
 %%% mode: LaTeX

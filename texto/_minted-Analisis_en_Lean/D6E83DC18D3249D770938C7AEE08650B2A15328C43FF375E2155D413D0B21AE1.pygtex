@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{if}\PYG{+w}{ }\PYG{n}{h}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{condicion}\PYG{+w}{ }\PYG{k}{then}\PYG{+w}{ }\PYG{n}{valor\PYGZus{}si\PYGZus{}verdadero}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{n}{valor\PYGZus{}si\PYGZus{}falso}
+\end{Verbatim}

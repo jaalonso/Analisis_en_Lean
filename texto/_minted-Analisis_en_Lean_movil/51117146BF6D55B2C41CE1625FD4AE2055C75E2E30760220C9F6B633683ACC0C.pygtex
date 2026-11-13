@@ -1,0 +1,330 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostrar que si las sucesiones a y c convergen a L, y b está}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} comprimida entre a y c (es decir, aₙ ≤ bₙ ≤ cₙ para todo n), entonces}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} b también converge a L.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostración en lenguaje natural}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ================================}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sea ε \PYGZgt{} 0. Tenemos que demostrar que existe un N tal que,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ≥ N, |bₙ \PYGZhy{} L| \PYGZlt{} ε                                          (1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Puesto que a y c convergen a L, existen N₁ y ℕ₂ tales que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ≥ N₁, |aₙ \PYGZhy{} L| \PYGZlt{} ε                                         (2)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ≥ N₂, |cₙ \PYGZhy{} L| \PYGZlt{} ε                                         (3)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sea}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    N = máx(N₁, ℕ₂).                                               (4)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Para demostrar (1), sea n ≥ N. Por  (4), se tiene que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    n ≥ N₁}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    n ≥ N₂}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Luego, usando (2) y (3), se tiene que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    |aₙ \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    |cₙ \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} de donde se deduce que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    \PYGZhy{} ε \PYGZlt{} aₙ \PYGZhy{} L \PYGZlt{} ε                                               (5)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    \PYGZhy{} ε \PYGZlt{} bₙ \PYGZhy{} L \PYGZlt{} ε                                               (6)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Luego,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    \PYGZhy{}ε \PYGZlt{} aₙ \PYGZhy{} L   [por (5)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       ≤ bₙ \PYGZhy{} L   [por hipótesis de b]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       ≤ cₙ \PYGZhy{} L   [por hipótesis de b]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}       \PYGZlt{} ε        [por (6)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Por tanto,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    \PYGZhy{}ε \PYGZlt{} bₙ \PYGZhy{} L \PYGZlt{} ε}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} y, finalmente,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    |bₙ \PYGZhy{} L| \PYGZlt{} ε}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostraciones con Lean4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ========================}
+
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{Mathlib.Data.Real.Basic}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{Mathlib.Tactic}
+
+\PYG{k+kd}{variable}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{\PYGZcb{}}
+\PYG{k+kd}{variable}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{\PYGZcb{}}
+
+\PYG{k+kd}{def}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{Prop}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{  }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{exact}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{grind}\PYG{o}{⟩}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hb}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ n ≥ max Na Nc, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ max Na Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L ∧ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{constructor}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L}
+\PYG{+w}{    }\PYG{k}{calc}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{ε}
+\PYG{+w}{       }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{grind}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{grind}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{    }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}
+\PYG{+w}{       }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{grind}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{       }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{grind}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{    }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{refine}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ max Na Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}left}\PYG{+w}{ }\PYG{n}{hn}\PYG{o}{)}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}right}\PYG{+w}{ }\PYG{n}{hn}\PYG{o}{)}
+\PYG{+w}{  }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{n+nb+bp}{⊢}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hna : \PYGZhy{}ε \PYGZlt{} a n \PYGZhy{} L ∧ a n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hnc : \PYGZhy{}ε \PYGZlt{} c n \PYGZhy{} L ∧ c n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L ∧ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{exact}\PYG{+w}{ }\PYG{o}{⟨}\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hab}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{],}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hbc}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{]⟩}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 4ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{refine}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ max Na Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}left}\PYG{+w}{ }\PYG{n}{hn}\PYG{o}{)}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}right}\PYG{+w}{ }\PYG{n}{hn}\PYG{o}{)}
+\PYG{+w}{  }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{n+nb+bp}{⊢}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hna : \PYGZhy{}ε \PYGZlt{} a n \PYGZhy{} L ∧ a n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hnc : \PYGZhy{}ε \PYGZlt{} c n \PYGZhy{} L ∧ c n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L ∧ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{refine}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L}
+\PYG{+w}{    }\PYG{k}{calc}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{ε}
+\PYG{+w}{         }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hna}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{1}
+\PYG{+w}{       }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hab}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}
+\PYG{+w}{         }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hbc}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{]}
+\PYG{+w}{       }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{       }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hnc}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{2}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 5ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hb}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ n ≥ max Na Nc, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ max Na Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}left}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Nc}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}right}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hna}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hnc}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hNa}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : \PYGZhy{}ε \PYGZlt{} a n \PYGZhy{} L ∧ a n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hNc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : \PYGZhy{}ε \PYGZlt{} c n \PYGZhy{} L ∧ c n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L ∧ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{constructor}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L}
+\PYG{+w}{    }\PYG{k}{calc}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{ε}
+\PYG{+w}{       }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNa}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{1}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}\PYG{+w}{ }\PYG{n}{only}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{tsub\PYGZus{}le\PYGZus{}iff\PYGZus{}right}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{sub\PYGZus{}add\PYGZus{}cancel}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hab}\PYG{o}{]}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{    }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}
+\PYG{+w}{       }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}\PYG{+w}{ }\PYG{n}{only}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{tsub\PYGZus{}le\PYGZus{}iff\PYGZus{}right}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{sub\PYGZus{}add\PYGZus{}cancel}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hbc}\PYG{o}{]}
+\PYG{+w}{     }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{       }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNc}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{2}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 6ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∃}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{N}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hb}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{use}\PYG{+w}{ }\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ n ≥ max Na Nc, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ max Na Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}left}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{Nc}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}right}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hna}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hnc}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hNa}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : \PYGZhy{}ε \PYGZlt{} a n \PYGZhy{} L ∧ a n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{hNc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : \PYGZhy{}ε \PYGZlt{} c n \PYGZhy{} L ∧ c n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{rewrite}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L ∧ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{split\PYGZus{}ands}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L}
+\PYG{+w}{    }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hab}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{    }\PYG{n}{linarith}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{    }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hbc}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{    }\PYG{n}{linarith}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 7ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{L}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hab}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{(}\PYG{n}{hbc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{    }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ε : ℝ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hε : ε \PYGZgt{} 0}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∃ N, ∀ n ≥ N, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Na}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNa}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Na : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNa : ∀ n ≥ Na, |a n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{obtain}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{hNc}\PYG{o}{⟩}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{n}{hε}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nc : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hNc : ∀ n ≥ Nc, |c n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{refine}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{max}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{n}{Nc}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nb+bp}{?}\PYG{n}{\PYGZus{}}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ n ≥ max Na Nc, |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hn : n ≥ max Na Nc}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ |b n \PYGZhy{} L| \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hna}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{Na}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}left}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hnc}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{≥}\PYG{+w}{ }\PYG{n}{Nc}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}right}\PYG{+w}{ }\PYG{n}{hn}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{ha\PYGZsq{}}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNa}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hna}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hc\PYGZsq{}}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hNc}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{hnc}
+\PYG{+w}{  }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{abs\PYGZus{}lt}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{at}\PYG{+w}{ }\PYG{n}{ha\PYGZsq{}}\PYG{+w}{ }\PYG{n}{hc\PYGZsq{}}\PYG{+w}{ }\PYG{n+nb+bp}{⊢}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L ∧ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{  }\PYG{n}{constructor}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ \PYGZhy{}ε \PYGZlt{} b n \PYGZhy{} L}
+\PYG{+w}{    }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{ε}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha\PYGZsq{}}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{1}
+\PYG{+w}{    }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{      }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hab}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{]}
+\PYG{+w}{    }\PYG{n}{linarith}
+\PYG{+w}{  }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ b n \PYGZhy{} L \PYGZlt{} ε}
+\PYG{+w}{    }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}
+\PYG{+w}{      }\PYG{n}{linarith}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{hbc}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{]}
+\PYG{+w}{    }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{L}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{ε}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hc\PYGZsq{}}\PYG{n+nb+bp}{.}\PYG{l+m+mi}{2}
+\PYG{+w}{    }\PYG{n}{linarith}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Lemas usados}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ============}
+
+\PYG{k+kd}{variable}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{)}
+\PYG{k}{\PYGZsh{}check}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{abs\PYGZus{}lt}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{n}{a}\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{↔}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∧}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{)}
+\PYG{k}{\PYGZsh{}check}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}left}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{max}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{o}{)}
+\PYG{k}{\PYGZsh{}check}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{le\PYGZus{}of\PYGZus{}max\PYGZus{}le\PYGZus{}right}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{max}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{o}{)}
+\PYG{k}{\PYGZsh{}check}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{sub\PYGZus{}add\PYGZus{}cancel}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{a}\PYG{o}{)}
+\PYG{k}{\PYGZsh{}check}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{tsub\PYGZus{}le\PYGZus{}iff\PYGZus{}right}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{b}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n+nb+bp}{↔}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{c}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{n}{b}\PYG{o}{)}
+\end{Verbatim}

@@ -110,20 +110,167 @@ La idea clave es que si tanto $a_m$ como $a_n$ están a distancia menor que $\va
 \subsection{Solución en Lean}
 
 \begin{minted}{lean}
-Statement IsCauchyOfLim (a : N → R) (ha : SeqConv a)
-    : IsCauchy a := by
-  choose L hL using ha
-  intro ε hε
-  choose N hN using hL (ε / 2) (by bound)
-  use N
-  intro n hn m hm
-  have hn' : |a n - L| < ε / 2 := by apply hN n hn
-  have hm' : |a m - L| < ε / 2 := by apply hN m hm
-  rewrite [(by ring_nf : |a n - a m| = |(a n - L) + (L - a m)|)]
-  have f1 : |(a n - L) + (L - a m)| ≤ |a n - L| + |L - a m|
-      := by apply abs_add
-  have f2 : |L - a m| = |a m - L| := by apply abs_sub_comm
-  linarith [f1, f2, hn', hm']
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea ε ∈ ℝ tal que ε > 0. Tenemos que demostrar que existe un
+-- k ∈ ℕ tal que
+--    ∀ p ≥ k, ∀ q ≥ k, |u(p) - u(q)| < ε                      (1)
+--
+-- Puesto que u es convergente, existe un a ∈ ℝ tal que el límite
+-- de u es a. Por tanto, existe un k ∈ ℕ tal que
+--    ∀ n ≥ k, |u(n) - a| < ε/2                                (2)
+--
+-- Para demostrar que con dicho k se cumple (1), sean p, q ∈ ℕ
+-- tales que p ≥ k y q ≥ k. Entonces, por (2), se tiene que
+--    |u(p) - a| < ε/2                                         (3)
+--    |u(q) - a| < ε/2                                         (4)
+-- Por tanto,
+--    |u(p) - u(q)| = |(u(p) - a) + (a - u(q))|
+--                  ≤ |u(p) - a|  + |a - u(q)|
+--                  = |u(p) - a|  + |u(q) - a|
+--                  < ε/2 + ε/2                    [por (3) y (4)]
+--                  = ε
+
+-- Demostraciones con Lean4
+-- ========================
+
+module
+
+import Mathlib.Basic.Real.Basic
+import Mathlib.Tactic
+import RetosLean4.Defs -- SeqLim, SeqConv, IsCauchy
+
+variable {u : ℕ → ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (h : SeqConv u)
+  : IsCauchy u :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  obtain ⟨a, ha⟩ := h
+  -- a : ℝ
+  -- ha : SeqLim u a
+  obtain ⟨k, hk⟩ := ha (ε/2) (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε / 2
+  use k
+  -- ⊢ ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  intros p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ k
+  -- q : ℕ
+  -- hq : q ≥ k
+  -- ⊢ |u p - u q| < ε
+  grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (h : SeqConv u)
+  : IsCauchy u :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  obtain ⟨a, ha⟩ := h
+  -- a : ℝ
+  -- ha : SeqLim u a
+  obtain ⟨k, hk⟩ := ha (ε/2) (by grind)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε / 2
+  use k
+  -- ⊢ ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  intros p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ k
+  -- q : ℕ
+  -- hq : q ≥ k
+  -- ⊢ |u p - u q| < ε
+  calc |u p - u q|
+       = |(u p - a) + (a - u q)| := by grind
+     _ ≤ |u p - a|  + |a - u q|  := by grind
+     _ = |u p - a|  + |u q - a|  := by grind
+     _ < ε                       := by grind
+
+-- 3ª demostración
+-- ===============
+
+example
+  (h : SeqConv u)
+  : IsCauchy u :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  obtain ⟨a, ha⟩ := h
+  -- a : ℝ
+  -- ha : SeqLim u a
+  obtain ⟨k, hk⟩ := ha (ε/2) (by positivity)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε / 2
+  use k
+  -- ⊢ ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  intros p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ k
+  -- q : ℕ
+  -- hq : q ≥ k
+  -- ⊢ |u p - u q| < ε
+  have h1 : |u p - a| < ε / 2 := hk p hp
+  have h2 : |u q - a| < ε / 2 := hk q hq
+  calc |u p - u q|
+       = |(u p - a) + (a - u q)| := by ring_nf
+     _ ≤ |u p - a| + |a - u q|   := abs_add_le _ _
+     _ = |u p - a| + |u q - a|   := by simp [abs_sub_comm]
+     _ < ε / 2 + ε / 2           := by gcongr
+     _ = ε                       := by ring
+
+-- 4ª demostración
+-- ===============
+
+example
+  (h : SeqConv u)
+  : IsCauchy u :=
+by
+  intros ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ k, ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  obtain ⟨a, ha⟩ := h
+  -- a : ℝ
+  -- ha : SeqLim u a
+  obtain ⟨k, hk⟩ := ha (ε/2) (half_pos hε)
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |u n - a| < ε / 2
+  use k
+  -- ⊢ ∀ p ≥ k, ∀ q ≥ k, |u p - u q| < ε
+  intros p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ k
+  -- q : ℕ
+  -- hq : q ≥ k
+  -- ⊢ |u p - u q| < ε
+  calc |u p - u q|
+       = |(u p - a) + (a - u q)| :=
+           congrArg abs (sub_add_sub_cancel (u p) a (u q)).symm
+     _ ≤ |u p - a|  + |a - u q| :=
+           abs_add_le (u p - a) (a - u q)
+     _ = |u p - a|  + |u q - a| :=
+           congrArg (|u p - a| + ·) (abs_sub_comm a (u q))
+     _ < ε / 2 + ε / 2 :=
+           add_lt_add (hk p hp) (hk q hq)
+     _ = ε :=
+           add_halves ε
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -164,22 +311,172 @@ La demostración sigue un patrón similar al de la suma de límites:
 \subsection{Solución en Lean}
 
 \begin{minted}{lean}
-Statement IsCauchyOfSum (a b : N → R) (ha : IsCauchy a)
-    (hb : IsCauchy b)
-    : IsCauchy (a + b) := by
+-- Demostración en lenguaje natural
+-- ================================
+
+-- Sea ε ∈ ℝ tal que
+--    ε > 0                                                     (1)
+-- Tenemos que demostrar que existe un N ∈ ℕ tal que
+--    ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε             (2)
+--
+-- Por (1), se tiene que
+--    ε/2 > 0                                                   (3)
+-- y, puesto que aₙ es de Cauchy, existe un N₁ tal que
+--    ∀ p ≥ N₁, ∀ q ≥ N₁, |a p - a q| < ε/2                     (4)
+-- y, puesto que bₙ es de Cauchy, existe un N₂ tal que
+--    ∀ p ≥ N₂, ∀ q ≥ N₂, |b p - b q| < ε/2                     (5)
+-- Sean
+--    N = máx(N₁, N₂)                                           (6)
+-- Veamos que con N se verifica (2). Para ello, sean p y q
+-- tales que
+--   p ≥ N                                                      (7)
+--   q ≥ N                                                      (8)
+-- Por (7), (8) y (6), se tiene que
+--   p ≥ N₁ y q ≥ N₁
+-- y, por (4), se tiene que
+--   |a p - a q| < ε/2                                          (9)
+-- Por (7), (8) y (6), también se tiene que
+--   p ≥ N₂ y q ≥ N₂
+-- y, por (5), se tiene que
+--   |b p - b q| < ε/2                                         (10)
+-- Finalmente,
+--    |(a + b) p - (a + b) q|
+--    = |(a p - a q) + (b p - b q)|
+--    ≤ |a p - a q| + |b p - b q|    [por la desigualdad triangular]
+--    < ε/2 + ε/2                    [por (9) y (10)]
+--    = ε
+
+-- Demostraciones en Lean 4
+-- ========================
+
+import Mathlib.Basic.Real.Basic
+import Mathlib.Tactic
+import RetosLean4.Defs -- IsCauchy
+
+variable {a b : ℕ → ℝ}
+
+-- 1ª demostración
+-- ===============
+
+example
+  (ha : IsCauchy a)
+  (hb : IsCauchy b)
+  : IsCauchy (a + b) :=
+by
   intro ε hε
-  choose N1 hN1 using ha (ε / 2) (by bound)
-  choose N2 hN2 using hb (ε / 2) (by bound)
-  use N1 + N2
-  intro m hm n hn
-  specialize hN1 m (by bound) n (by bound)
-  specialize hN2 m (by bound) n (by bound)
-  change |(a m + b m) - (a n + b n)| < ε
-  rewrite [(by ring_nf : |(a m + b m) - (a n + b n)|
-      = |(a m - a n) + (b m - b n)|)]
-  have f1 : |a m - a n + (b m - b n)| ≤ |a m - a n| + |(b m - b n)|
-      := by apply abs_add
-  linarith [f1, hN1, hN2]
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε
+  obtain ⟨N1, hN1⟩ := ha (ε/2) (by positivity)
+  -- N1 : ℕ
+  -- hN1 : ∀ p ≥ N1, ∀ q ≥ N1, |a p - a q| < ε / 2
+  obtain ⟨N2, hN2⟩ := hb (ε/2) (by positivity)
+  -- N2 : ℕ
+  -- hN2 : ∀ p ≥ N2, ∀ q ≥ N2, |b p - b q| < ε / 2
+  set N := max N1 N2
+  use N
+  -- ⊢ ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε
+  intro p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ N
+  -- q : ℕ
+  -- hq : q ≥ N
+  -- ⊢ |(a + b) p - (a + b) q| < ε
+  calc |(a + b) p - (a + b) q|
+       = |(a p + b p) - (a q + b q)| := rfl
+     _ = |(a p - a q) + (b p - b q)| := by congr; ring
+     _ ≤ |a p - a q| + |b p - b q|   := abs_add_le _ _
+     _ < ε/2 + ε/2                   := by grind
+     _ = ε                           := by grind
+
+-- 2ª demostración
+-- ===============
+
+example
+  (ha : IsCauchy a)
+  (hb : IsCauchy b)
+  : IsCauchy (a + b) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε
+  obtain ⟨N1, hN1⟩ := ha (ε/2) (by positivity)
+  -- N1 : ℕ
+  -- hN1 : ∀ p ≥ N1, ∀ q ≥ N1, |a p - a q| < ε / 2
+  obtain ⟨N2, hN2⟩ := hb (ε/2) (by positivity)
+  -- N2 : ℕ
+  -- hN2 : ∀ p ≥ N2, ∀ q ≥ N2, |b p - b q| < ε / 2
+  set N := max N1 N2
+  use N
+  -- ⊢ ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε
+  intro p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ N
+  -- q : ℕ
+  -- hq : q ≥ N
+  -- ⊢ |(a + b) p - (a + b) q| < ε
+  have h1 : |a p - a q| < ε/2 := by
+    apply hN1
+    · -- ⊢ p ≥ N1
+      exact le_of_max_le_left hp
+    · -- ⊢ q ≥ N1
+      exact le_of_max_le_left hq
+  have h2 : |b p - b q| < ε/2 := by
+    apply hN2
+    · -- ⊢ p ≥ N2
+      exact le_of_max_le_right hp
+    · -- ⊢ q ≥ N2
+      exact le_of_max_le_right hq
+  calc |(a + b) p - (a + b) q|
+       = |(a p + b p) - (a q + b q)| := rfl
+     _ = |(a p - a q) + (b p - b q)| := by congr; ring
+     _ ≤ |a p - a q| + |b p - b q|   := abs_add_le _ _
+     _ < ε/2 + ε/2                   := by gcongr
+     _ = ε                           := by ring
+
+-- 3ª demostración
+-- ===============
+
+public theorem isCauchy_add
+  (ha : IsCauchy a)
+  (hb : IsCauchy b)
+  : IsCauchy (a + b) :=
+by
+  intro ε hε
+  -- ε : ℝ
+  -- hε : ε > 0
+  -- ⊢ ∃ N, ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε
+  obtain ⟨N1, hN1⟩ := ha (ε/2) (half_pos hε)
+  -- N1 : ℕ
+  -- hN1 : ∀ p ≥ N1, ∀ q ≥ N1, |a p - a q| < ε / 2
+  obtain ⟨N2, hN2⟩ := hb (ε/2) (half_pos hε)
+  -- N2 : ℕ
+  -- hN2 : ∀ p ≥ N2, ∀ q ≥ N2, |b p - b q| < ε / 2
+  set N := max N1 N2
+  use N
+  -- ⊢ ∀ p ≥ N, ∀ q ≥ N, |(a + b) p - (a + b) q| < ε
+  intro p hp q hq
+  -- p : ℕ
+  -- hp : p ≥ N
+  -- q : ℕ
+  -- hq : q ≥ N
+  -- ⊢ |(a + b) p - (a + b) q| < ε
+  have h1 : |a p - a q| < ε/2 :=
+    hN1 p (le_of_max_le_left hp) q (le_of_max_le_left hq)
+  have h2 : |b p - b q| < ε/2 :=
+    hN2 p (le_of_max_le_right hp) q (le_of_max_le_right hq)
+  calc |(a + b) p - (a + b) q|
+       = |(a p + b p) - (a q + b q)| :=
+           rfl
+     _ = |(a p - a q) + (b p - b q)| :=
+           congrArg abs (add_sub_add_comm (a p) (b p) (a q) (b q))
+     _ ≤ |a p - a q| + |b p - b q| :=
+           abs_add_le (a p - a q) (b p - b q)
+     _ < ε/2 + ε/2 :=
+           add_lt_add h1 h2
+     _ = ε :=
+           add_halves ε
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}
@@ -224,28 +521,167 @@ La idea clave es que una sucesión de Cauchy está «eventualmente agrupada», y
 \subsection{Solución en Lean}
 
 \begin{minted}{lean}
-Statement IsBddOfCauchy (a : N → R) (ha : IsCauchy a)
-    : SeqBdd a := by
-  choose N hN using ha 1 (by bound)
-  use |a N| + 1 + ∑ k ∈ range N, |a k|
-  have aNnonneg : 0 ≤ |a N| := by bound
-  have sumNonneg : 0 ≤ ∑ k ∈ range N, |a k|
-      := by apply sum_nonneg (by bound)
-  have f1 : ∀ n < N, |a n| ≤ ∑ k ∈ range N, |a k|
-      := by apply TermLeSum a N
-  split_ands
-  · linarith [aNnonneg, sumNonneg]
-  intro n
-  specialize hN N (by bound) n
-  by_cases hn : n < N
-  · specialize f1 n hn
-    linarith [f1, aNnonneg]
-  · specialize hN (by bound)
-    have f2 : |a n| = |(a n - a N) + a N| := by ring_nf
-    have f3 : |(a n - a N) + a N| ≤ |a n - a N| + |a N|
-        := by apply abs_add
-    rewrite [(by apply abs_sub_comm : |a n - a N| = |a N - a n|)] at f3
-    linarith [f2, f3, hN, sumNonneg]
+-- Demostración en lenguaje natural
+-- ================================
+
+-- La demostración se basa en los siguientes lemas:
+-- + Lema 1: Si aₙ es de Cauchy, entonces existe un k ∈ ℕ tal
+--   que para todo n ≥ k, |a n| < |a k| + 1.
+-- + Lema 2: Para cada k ∈ ℕ, existe un M ∈ ℝ tal que para
+--   todo i < k, |a i| ≤ M.
+--
+-- En efecto, por el lema 1, existe un k ∈ ℕ tal que
+--   ∀ n ≥ k, |aₙ| < |aₖ| + 1                                  (1)
+-- Además, por el Lema 2, existe un C ∈ ℝ tal que
+--   ∀ i < k, |aᵢ| ≤ C                                         (2)
+-- Sea
+--   M = máx(|aₖ| + 1, C)                                      (3)
+-- Veamos en primer lugar que M > 0. En efecto,
+--    M ≥ |aₖ| + 1  [por (3)]
+--      ≥ 0 + 1
+--      = 1
+--      > 0
+--
+-- En segundo lugar, veamos que para todo n ∈ ℕ, |aₙ| ≤ M. Lo
+-- haremos distinguiendo dos casos.
+--
+-- Caso 1: Supongamos que n < k. Entonces,
+--    |aₙ| ≤ C    [por (2)]
+--         ≤ M    [por (3)]
+--
+-- Caso 2: Supongamos que n ≥ k. Entonces,
+--    |aₙ| ≤ |aₖ| + 1   [por (1)]
+--         ≤ M          [por (3)]
+--
+-- Falta la demostración de los lemas. Para demostrar el
+-- primer lema, puesto que aₙ es de Cauchy, existe un k ∈ ℕ tal
+-- que
+--    ∀ i ≥ k, ∀ j ≥ k, |aᵢ - aⱼ| < 1                         (4)
+-- Veamos que k cumple la condición; es decir,
+--    ∀ n ≥ k, |aₙ| < |aₖ| + 1
+-- Para ello, sea n ∈ ℕ tal que
+--    n ≥ k
+-- Entonces, por (4) y por ser k ≥ k, se tiene
+--    |aₙ - aₖ| < 1                                           (5)
+-- y, por tanto,
+--    |aₙ| = |aₖ + (aₙ - aₖ)|
+--         ≤ |aₖ| + |aₙ - aₖ|   [por la desigualdad triangular]
+--         < |aₖ| + 1           [por (5)]
+--
+-- Para demostrar el lema 2, sea
+--    M = ∑ i ∈ range k, |aᵢ|                                 (6)
+-- es decir,
+--    M = |a₀| + |a₁| + ... + |aₖ₋₁|
+-- Veamos que M es la cota buscada; es decir,
+--    ∀ i < k, |aᵢ| ≤ M
+-- Para ello, sea i ∈ ℕ tal que
+--    i < k                                                   (7)
+-- Entonces, puesto que
+--    ∀ i ∈ range k, 0 ≤ |aᵢ|                                 (8)
+-- y, por (7),
+--    i ∈ range k                                             (9)
+-- se tiene que
+--    |aᵢ| ≤ ∑ i ∈ range k, |aᵢ|    [por (8) y (9)]
+--         = M                      [por (6)]
+
+-- Demostraciones en Lean 4
+-- ========================
+
+import Mathlib.Basic.Real.Basic
+import Mathlib.Tactic
+
+def IsCauchy (a : ℕ → ℝ) : Prop :=
+  ∀ ε > 0, ∃ N : ℕ, ∀ p ≥ N, ∀ q ≥ N, |a p - a q| < ε
+
+def SeqBdd (a : ℕ → ℝ) : Prop :=
+  ∃ M > 0, ∀ n, |a n| ≤ M
+
+open Finset
+
+variable (a : ℕ → ℝ)
+
+lemma cauchy_exists_bound_tail_terms
+  (h : IsCauchy a)
+  : ∃ k, ∀ n ≥ k, |a n| < |a k| + 1 :=
+by
+  obtain ⟨k, hk⟩ := h 1 one_pos
+  -- k : ℕ
+  -- hk : ∀ p ≥ k, ∀ q ≥ k, |a p - a q| < 1
+  use k
+  -- ⊢ ∀ n ≥ k, |a n| < |a k| + 1
+  intro n hn
+  -- n : ℕ
+  -- hn : n ≥ k
+  -- ⊢ |a n| < |a k| + 1
+  have h1 : |a n - a k| < 1 := hk n hn k (Nat.le_refl k)
+  calc |a n|
+       = |a k + (a n - a k)| := congrArg abs (add_sub_cancel (a k) (a n)).symm
+     _ ≤ |a k| + |a n - a k| := abs_add_le (a k) (a n - a k)
+     _ < |a k| + 1           := add_lt_add_right h1 |a k|
+
+lemma exists_bound_first_terms
+  (k : ℕ)
+  : ∃ M, ∀ i < k, |a i| ≤ M :=
+  ⟨∑ i ∈ range k, |a i|,
+   fun _ hi => single_le_sum
+                 (fun j _ => abs_nonneg (a j))
+                 (mem_range.mpr hi)⟩
+
+example
+  (ha : IsCauchy a)
+  : SeqBdd a :=
+by
+  obtain ⟨k, hk⟩ := cauchy_exists_bound_tail_terms a ha
+  -- k : ℕ
+  -- hk : ∀ n ≥ k, |a n| < |a k| + 1
+  obtain ⟨C, hC⟩ := exists_bound_first_terms a k
+  -- C : ℝ
+  -- hC : ∀ i < k, |a i| ≤ C
+  set M := max (|a k| + 1) C
+  -- hM : M = max (|a k| + 1) C
+  use M
+  -- ⊢ M > 0 ∧ ∀ (n : ℕ), |a n| ≤ M
+  constructor
+  · -- ⊢ M > 0
+    calc M
+         ≥ |a k| + 1 := le_max_left (|a k| + 1) C
+       _ ≥ 0 + 1     := add_le_add_left (abs_nonneg (a k)) 1
+       _ = 1         := zero_add 1
+       _ > 0         := Real.zero_lt_one
+  · intro n
+    -- n : ℕ
+    -- ⊢ |a n| ≤ M
+    rcases lt_or_ge n k with hn1 | hn2
+    · -- hn1 : n < k
+      calc |a n|
+           ≤ C := hC n hn1
+         _ ≤ M := le_max_right (|a k| + 1) C
+    · -- hn2 : k ≤ n
+      calc |a n|
+           ≤ |a k| + 1 := le_of_lt (hk n hn2)
+         _ ≤ M         := le_max_left (|a k| + 1) _
+
+-- Lemas usados
+-- ============
+
+-- variable (b c d : ℝ)
+-- variable (m n : ℕ)
+-- variable (s : Finset ℕ)
+-- variable (f : ℕ → ℝ)
+-- #check (abs_add_le b c : |b + c| ≤ |b| + |c|)
+-- #check (abs_nonneg b : 0 ≤ |b|)
+-- #check (add_le_add_left : b ≤ c → ∀ d, b + d ≤ c + d)
+-- #check (add_lt_add_right : b < c → ∀ d, d + b < d + c)
+-- #check (add_sub_cancel b c : b + (c - b) = c)
+-- #check (le_max_left b c : b ≤ max b c)
+-- #check (le_max_right b c : c ≤ max b c)
+-- #check (lt_or_ge m n : m < n ∨ n ≤ m)
+-- #check (mem_range : m ∈ range n ↔ m < n)
+-- #check (Nat.le_refl n : n ≤ n)
+-- #check (one_pos : 0 < 1)
+-- #check (Real.zero_lt_one : (0 : ℝ) < 1)
+-- #check (single_le_sum : (∀ i ∈ s, 0 ≤ a i) → ∀ i : ℕ, i ∈ s → a i ≤ ∑ x ∈ s, a x)
+-- #check (zero_add b : 0 + b = b)
 \end{minted}
 
 \subsection{Demostración en lenguaje natural}

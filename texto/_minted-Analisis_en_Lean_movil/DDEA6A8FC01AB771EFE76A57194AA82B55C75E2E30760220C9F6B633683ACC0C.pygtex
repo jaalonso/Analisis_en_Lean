@@ -1,0 +1,125 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostración en lenguaje natural}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ================================}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Por el Reto 22, basta demostrar que la sucesión a tiene dos}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} subsucesiones que convergen a límites distintos. Para ello,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} consideramos las funciones φ₁ y φ₂ de ℕ en ℕ definidas por}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ₁(n) = 2n}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ₂(n) = 2n + 1}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ambas son funciones de extracción ya que, para todo i, j ∈ ℕ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} con i \PYGZlt{} j, se tiene que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ₁(i) = 2i \PYGZlt{} 2j = φ₁(j)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ₂(i) = 2i + 1 \PYGZlt{} 2j + 1 = φ₂(j)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definimos las subsucesiones de a}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    b₁ = a ∘ φ₁}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    b₂ = a ∘ φ₂}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ambas subsucesiones son constantes (b₁ vale 1 y b₂ vale \PYGZhy{}1), ya}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} que para todo n ∈ ℕ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    b₁(n) = a(2n) = (\PYGZhy{}1)²ⁿ = 1}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    b₂(n) = a(2n + 1) = (\PYGZhy{}1)²ⁿ⁺¹ = \PYGZhy{}1}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Luego, aplicando el Reto 23 que dice \PYGZdq{}toda sucesión constante}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} converge a su valor\PYGZdq{}, b₁ converge a 1 y b₂ converge a \PYGZhy{}1. Como}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1 ≠ \PYGZhy{}1, a tiene dos subsucesiones con límites distintos y, por}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} el Reto 22, no es convergente.}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostraciones en Lean 4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ========================}
+
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{Mathlib.Tactic}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4.Defs}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} LimSuc, SucConvergente, extraccion, subsucesion}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4.Reto\PYGZus{}9}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} unicidad\PYGZus{}limite}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4.Reto\PYGZus{}21}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} limite\PYGZus{}subsucesion}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4.Reto\PYGZus{}22}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} no\PYGZus{}convergencia\PYGZus{}subsucesiones}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4.Reto\PYGZus{}23}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} limSuc\PYGZus{}const}
+
+\PYG{k+kd}{variable}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℝ}\PYG{o}{\PYGZcb{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{lemma}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}par}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{extraccion}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{n}{hij}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} i j : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hij : i \PYGZlt{} j}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ (fun n =\PYGZgt{} 2 * n) i \PYGZlt{} (fun n =\PYGZgt{} 2 * n) j}
+\PYG{+w}{  }\PYG{n}{dsimp}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ 2 * i \PYGZlt{} 2 * j}
+\PYG{+w}{  }\PYG{n}{omega}
+
+\PYG{k+kd}{lemma}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}impar}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{extraccion}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{n}{hij}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} i j : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hij : i \PYGZlt{} j}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ (fun n =\PYGZgt{} 2 * n + 1) i \PYGZlt{} (fun n =\PYGZgt{} 2 * n + 1) j}
+\PYG{+w}{  }\PYG{n}{dsimp}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ 2 * i + 1 \PYGZlt{} 2 * j + 1}
+\PYG{+w}{  }\PYG{n}{omega}
+
+\PYG{k+kd}{lemma}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}par}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{         }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZca{}}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{       }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{              }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}
+
+\PYG{k+kd}{lemma}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}impar}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}
+\PYG{+w}{         }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZca{}}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}
+\PYG{+w}{       }\PYG{n}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{+w}{                 }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{simp}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{pow\PYGZus{}succ}\PYG{o}{]}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{¬}\PYG{n}{SucConvergente}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{k}{let}\PYG{+w}{ }\PYG{n}{φ₁}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{k}{let}\PYG{+w}{ }\PYG{n}{φ₂}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb₁}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{subsucesion}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{n}{φ₁}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{φ₁}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}par}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{rfl}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb₂}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{subsucesion}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{n}{φ₂}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{  }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{φ₂}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}impar}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{rfl}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hL₁}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{n}{φ₁}\PYG{o}{)}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{    }\PYG{n}{limSuc\PYGZus{}const}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}par}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hL₂}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{n}{φ₂}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{    }\PYG{n}{limSuc\PYGZus{}const}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}impar}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{o}{(}\PYG{l+m+mi}{1}\PYG{o}{:}\PYG{n}{ℝ}\PYG{o}{)}\PYG{+w}{ }\PYG{n+nb+bp}{≠}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{norm\PYGZus{}num}
+\PYG{+w}{  }\PYG{n}{exact}\PYG{+w}{ }\PYG{n}{no\PYGZus{}convergencia\PYGZus{}subsucesiones}\PYG{+w}{ }\PYG{n}{hb₁}\PYG{+w}{ }\PYG{n}{hL₁}\PYG{+w}{ }\PYG{n}{hb₂}\PYG{+w}{ }\PYG{n}{hL₂}\PYG{+w}{ }\PYG{n}{h}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{¬}\PYG{n}{SucConvergente}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k+kd}{by}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h1}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{extraccion}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}par}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb₁}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{subsucesion}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{\PYGZus{}}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{h1}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{rfl}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hL₁}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{    }\PYG{n}{limSuc\PYGZus{}const}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}par}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h2}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{extraccion}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}impar}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hb₂}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{subsucesion}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{⟨}\PYG{n}{\PYGZus{}}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{h2}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{rfl}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{hL₂}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{LimSuc}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{a}\PYG{+w}{ }\PYG{n+nb+bp}{∘}\PYG{+w}{ }\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{+w}{ }\PYG{n+nb+bp}{*}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{    }\PYG{n}{limSuc\PYGZus{}const}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}impar}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{n}{exact}\PYG{+w}{ }\PYG{n}{no\PYGZus{}convergencia\PYGZus{}subsucesiones}\PYG{+w}{ }\PYG{n}{hb₁}\PYG{+w}{ }\PYG{n}{hL₁}\PYG{+w}{ }\PYG{n}{hb₂}\PYG{+w}{ }\PYG{n}{hL₂}\PYG{+w}{ }\PYG{o}{(}\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{norm\PYGZus{}num}\PYG{o}{)}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kd}{theorem}\PYG{+w}{ }\PYG{n}{no\PYGZus{}convergente\PYGZus{}pot\PYGZus{}menos\PYGZus{}uno}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{ha}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{o}{(}\PYG{n+nb+bp}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{n+nb+bp}{\PYGZca{}}\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{¬}\PYG{n}{SucConvergente}\PYG{+w}{ }\PYG{n}{a}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{n}{no\PYGZus{}convergencia\PYGZus{}subsucesiones}
+\PYG{+w}{  }\PYG{o}{⟨}\PYG{n}{\PYGZus{}}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}par}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{rfl}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{limSuc\PYGZus{}const}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}par}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{))}
+\PYG{+w}{  }\PYG{o}{⟨}\PYG{n}{\PYGZus{}}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{extraccion\PYGZus{}impar}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{rfl}\PYG{o}{⟩}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{limSuc\PYGZus{}const}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}\PYG{+w}{ }\PYG{n}{suc\PYGZus{}impar}\PYG{+w}{ }\PYG{n}{ha}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{))}
+\PYG{+w}{  }\PYG{o}{(}\PYG{k+kd}{by}\PYG{+w}{ }\PYG{n}{norm\PYGZus{}num}\PYG{o}{)}
+\end{Verbatim}

@@ -1,0 +1,269 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Una función φ : ℕ → ℕ es una función de extracción si es}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} estrictamente creciente; es decir, si}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ i j ∈ ℕ, i \PYGZlt{} j → φ(i) \PYGZlt{} φ(j)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostrar que, para comprobar que φ es una función de}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} extracción, basta con verificar que cada término es menor que el}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} siguiente; es decir,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ∈ ℕ, φ(n) \PYGZlt{} φ(n+1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Para ello, completar la siguiente teoría en Lean 4:}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    import Mathlib.Basic.Real.Basic}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    def IsExtraction (φ : ℕ → ℕ) : Prop :=}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      StrictMono φ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    example}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      (φ : ℕ → ℕ)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      (hφ : ∀ n, φ n \PYGZlt{} φ (n + 1)) :}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      IsExtraction φ :=}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    by}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      sorry}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostraciones en lenguaje natural}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ==================================}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sea φ : ℕ → ℕ tal que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ∈ ℕ, φ(n) \PYGZlt{} φ(n+1)                                    (1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Hay que demostrar que φ es una función de extracción: es decir,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ i j ∈ ℕ, i \PYGZlt{} j → φ(i) \PYGZlt{} φ(j)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración (inducción sobre j)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sean i, j ∈ ℕ con i \PYGZlt{} j. Probamos por inducción sobre j que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} φ(i) \PYGZlt{} φ(j).}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Caso j = 0. La hipótesis i \PYGZlt{} 0 es imposible, ya que ningún}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} natural es menor que 0. Por tanto, el resultado se cumple}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} trivialmente.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Paso j = n + 1. Supongamos como hipótesis de inducción que,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    i \PYGZlt{} n → φ(i) \PYGZlt{} φ(n)                                      (ih)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} y tenemos que demostrar que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    i \PYGZlt{} n+1 → φ(i) \PYGZlt{} φ(n+1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Para ello, sea}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    i \PYGZlt{} n+1                                                   (2)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} y tenemos que demostrar que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ(i) \PYGZlt{} φ(n+1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Lo haremos distinguiendo dos casos, ya que de (2) se sigue que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    i \PYGZlt{} n ∨ i = n}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Caso i \PYGZlt{} n. Entonces,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ(i) \PYGZlt{} φ(n)    [por ih, ya que i \PYGZlt{} n]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}         \PYGZlt{} φ(n+1)  [por (1)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Caso i = n. Entonces,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ(i) = φ(n)    [porque i = n]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}         \PYGZlt{} φ(n+1)  [por (1)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración (inducción sobre la desigualdad)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ================================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sean i, j ∈ ℕ con i \PYGZlt{} j, o, equivalentemente, i + 1 ≤ j.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Probamos por inducción sobre j, a partir de j = i + 1, que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} φ(i) \PYGZlt{} φ(j).}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Caso base j = i + 1. Hay que probar φ(i) \PYGZlt{} φ(i+1), que es (1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} para n = i.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Paso inductivo. Sea m ≥ i + 1 y supongamos que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ(i) \PYGZlt{} φ(m)                                             (ih)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Entonces,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φ(i) \PYGZlt{} φ(m)    [por ih]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}         \PYGZlt{} φ(m+1)  [por (1)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª demostración (lema de Mathlib)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} =================================}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Basta aplicar el lema strictMono\PYGZus{}nat\PYGZus{}of\PYGZus{}lt\PYGZus{}succ de Mathlib, que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} afirma que una función f : ℕ → α, con α un preorden, es}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} estrictamente creciente si f(n) \PYGZlt{} f(n+1) para todo n. Como φ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} cumple (1), es estrictamente creciente, y por definición, una}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} función de extracción.}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostraciones en Lean 4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ========================}
+
+\PYG{n}{module}
+
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{Mathlib}\PYG{n+nb+bp}{.}\PYG{n}{Basic}\PYG{n+nb+bp}{.}\PYG{n}{Real}\PYG{n+nb+bp}{.}\PYG{n}{Basic}
+\PYG{n}{public}\PYG{+w}{ }\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{RetosLean4}\PYG{n+nb+bp}{.}\PYG{n}{Defs}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} IsExtraction}
+
+\PYG{c}{/\PYGZhy{}}
+\PYG{c+cm}{def IsExtraction (φ : ℕ → ℕ) : Prop :=}
+\PYG{c+cm}{  StrictMono φ}
+\PYG{c+cm}{\PYGZhy{}/}
+
+\PYG{k+kn}{variable}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kn}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{))}\PYG{+w}{ }\PYG{o}{:}
+\PYG{+w}{  }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{n}{hij}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} i j : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hij : i \PYGZlt{} j}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ i \PYGZlt{} φ j}
+\PYG{+w}{  }\PYG{n}{induction}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{k}{with}
+\PYG{+w}{  }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{zero}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hij : i \PYGZlt{} 0}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ i \PYGZlt{} φ 0}
+\PYG{+w}{    }\PYG{n}{exact}\PYG{+w}{ }\PYG{n}{absurd}\PYG{+w}{ }\PYG{n}{hij}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{Nat}\PYG{n+nb+bp}{.}\PYG{n}{not\PYGZus{}lt\PYGZus{}zero}\PYG{+w}{ }\PYG{n}{i}\PYG{o}{)}
+\PYG{+w}{  }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{succ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{ih}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ih : i \PYGZlt{} n → φ i \PYGZlt{} φ n}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hij : i \PYGZlt{} n + 1}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ i \PYGZlt{} φ (n + 1)}
+\PYG{+w}{    }\PYG{n}{rcases}\PYG{+w}{ }\PYG{n}{lt\PYGZus{}or\PYGZus{}eq\PYGZus{}of\PYGZus{}le}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{Nat}\PYG{n+nb+bp}{.}\PYG{n}{lt\PYGZus{}succ\PYGZus{}iff}\PYG{n+nb+bp}{.}\PYG{n}{mp}\PYG{+w}{ }\PYG{n}{hij}\PYG{o}{)}\PYG{+w}{ }\PYG{k}{with}\PYG{+w}{ }\PYG{n}{h1}\PYG{+w}{ }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{h2}
+\PYG{+w}{    }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} h1 : i \PYGZlt{} n}
+\PYG{+w}{      }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{i}
+\PYG{+w}{           }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{       }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ih}\PYG{+w}{ }\PYG{n}{h1}
+\PYG{+w}{         }\PYG{n+nb+bp}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{    }\PYG{n+nb+bp}{·}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} h2 : i = n}
+\PYG{+w}{      }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{i}
+\PYG{+w}{           }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{k}{by}\PYG{+w}{ }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{h2}\PYG{o}{]}
+\PYG{+w}{         }\PYG{n+nb+bp}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{n}{n}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kn}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{))}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k}{by}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{n}{hij}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} i j : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} hij : i \PYGZlt{} j}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ i \PYGZlt{} φ j}
+\PYG{+w}{  }\PYG{k}{have}\PYG{+w}{ }\PYG{n}{h}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{i}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{+w}{ }\PYG{n+nb+bp}{≤}\PYG{+w}{ }\PYG{n}{j}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hij}
+\PYG{+w}{  }\PYG{n}{clear}\PYG{+w}{ }\PYG{n}{hij}
+\PYG{+w}{  }\PYG{n}{induction}\PYG{+w}{ }\PYG{n}{j}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{h}\PYG{+w}{ }\PYG{k+kn}{using}\PYG{+w}{ }\PYG{n}{Nat}\PYG{n+nb+bp}{.}\PYG{n}{le\PYGZus{}induction}\PYG{+w}{ }\PYG{k}{with}
+\PYG{+w}{  }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{base}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ i \PYGZlt{} φ (i + 1)}
+\PYG{+w}{    }\PYG{n}{exact}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{n}{i}
+\PYG{+w}{  }\PYG{n+nb+bp}{|}\PYG{+w}{ }\PYG{n}{succ}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZus{}}\PYG{+w}{ }\PYG{n}{ih}\PYG{+w}{ }\PYG{n+nb+bp}{=\PYGZgt{}}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} m : ℕ}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ih : φ i \PYGZlt{} φ m}
+\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ i \PYGZlt{} φ (m + 1)}
+\PYG{+w}{    }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{i}
+\PYG{+w}{         }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{        }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{ih}
+\PYG{+w}{       }\PYG{n+nb+bp}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{m}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{)}\PYG{+w}{  }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{n}{m}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{n}{public}\PYG{+w}{ }\PYG{k+kn}{theorem}\PYG{+w}{ }\PYG{n}{isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{))}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{n}{strictMono\PYGZus{}nat\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}\PYG{+w}{ }\PYG{n}{hφ}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sea φ : ℕ → ℕ una función que crece más que la identidad; es}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} decir, tal que n \PYGZlt{} φ(n) para todo n. Demostrar que, para}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} cualquier punto inicial n₀ ∈ ℕ, su órbita por φ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    n₀, φ(n₀), φ²(n₀), φ³(n₀), ...}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} es una función de extracción (es decir, es estrictamente}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} creciente).}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Para ello, completar la siguiente teoría en Lean 4, donde}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (φ\PYGZca{}[n] n₀) representa la iterada φⁿ(n₀):}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    import Mathlib.Basic.Real.Basic}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    variable (φ : ℕ → ℕ)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    def IsExtraction (φ : ℕ → ℕ) : Prop :=}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      StrictMono φ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    lemma isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ \PYGZhy{}\PYGZhy{} Reto 32}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      (hφ : ∀ n, φ n \PYGZlt{} φ (n + 1))}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      : IsExtraction φ :=}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    strictMono\PYGZus{}nat\PYGZus{}of\PYGZus{}lt\PYGZus{}succ hφ}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    example}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      (hφ : ∀ n, n \PYGZlt{} φ n)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      (n₀ : ℕ)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      : IsExtraction (fun n ↦ φ\PYGZca{}[n] n₀) :=}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    by sorry}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Demostración en lenguaje natural}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ================================}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Por el criterio del sucesor (Reto 32), basta probar que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ∀ n ∈ ℕ, φⁿ(n₀) \PYGZlt{} φⁿ⁺¹(n₀)                               (1)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Sea n ∈ ℕ. Entonces,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    φⁿ(n₀) \PYGZlt{} φ(φⁿ(n₀))   [por la hipótesis, aplicada a φⁿ(n₀)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}           = φⁿ⁺¹(n₀)    [por definición de iterada]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} que es (1).}
+
+\PYG{n}{module}
+
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n}{Mathlib}\PYG{n+nb+bp}{.}\PYG{n}{Basic}\PYG{n+nb+bp}{.}\PYG{n}{Real}\PYG{n+nb+bp}{.}\PYG{n}{Basic}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} public import RetosLean4.Defs \PYGZhy{}\PYGZhy{} IsExtraction}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} public import RetosLean4.Reto\PYGZus{}32 \PYGZhy{}\PYGZhy{} isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}
+
+\PYG{k+kn}{variable}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+
+\PYG{k+kn}{def}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{+w}{ }\PYG{n+nb+bp}{→}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{k+kt}{Prop}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{+w}{  }\PYG{n}{StrictMono}\PYG{+w}{ }\PYG{n}{φ}
+
+\PYG{k+kn}{lemma}\PYG{+w}{ }\PYG{n}{isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}\PYG{+w}{ }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Reto 32}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{))}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{n}{strictMono\PYGZus{}nat\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}\PYG{+w}{ }\PYG{n}{hφ}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kn}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{n₀}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{↦}\PYG{+w}{ }\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k}{by}
+\PYG{+w}{  }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ (n : ℕ), φ\PYGZca{}[n] n₀ \PYGZlt{} φ\PYGZca{}[n + 1] n₀}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ\PYGZca{}[n] n₀ \PYGZlt{} φ\PYGZca{}[n + 1] n₀}
+\PYG{+w}{  }\PYG{k}{calc}\PYG{+w}{ }\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}
+\PYG{+w}{       }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}
+\PYG{+w}{     }\PYG{n+nb+bp}{\PYGZus{}}\PYG{+w}{ }\PYG{n+nb+bp}{=}\PYG{+w}{ }\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{+}\PYG{+w}{ }\PYG{l+m+mi}{1}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{+w}{ }\PYG{o}{:=}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{Function}\PYG{n+nb+bp}{.}\PYG{n}{iterate\PYGZus{}succ\PYGZus{}apply\PYGZsq{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{n+nb+bp}{.}\PYG{n}{symm}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kn}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{n₀}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{↦}\PYG{+w}{ }\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k}{by}
+\PYG{+w}{  }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ (n : ℕ), φ\PYGZca{}[n] n₀ \PYGZlt{} φ\PYGZca{}[n + 1] n₀}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ\PYGZca{}[n] n₀ \PYGZlt{} φ\PYGZca{}[n + 1] n₀}
+\PYG{+w}{  }\PYG{n}{rw}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{Function}\PYG{n+nb+bp}{.}\PYG{n}{iterate\PYGZus{}succ\PYGZus{}apply\PYGZsq{}}\PYG{o}{]}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ\PYGZca{}[n] n₀ \PYGZlt{} φ (φ\PYGZca{}[n] n₀)}
+\PYG{+w}{  }\PYG{n}{exact}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª demostración}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ===============}
+
+\PYG{k+kn}{example}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n+nb+bp}{∀}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{,}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{\PYGZlt{}}\PYG{+w}{ }\PYG{n}{φ}\PYG{+w}{ }\PYG{n}{n}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{(}\PYG{n}{n₀}\PYG{+w}{ }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{ℕ}\PYG{o}{)}
+\PYG{+w}{  }\PYG{o}{:}\PYG{+w}{ }\PYG{n}{IsExtraction}\PYG{+w}{ }\PYG{o}{(}\PYG{k}{fun}\PYG{+w}{ }\PYG{n}{n}\PYG{+w}{ }\PYG{n+nb+bp}{↦}\PYG{+w}{ }\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}\PYG{+w}{ }\PYG{o}{:=}
+\PYG{k}{by}
+\PYG{+w}{  }\PYG{n}{apply}\PYG{+w}{ }\PYG{n}{isExtraction\PYGZus{}of\PYGZus{}lt\PYGZus{}succ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ ∀ (n : ℕ), φ\PYGZca{}[n] n₀ \PYGZlt{} φ\PYGZca{}[n + 1] n₀}
+\PYG{+w}{  }\PYG{n}{intro}\PYG{+w}{ }\PYG{n}{n}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} n : ℕ}
+\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ⊢ φ\PYGZca{}[n] n₀ \PYGZlt{} φ\PYGZca{}[n + 1] n₀}
+\PYG{+w}{  }\PYG{n}{simpa}\PYG{+w}{ }\PYG{o}{[}\PYG{n}{Function}\PYG{n+nb+bp}{.}\PYG{n}{iterate\PYGZus{}succ\PYGZus{}apply\PYGZsq{}}\PYG{o}{]}\PYG{+w}{ }\PYG{k+kn}{using}\PYG{+w}{ }\PYG{n}{hφ}\PYG{+w}{ }\PYG{o}{(}\PYG{n}{φ}\PYG{n+nb+bp}{\PYGZca{}}\PYG{o}{[}\PYG{n}{n}\PYG{o}{]}\PYG{+w}{ }\PYG{n}{n₀}\PYG{o}{)}
+\end{Verbatim}
