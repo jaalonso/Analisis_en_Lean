@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.1.30)  11 NOV 2026 18:19
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.1.30)  13 NOV 2026 13:27
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2219,7 +2219,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [11]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 9.6pt on input line 313.
+(Font)              scaled to size 9.6pt on input line 314.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;mapping=tex-text;" at 9.6pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2228,7 +2228,7 @@ Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.t
 tf]/OT:script=latn;language=dflt;" at 7.48799pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.ttf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 7.2pt on input line 313.
+(Font)              scaled to size 7.2pt on input line 314.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;mapping=tex-text;" at 7.2pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2237,19 +2237,19 @@ Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.t
 tf]/OT:script=latn;language=dflt;" at 5.61598pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.ttf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/it' will be
-(Font)              scaled to size 12.0pt on input line 313.
+(Font)              scaled to size 12.0pt on input line 314.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;" at 12.0pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Italic.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/it' will be
-(Font)              scaled to size 9.6pt on input line 313.
+(Font)              scaled to size 9.6pt on input line 314.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;" at 9.6pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Italic.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/it' will be
-(Font)              scaled to size 7.2pt on input line 313.
+(Font)              scaled to size 7.2pt on input line 314.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;" at 7.2pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2284,34 +2284,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 \openout2 = `C13_Subsucesion_monotona.aux'.
 
  (./C13_Subsucesion_monotona.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 14.49998pt, for example:
-(fancyhdr)                \setlength{\headheight}{14.49998pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
-
-[412
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]
 Capítulo 13.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 17.28pt on input line 3.
@@ -2355,7 +2327,23 @@ Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;" at 7.2pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Regular.otf
-[413]
+[417
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]
 LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
 (Font)              scaled to size 11.23196pt on input line 58.
 Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
@@ -2398,7 +2386,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[414]
+[418]
 \openout3 = `Analisis_en_Lean.pyg'.
 
 
@@ -2415,7 +2403,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[415])
+[419])
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/it' will be
 (Font)              scaled to size 12.0pt on input line 197.
 Requested font "[LibertinusSerif-BoldItalic.otf]/OT:script=latn;language=dflt;+
@@ -2439,7 +2427,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[416]
+[420]
 LaTeX Info: Redefining \. on input line 286.
 LaTeX Info: Redefining \% on input line 286.
 
@@ -2451,7 +2439,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[417]
+[421]
 Overfull \hbox (41.18613pt too wide) in paragraph at lines 301--303
 []\TU/LibertinusSerif(0)/m/n/12 Proporciona automáticamente una sucesión estric
 tamente creciente (por \TU/JuliaMono-Regular.ttf(0)/m/n/12 Subseq_of_Iterate\TU
@@ -2470,7 +2458,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[418] (./Analisis_en_Lean.aux
+[422] (./Analisis_en_Lean.aux
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
  (./C1_La_historia_del_analisis_real.aux)
@@ -2486,17 +2474,17 @@ LaTeX Info: Redefining \% on input line 25.
 (./C13_Subsucesion_monotona.aux) (./C14_El_teorema_de_Bolzano_Weierstrass.aux)
 (./C15_Los_numeros_reales.aux) (./C16_Completitud_de_los_numeros_reales.aux))
 Package rerunfilecheck Info: File `Analisis_en_Lean.out' has not changed.
-(rerunfilecheck)             Checksum: 963730EBA3C26E010859240CC6CBBA61;3394.
+(rerunfilecheck)             Checksum: 83D97A02E5C89D34ADF4D234F3CCBA6A;3394.
 runsystem(rm Analisis_en_Lean.pyg)...executed.
 
  ) ) 
 Here is how much of TeX's memory you used:
  22966 strings out of 476191
  451630 string characters out of 5812072
- 994193 words of memory out of 5000000
+ 995193 words of memory out of 5000000
  43247 multiletter control sequences out of 15000+600000
  472962 words of font info for 115 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  91i,12n,140p,696b,957s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Analisis_en_Lean.pdf (20 pages).
+Output written on Analisis_en_Lean.pdf (19 pages).
