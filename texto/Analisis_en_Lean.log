@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.1.30)  13 NOV 2026 13:27
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2026.1.30)  23 NOV 2026 13:26
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2219,7 +2219,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [11]
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 9.6pt on input line 314.
+(Font)              scaled to size 9.6pt on input line 315.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;mapping=tex-text;" at 9.6pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2228,7 +2228,7 @@ Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.t
 tf]/OT:script=latn;language=dflt;" at 7.48799pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.ttf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 7.2pt on input line 314.
+(Font)              scaled to size 7.2pt on input line 315.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;mapping=tex-text;" at 7.2pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2237,19 +2237,19 @@ Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.t
 tf]/OT:script=latn;language=dflt;" at 5.61598pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Regular.ttf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/it' will be
-(Font)              scaled to size 12.0pt on input line 314.
+(Font)              scaled to size 12.0pt on input line 315.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;" at 12.0pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Italic.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/it' will be
-(Font)              scaled to size 9.6pt on input line 314.
+(Font)              scaled to size 9.6pt on input line 315.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;" at 9.6pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Italic.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/it' will be
-(Font)              scaled to size 7.2pt on input line 314.
+(Font)              scaled to size 7.2pt on input line 315.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;" at 7.2pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2298,31 +2298,31 @@ lnum;mapping=tex-text;" at 17.28pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Bold.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
-(Font)              scaled to size 12.0pt on input line 7.
+(Font)              scaled to size 12.0pt on input line 6.
 Requested font "[LibertinusSerif-Italic.otf]/OT:script=latn;language=dflt;+tnum
 ;+lnum;mapping=tex-text;" at 12.0pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Italic.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
-(Font)              scaled to size 14.4pt on input line 24.
+(Font)              scaled to size 14.4pt on input line 23.
 Requested font "[LibertinusSerif-Bold.otf]/OT:script=latn;language=dflt;+tnum;+
 lnum;mapping=tex-text;" at 14.4pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Bold.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
-(Font)              scaled to size 12.0pt on input line 36.
+(Font)              scaled to size 12.0pt on input line 35.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;" at 12.0pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Regular.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
-(Font)              scaled to size 9.6pt on input line 36.
+(Font)              scaled to size 9.6pt on input line 35.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;" at 9.6pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
 inusSerif-Regular.otf
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(1)/m/n' will be
-(Font)              scaled to size 7.2pt on input line 36.
+(Font)              scaled to size 7.2pt on input line 35.
 Requested font "[LibertinusSerif-Regular.otf]/OT:script=latn;language=dflt;+tnu
 m;+lnum;" at 7.2pt
  -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
@@ -2345,7 +2345,7 @@ inusSerif-Regular.otf
 
 ]
 LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
-(Font)              scaled to size 11.23196pt on input line 58.
+(Font)              scaled to size 11.23196pt on input line 57.
 Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
 /OT:script=latn;language=dflt;" at 11.23196pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf
@@ -2366,17 +2366,17 @@ Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf
 )
 LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/b/n' will be
-(Font)              scaled to size 13.47836pt on input line 70.
+(Font)              scaled to size 13.47836pt on input line 69.
 Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf]
 /OT:script=latn;language=dflt;" at 13.47836pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-Bold.ttf
 LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/m/it' will be
-(Font)              scaled to size 9.35999pt on input line 95.
+(Font)              scaled to size 9.35999pt on input line 94.
 Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-RegularIt
 alic.ttf]/OT:script=latn;language=dflt;" at 9.35999pt
  -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-RegularItalic.ttf
-LaTeX Info: Redefining \. on input line 105.
-LaTeX Info: Redefining \% on input line 105.
+LaTeX Info: Redefining \. on input line 104.
+LaTeX Info: Redefining \% on input line 104.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2390,8 +2390,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 \openout3 = `Analisis_en_Lean.pyg'.
 
 
-(./_minted-Analisis_en_Lean/ED882D8B99717ACD50DED9F69CDA90202A15328C43FF375E215
+(./_minted-Analisis_en_Lean/9B9852D6AE01F91B2F44DB6692087D4F2A15328C43FF375E215
 5D413D0B21AE1.pygtex
+LaTeX Font Info:    Font shape `TU/JuliaMono-Regular.ttf(0)/m/it' will be
+(Font)              scaled to size 8.54097pt on input line 2.
+Requested font "[/home/jalonso/.local/share/fonts/juliamono/JuliaMono-RegularIt
+alic.ttf]/OT:script=latn;language=dflt;" at 8.54097pt
+ -> /home/jalonso/.local/share/fonts/juliamono/JuliaMono-RegularItalic.ttf
 LaTeX Info: Redefining \. on input line 19.
 LaTeX Info: Redefining \% on input line 19.
 
@@ -2403,22 +2408,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[419])
-LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/it' will be
-(Font)              scaled to size 12.0pt on input line 197.
-Requested font "[LibertinusSerif-BoldItalic.otf]/OT:script=latn;language=dflt;+
-tnum;+lnum;mapping=tex-text;" at 12.0pt
- -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
-inusSerif-BoldItalic.otf
+[419]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Overfull \hbox (12.63661pt too wide) in paragraph at lines 202--205
-[]\TU/LibertinusSerif(0)/b/n/12 Paso 1: Extraer la cota. \TU/LibertinusSerif(0)
-/m/n/12 Como $[][][][][]$, la negación de $[][][]  [][] [] [][]  [][][][] [][]$
+LaTeX Info: Redefining \. on input line 66.
+LaTeX Info: Redefining \% on input line 66.
 
- []
-
-LaTeX Info: Redefining \. on input line 226.
-LaTeX Info: Redefining \% on input line 226.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -2428,8 +2423,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [420]
-LaTeX Info: Redefining \. on input line 286.
-LaTeX Info: Redefining \% on input line 286.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 115.
+LaTeX Info: Redefining \% on input line 115.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -2440,13 +2437,148 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [421]
-Overfull \hbox (41.18613pt too wide) in paragraph at lines 301--303
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 164.
+LaTeX Info: Redefining \% on input line 164.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[422]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 213.
+LaTeX Info: Redefining \% on input line 213.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[423]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 262.
+LaTeX Info: Redefining \% on input line 262.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[424])
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/it' will be
+(Font)              scaled to size 12.0pt on input line 415.
+Requested font "[LibertinusSerif-BoldItalic.otf]/OT:script=latn;language=dflt;+
+tnum;+lnum;mapping=tex-text;" at 12.0pt
+ -> /usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-BoldItalic.otf
+
+Overfull \hbox (12.63661pt too wide) in paragraph at lines 420--423
+[]\TU/LibertinusSerif(0)/b/n/12 Paso 1: Extraer la cota. \TU/LibertinusSerif(0)
+/m/n/12 Como $[][][][][]$, la negación de $[][][]  [][] [] [][]  [][][][] [][]$
+
+ []
+
+LaTeX Info: Redefining \. on input line 482.
+LaTeX Info: Redefining \% on input line 482.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[425]
+Overfull \hbox (41.18613pt too wide) in paragraph at lines 519--521
 []\TU/LibertinusSerif(0)/m/n/12 Proporciona automáticamente una sucesión estric
 tamente creciente (por \TU/JuliaMono-Regular.ttf(0)/m/n/12 Subseq_of_Iterate\TU
 /LibertinusSerif(0)/m/n/12 ). 
  []
 
-)
+LaTeX Info: Redefining \. on input line 530.
+LaTeX Info: Redefining \% on input line 530.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[426]
+\openout3 = `Analisis_en_Lean.pyg'.
+
+
+(./_minted-Analisis_en_Lean/E3252710F20A91619A485C626082B3FDEB07162D8409A223C0C
+CCD12FB416134.pygtex
+LaTeX Info: Redefining \. on input line 21.
+LaTeX Info: Redefining \% on input line 21.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[427]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 70.
+LaTeX Info: Redefining \% on input line 70.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[428]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 119.
+LaTeX Info: Redefining \% on input line 119.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[429]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 168.
+LaTeX Info: Redefining \% on input line 168.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[430]))
 LaTeX Info: Redefining \. on input line 33.
 LaTeX Info: Redefining \% on input line 33.
 
@@ -2458,7 +2590,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[422] (./Analisis_en_Lean.aux
+[431] (./Analisis_en_Lean.aux
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
  (./C1_La_historia_del_analisis_real.aux)
@@ -2474,17 +2606,17 @@ LaTeX Info: Redefining \% on input line 25.
 (./C13_Subsucesion_monotona.aux) (./C14_El_teorema_de_Bolzano_Weierstrass.aux)
 (./C15_Los_numeros_reales.aux) (./C16_Completitud_de_los_numeros_reales.aux))
 Package rerunfilecheck Info: File `Analisis_en_Lean.out' has not changed.
-(rerunfilecheck)             Checksum: 83D97A02E5C89D34ADF4D234F3CCBA6A;3394.
+(rerunfilecheck)             Checksum: 8D593CF67D49843F50525EF9BAC8A1F2;3502.
 runsystem(rm Analisis_en_Lean.pyg)...executed.
 
  ) ) 
 Here is how much of TeX's memory you used:
- 22966 strings out of 476191
- 451630 string characters out of 5812072
- 995193 words of memory out of 5000000
- 43247 multiletter control sequences out of 15000+600000
- 472962 words of font info for 115 fonts, out of 8000000 for 9000
+ 22978 strings out of 476191
+ 452421 string characters out of 5812072
+ 1004981 words of memory out of 5000000
+ 43255 multiletter control sequences out of 15000+600000
+ 472970 words of font info for 116 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 91i,12n,140p,696b,957s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 91i,12n,140p,603b,975s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Analisis_en_Lean.pdf (19 pages).
+Output written on Analisis_en_Lean.pdf (28 pages).
