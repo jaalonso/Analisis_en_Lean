@@ -1,0 +1,699 @@
+\chapter{Series y convergencia}
+
+% ==========================================================
+\section{Nivel 1 (de la Lección 16): El test del término que se anula}
+
+En este nivel fundacional introducimos el concepto de serie infinita y demostramos una condición necesaria fundamental para la convergencia.
+
+\subsection{Definición de serie}
+
+Dada una sucesión $a : \N \to \R$, definimos una nueva sucesión, llamada la \emph{serie} de $a$, que consiste en las sumas parciales:
+
+\begin{definicion}[Serie]
+Para una sucesión $a : \N \to \R$ definimos
+\[
+  \Series(a)(n) = \sum_{k=0}^{n-1} a_k .
+\]
+Es decir, el $n$-ésimo término de $\Series(a)$ es la suma de los primeros $n$ términos de $a$.
+\end{definicion}
+
+Por ejemplo, si $a = (1,2,3,4,\dots)$, entonces:
+\begin{align*}
+  \Series(a)(0) &= 0\\
+  \Series(a)(1) &= 1\\
+  \Series(a)(2) &= 1+2 = 3\\
+  \Series(a)(3) &= 1+2+3 = 6\\
+  \Series(a)(4) &= 1+2+3+4 = 10
+\end{align*}
+
+\subsection{Convergencia de series}
+
+Una serie \emph{converge} si su sucesión de sumas parciales converge.
+
+\begin{definicion}[SeriesConv]
+Decimos que se cumple \texttt{SeriesConv}$(a)$ si se cumple \texttt{SeqConv}$(\Series(a))$. Es decir, existe un límite $L \in \R$ tal que
+\[
+  \lim_{n\to\infty} \sum_{k=0}^{n-1} a_k = L .
+\]
+Escribimos $\sum_{k=0}^{\infty} a_k = L$ y decimos que la serie infinita converge a $L$.
+\end{definicion}
+
+\begin{definicion}[SeriesLim]
+Si la serie de $a$ converge a $L$, escribimos \texttt{SeriesLim}$(a, L)$, que significa \texttt{SeqLim}$(\Series(a), L)$.
+\end{definicion}
+
+\subsection{El test del término que se anula}
+
+Demostramos ahora una condición necesaria crucial para la convergencia.
+
+\begin{teorema}[LimZero\_of\_SeriesConv]
+Si una serie $\sum_{k=0}^{\infty} a_k$ converge, entonces $\lim_{n\to\infty} a_n = 0$.
+\end{teorema}
+
+En otras palabras: si los términos de una serie no tienden a cero, la serie no puede converger.
+
+\subsection{Estrategia de la demostración}
+
+La idea clave es que, si una serie converge, entonces su sucesión de sumas parciales es convergente y, por tanto, de Cauchy. En una sucesión de Cauchy, los términos consecutivos se acercan arbitrariamente entre sí.
+
+Ahora bien, la diferencia entre sumas parciales consecutivas es exactamente un término de la sucesión original:
+\[
+  \Series(a)(n+1) - \Series(a)(n) = \sum_{k=0}^{n} a_k - \sum_{k=0}^{n-1} a_k = a_n .
+\]
+Así, si las sumas parciales son de Cauchy, entonces $a_n$ debe tender a cero.
+
+\subsection{La demostración formal}
+
+\begin{proof}
+Sea $\varepsilon > 0$. Debemos hallar $N$ tal que, para todo $n \ge N$, se cumpla $|a_n - 0| < \varepsilon$.
+
+Como la serie converge, $\Series(a)$ converge y, por tanto, es de Cauchy. Por la definición de sucesión de Cauchy, existe $N$ tal que para todos $m, n \ge N$ con $m \ge n$:
+\[
+  |\Series(a)(m) - \Series(a)(n)| < \varepsilon .
+\]
+Ahora, para cualquier $n \ge N$, tomemos $m = n+1$. Entonces
+\begin{align*}
+  |a_n| = |a_n - 0|
+  &= \left| \sum_{k=0}^{n} a_k - \sum_{k=0}^{n-1} a_k \right|\\
+  &= |\Series(a)(n+1) - \Series(a)(n)|\\
+  &< \varepsilon .
+\end{align*}
+Esto completa la demostración.
+\end{proof}
+
+\subsection{La demostración en Lean}
+
+\begin{minted}{lean4}
+Statement LimZero_of_SeriesConv (a : ℕ → ℝ)
+    (ha : SeriesConv a) : SeqLim a 0 := by
+  intro ε hε
+  change SeqConv (Series a) at ha
+  have cau : IsCauchy (Series a) := by
+    apply IsCauchyOfLim (Series a) ha
+  choose N hN using cau ε hε
+  use N
+  intro n hn
+  specialize hN n hn (n+1) (by bound)
+  change |∑ k ∈ range (n+1), a k - ∑ k ∈ range n, a k| < ε at hN
+  rewrite [show ∑ k ∈ range (n+1), a k =
+    ∑ k ∈ range n, a k + a n by apply sum_range_succ] at hN
+  rewrite [show ∑ k ∈ range n, a k + a n - ∑ k ∈ range n, a k =
+    a n by ring_nf] at hN
+  rewrite [show a n - 0 = a n by ring_nf]
+  apply hN
+\end{minted}
+
+\subsection{Comprensión del teorema}
+
+Este teorema nos da un criterio rápido de divergencia: si queremos probar que una serie $\sum a_k$ diverge, basta mostrar que $a_k$ no tiende a cero.
+
+Ejemplos de series divergentes:
+\begin{itemize}
+  \item $\sum_{k=0}^{\infty} 1 = 1+1+1+\cdots$ diverge porque los términos no tienden a cero.
+  \item $\sum_{k=0}^{\infty} (-1)^k = 1-1+1-1+\cdots$ diverge porque los términos oscilan entre $1$ y $-1$.
+  \item $\sum_{k=1}^{\infty} \dfrac{k}{k+1}$ diverge porque $\dfrac{k}{k+1} \to 1 \neq 0$.
+\end{itemize}
+
+\subsection{Advertencia: ¡el recíproco es falso!}
+
+No es cierto que, si $a_n \to 0$, entonces $\sum a_k$ converge. Que los términos tiendan a cero es \emph{necesario} pero no \emph{suficiente} para la convergencia.
+
+El contraejemplo clásico es la \emph{serie armónica}:
+\[
+  \sum_{k=1}^{\infty} \frac{1}{k} = 1 + \frac12 + \frac13 + \frac14 + \cdots
+\]
+Aquí $\frac1k \to 0$, ¡pero la serie diverge! Las sumas parciales crecen como $\log n$, tendiendo a infinito.
+
+Para demostrar convergencia necesitamos criterios adicionales (comparación, cociente, integral, etc.), que desarrollaremos en los niveles siguientes.
+
+\subsection{Nota histórica}
+
+Este teorema se conoce a veces como el \emph{test del $n$-ésimo término para la divergencia} o \emph{test del término que se anula}. Ya era conocido por los primeros analistas, como Nicole Oresme (siglo XIV) y Jakob Bernoulli (siglo XVII), quienes lo usaban para identificar rápidamente series divergentes.
+
+La serie armónica, que muestra que el recíproco es falso, fue demostrada divergente por Oresme hacia 1350 mediante un ingenioso argumento de agrupación.
+
+%==========================================================
+\section{Nivel 1: La serie de Leibniz -- Sumas parciales}
+
+En este nivel comenzamos nuestro estudio de las series infinitas examinando un hermoso resultado clásico descubierto por Leibniz. Evaluaremos la serie
+\[
+  \sum_{k=0}^{\infty} \frac{1}{(k+1)(k+2)} = \frac12 + \frac16 + \frac1{12} + \frac1{20} + \frac1{30} + \cdots
+\]
+La clave para entender una serie infinita es entender primero sus sumas parciales. Para una sucesión $a : \N \to \R$, la $n$-ésima suma parcial se define como
+\[
+  \Series(a, n) = \sum_{k=0}^{n-1} a_k .
+\]
+Nuestra primera tarea es hallar una fórmula explícita para las sumas parciales de la serie de Leibniz.
+
+\subsection{El teorema}
+
+\begin{teorema}[LeibnizSeries']
+Sea $a : \N \to \R$ la sucesión definida por $a_n = \dfrac{1}{(n+1)(n+2)}$ para todo $n \in \N$. Entonces, para todo $n \in \N$,
+\[
+  \sum_{k=0}^{n-1} a_k = 1 - \frac{1}{n+1} .
+\]
+\end{teorema}
+
+\subsection{Estrategia de la demostración}
+
+La idea clave es usar \emph{telescopado}: podemos reescribir cada término $\frac{1}{(k+1)(k+2)}$ mediante fracciones parciales como
+\[
+  \frac{1}{(k+1)(k+2)} = \frac{1}{k+1} - \frac{1}{k+2} .
+\]
+Al sumar estos términos, la mayoría se cancela:
+\begin{align*}
+  \sum_{k=0}^{n-1} \frac{1}{(k+1)(k+2)}
+  &= \sum_{k=0}^{n-1} \left( \frac{1}{k+1} - \frac{1}{k+2} \right)\\
+  &= \left(\frac11 - \frac12\right) + \left(\frac12 - \frac13\right) + \left(\frac13 - \frac14\right) + \cdots + \left(\frac1n - \frac1{n+1}\right)\\
+  &= 1 - \frac{1}{n+1} .
+\end{align*}
+
+\subsection{La demostración formal}
+
+Lo demostramos por inducción sobre $n$.
+
+\textbf{Caso base ($n=0$):} La suma sobre un rango vacío es $0$, y $1 - \frac{1}{0+1} = 1 - 1 = 0$. (En la práctica, esto requiere comprobar cuidadosamente las condiciones de frontera.)
+
+\textbf{Paso inductivo:} Supongamos que la fórmula vale para $n = m$. Debemos mostrar que vale para $n = m+1$. Tenemos
+\begin{align*}
+  \sum_{k=0}^{m} a_k &= \sum_{k=0}^{m-1} a_k + a_m\\
+  &= \left(1 - \frac{1}{m+1}\right) + \frac{1}{(m+1)(m+2)} \qquad \text{(por hipótesis de inducción)}\\
+  &= 1 - \frac{1}{m+1} + \frac{1}{(m+1)(m+2)} .
+\end{align*}
+Ahora simplificamos:
+\[
+  1 - \frac{1}{m+1} + \frac{1}{(m+1)(m+2)} = 1 - \frac{1}{m+2} .
+\]
+Esto completa la demostración.
+
+\subsection{Comprensión del resultado}
+
+Esta fórmula nos dice que, cuando $n \to \infty$, las sumas parciales se aproximan a $1$:
+\[
+  \lim_{n\to\infty} \sum_{k=0}^{n-1} \frac{1}{(k+1)(k+2)} = \lim_{n\to\infty} \left(1 - \frac{1}{n+1}\right) = 1 .
+\]
+Por lo tanto, la serie infinita converge a $1$.
+
+\subsection{La demostración en Lean}
+
+La demostración formal en Lean usa inducción (\texttt{induction' n with m hm}) y tácticas de simplificación algebraica:
+
+\begin{minted}{lean4}
+Statement LeibnizSeries' (a : ℕ → ℝ)
+    (ha : ∀ n, a n = 1 / ((n + 1) * (n + 2))) :
+    ∀ n, ∑ k ∈ range n, a k = 1 - 1 / (n + 1) := by
+  intro n
+  induction' n with m hm
+  bound -- caso base
+  rewrite [show ∑ k ∈ range (m + 1), a k =
+    ∑ k ∈ range m, a k + a m by apply sum_range_succ]
+  rewrite [hm] -- aplicar la hipótesis de inducción
+  rewrite [ha m] -- sustituir la definición de a
+  push_cast
+  norm_num
+  field_simp
+  ring_nf
+\end{minted}
+
+Las tácticas \texttt{field\_simp} y \texttt{ring\_nf} se encargan de la manipulación algebraica de forma automática.
+
+%==========================================================
+\section{Nivel 2: La serie de Leibniz -- Convergencia}
+
+Habiendo establecido una fórmula explícita para las sumas parciales, demostramos ahora que la serie de Leibniz efectivamente converge.
+
+\subsection{La definición de convergencia de una serie}
+
+Recordemos que una serie $\sum_{k=0}^{\infty} a_k$ converge si su sucesión de sumas parciales converge. Es decir, \texttt{SeriesConv a} significa que existe un límite $L \in \R$ tal que
+\[
+  \forall \varepsilon > 0,\ \exists N,\ \forall n \ge N,\quad \left| \sum_{k=0}^{n-1} a_k - L \right| < \varepsilon .
+\]
+
+\subsection{El teorema}
+
+\begin{teorema}[LeibnizSeries]
+Sea $a : \N \to \R$ la sucesión definida por $a_n = \dfrac{1}{(n+1)(n+2)}$ para todo $n \in \N$. Entonces la serie $\sum_{k=0}^{\infty} a_k$ converge.
+\end{teorema}
+
+\subsection{Estrategia de la demostración}
+
+Del Nivel~1 sabemos que
+\[
+  \sum_{k=0}^{n-1} a_k = 1 - \frac{1}{n+1} .
+\]
+Para mostrar la convergencia, debemos probar que esta sucesión de sumas parciales converge a $L = 1$. Es decir, debemos mostrar:
+\[
+  \forall \varepsilon > 0,\ \exists N,\ \forall n \ge N,\quad \left| 1 - \frac{1}{n+1} - 1 \right| < \varepsilon .
+\]
+Simplificando el lado izquierdo:
+\[
+  \left| 1 - \frac{1}{n+1} - 1 \right| = \left| -\frac{1}{n+1} \right| = \frac{1}{n+1} .
+\]
+Así que debemos mostrar:
+\[
+  \forall \varepsilon > 0,\ \exists N,\ \forall n \ge N,\quad \frac{1}{n+1} < \varepsilon .
+\]
+
+\subsection{Uso de la propiedad arquimediana}
+
+La clave es la \emph{propiedad arquimediana}: para todo $\varepsilon > 0$ existe $N \in \N$ tal que $\frac1N < \varepsilon$, o equivalentemente, $N > \frac1\varepsilon$.
+
+Dado $\varepsilon > 0$, elijamos $N$ con $\frac1N < \varepsilon$. Entonces, para todo $n \ge N$:
+\[
+  \frac{1}{n+1} \le \frac1n \le \frac1N < \varepsilon .
+\]
+Esto completa la demostración.
+
+\subsection{La demostración formal}
+
+La demostración en Lean sigue esta estructura:
+
+\begin{minted}{lean4}
+Statement LeibnizSeries (a : ℕ → ℝ)
+    (ha : ∀ n, a n = 1 / ((n + 1) * (n + 2))) :
+    SeriesConv a := by
+  have f : ∀ n, ∑ k ∈ range n, a k = 1 - 1 / (n + 1) :=
+  by
+    apply LeibnizSeries' a ha
+  use 1 -- el límite es 1
+  intro ε hε
+  choose N hN using ArchProp hε -- obtener N de la propiedad arquimediana
+  use N
+  intro n hn
+  change |∑ k ∈ range n, a k - 1| < ε
+  rewrite [f n] -- sustituir la fórmula de la suma parcial
+  rewrite [show |(1 : ℝ) - 1 / (n + 1) - 1| =
+    |-((1 : ℝ) / (n + 1))| by ring_nf]
+  rewrite [show |-((1 : ℝ) / (n + 1))| =
+    |(1 : ℝ) / (n + 1)| by apply abs_neg]
+  rewrite [show |((1 : ℝ) / (n + 1))| =
+    (1 : ℝ) / (n + 1) by apply abs_of_pos (by bound)]
+  -- Ahora hay que mostrar que 1/(n+1) < ε
+  have hn' : (N : ℝ) ≤ n := by exact_mod_cast hn
+  have hn'' : (1 : ℝ) / n ≤ 1 / N := by
+    field_simp; bound
+  have hN' : (1 : ℝ) / N < ε := by
+    field_simp; field_simp at hN; linarith [hN]
+  have hn''' : (1 : ℝ) / (n + 1) ≤ 1 / n := by
+    field_simp; bound
+  linarith [hn''', hn'', hN']
+\end{minted}
+
+\subsection{Comprensión de la convergencia}
+
+La serie de Leibniz converge a $1$, lo cual podemos verificar:
+\[
+  \sum_{k=0}^{\infty} \frac{1}{(k+1)(k+2)} = \frac{1}{1\cdot 2} + \frac{1}{2\cdot 3} + \frac{1}{3\cdot 4} + \cdots = 1 .
+\]
+La tasa de convergencia es $O(1/n)$: tras $n$ términos, la suma parcial difiere del límite en aproximadamente $\frac{1}{n+1}$.
+
+%==========================================================
+\section{Nivel 3: El teorema del orden para series}
+
+Una de las propiedades fundamentales de las series es que respetan el orden de sus términos: si tenemos dos sucesiones donde una es menor o igual que la otra término a término, entonces la misma relación vale para sus sumas parciales.
+
+\subsection{El teorema}
+
+\begin{teorema}[SeriesOrderThm]
+Sean $a, b : \N \to \R$ dos sucesiones tales que $a_n \le b_n$ para todo $n \in \N$. Entonces, para todo $n \in \N$,
+\[
+  \Series(a, n) \le \Series(b, n).
+\]
+Es decir,
+\[
+  \sum_{k=0}^{n-1} a_k \le \sum_{k=0}^{n-1} b_k .
+\]
+\end{teorema}
+
+\subsection{Estrategia de la demostración}
+
+Se trata de un argumento directo por inducción. Si cada término cumple $a_k \le b_k$, entonces sumar los primeros $n$ términos preserva la desigualdad.
+
+\textbf{Caso base ($n=0$):} Ambas sumas son vacías, así que $0 \le 0$.
+
+\textbf{Paso inductivo:} Supongamos que $\sum_{k=0}^{n-1} a_k \le \sum_{k=0}^{n-1} b_k$. Debemos mostrar
+\[
+  \sum_{k=0}^{n} a_k \le \sum_{k=0}^{n} b_k .
+\]
+Podemos escribir
+\[
+  \sum_{k=0}^{n} a_k = \sum_{k=0}^{n-1} a_k + a_n ,
+  \qquad
+  \sum_{k=0}^{n} b_k = \sum_{k=0}^{n-1} b_k + b_n .
+\]
+Por la hipótesis de inducción, $\sum_{k=0}^{n-1} a_k \le \sum_{k=0}^{n-1} b_k$. Por hipótesis, $a_n \le b_n$. Sumando estas desigualdades:
+\[
+  \sum_{k=0}^{n-1} a_k + a_n \le \sum_{k=0}^{n-1} b_k + b_n .
+\]
+Esto completa la demostración.
+
+\subsection{La demostración formal}
+
+\begin{minted}{lean4}
+Statement SeriesOrderThm (a b : ℕ → ℝ)
+    (hab : ∀ n, a n ≤ b n) :
+    ∀ n, Series a n ≤ Series b n := by
+  intro n
+  induction' n with n hn
+  bound -- caso base: 0 ≤ 0
+  change ∑ k ∈ range (n + 1), a k ≤ ∑ k ∈ range (n + 1), b k
+  change ∑ k ∈ range n, a k ≤ ∑ k ∈ range n, b k at hn
+  rewrite [show ∑ k ∈ range (n + 1), a k =
+    ∑ k ∈ range n, a k + a n by apply sum_range_succ]
+  rewrite [sum_range_succ]
+  linarith [hab n, hn]
+\end{minted}
+
+\subsection{Aplicaciones}
+
+Este teorema es crucial para los criterios de comparación en la teoría de convergencia de series. Si sabemos que $\sum b_k$ converge y $0 \le a_k \le b_k$, entonces podemos concluir que $\sum a_k$ también converge (y converge a un valor a lo sumo igual a $\sum b_k$).
+
+\subsection{Consecuencias para series infinitas}
+
+Si $a_n \le b_n$ para todo $n$ y ambas series convergen, entonces
+\[
+  \sum_{k=0}^{\infty} a_k \le \sum_{k=0}^{\infty} b_k .
+\]
+Esto se sigue de tomar límites en la desigualdad de las sumas parciales.
+
+\begin{ejemplo}
+Usaremos este teorema en el siguiente nivel para acotar la serie de Basilea por la serie de Leibniz, mostrando así que la serie de Basilea converge.
+\end{ejemplo}
+
+%==========================================================
+\section{Nivel 4: El problema de Basilea}
+
+Nos dirigimos ahora a uno de los problemas más famosos de la historia de las matemáticas: el problema de Basilea, planteado por Pietro Mengoli en 1644 y resuelto célebremente por Leonhard Euler en 1734.
+
+\subsection{Contexto histórico}
+
+Hacia el cambio del siglo XVII al XVIII, los hermanos Bernoulli, Johann y Jakob, se obsesionaron con evaluar la serie
+\[
+  \sum_{k=0}^{\infty} \frac{1}{(k+2)^2} = \frac14 + \frac19 + \frac1{16} + \frac1{25} + \cdots
+\]
+A pesar de sus considerables esfuerzos, no lograron hallar su valor exacto. Tuvo que ser su alumno más famoso, Leonhard Euler, quien la resolviera en 1734, mostrando que
+\[
+  \sum_{k=1}^{\infty} \frac{1}{k^2} = \frac{\pi^2}{6} .
+\]
+(Nuestra serie comienza en $k=2$, por lo que es igual a $\frac{\pi^2}{6} - 1$.)
+
+En este nivel demostraremos algo más modesto: que la serie converge.
+
+\subsection{La estrategia: comparación con la serie de Leibniz}
+
+La idea clave es comparar nuestra serie con la serie de Leibniz vista antes. Tenemos
+\[
+  \frac{1}{(k+2)^2} = \frac{1}{(k+2)(k+2)} \le \frac{1}{(k+1)(k+2)} .
+\]
+Dado que los denominadores satisfacen $(k+2)^2 = (k+2)(k+2) \ge (k+1)(k+2)$ para todo $k \ge 0$, la desigualdad se cumple.
+
+Por el Teorema del Orden para Series (Nivel~3), esto significa que
+\[
+  \sum_{k=0}^{n-1} \frac{1}{(k+2)^2} \le \sum_{k=0}^{n-1} \frac{1}{(k+1)(k+2)} .
+\]
+Del Nivel~1 sabemos que el lado derecho es igual a $1 - \frac{1}{n+1} < 1$. Por lo tanto, las sumas parciales de la serie de Basilea están acotadas superiormente por $1$.
+
+\subsection{Uso del teorema de convergencia monótona acotada}
+
+Las sumas parciales de la serie de Basilea forman una sucesión monótona creciente (pues sumamos términos positivos) y están acotadas superiormente por $1$. Por un teorema fundamental del análisis real:
+
+\begin{teorema}[SeqConvOfMonotoneBdd]
+Si una sucesión $a : \N \to \R$ es monótona y acotada, entonces converge.
+\end{teorema}
+
+Ya hemos demostrado que las sucesiones monótonas acotadas son de Cauchy (\texttt{IsCauchyOfMonotoneBdd}) y, por la completitud de los números reales, las sucesiones de Cauchy convergen (\texttt{Conv\_of\_IsCauchy}).
+
+\subsection{El argumento completo}
+
+Sea $a_n = \dfrac{1}{(n+2)^2}$ y sea $S_n = \sum_{k=0}^{n-1} a_k$ la sucesión de sumas parciales.
+
+\textbf{Paso 1: La sucesión $S_n$ es monótona creciente.} Para todo $n$ tenemos
+\[
+  S_{n+1} = S_n + a_n .
+\]
+Como $a_n = \frac{1}{(n+2)^2} > 0$, se cumple $S_{n+1} > S_n$.
+
+\textbf{Paso 2: La sucesión $S_n$ está acotada superiormente.} Definamos $b_n = \dfrac{1}{(n+1)(n+2)}$. Hemos mostrado que $a_n \le b_n$ para todo $n$. Por el Teorema del Orden para Series,
+\[
+  S_n = \sum_{k=0}^{n-1} a_k \le \sum_{k=0}^{n-1} b_k = 1 - \frac{1}{n+1} < 1 .
+\]
+Por lo tanto, $S_n$ está acotada superiormente por $1$.
+
+\textbf{Paso 3: Aplicar el teorema de convergencia monótona acotada.} Como $S_n$ es monótona y acotada, converge. Por lo tanto, la serie de Basilea converge.
+
+\subsection{La demostración formal}
+
+\begin{minted}{lean4}
+theorem SeqConvOfMonotoneBdd (a : ℕ → ℝ) (M : ℝ)
+    (hM : ∀ n, a n ≤ M) (ha : Monotone a) : SeqConv a :=
+by
+  have := IsCauchyOfMonotoneBdd a M hM ha
+  exact Conv_of_IsCauchy this
+\end{minted}
+
+\begin{minted}{lean4}
+Statement (a : ℕ → ℝ)
+    (ha : ∀ n, a n = 1 / ((n + 2) ^ 2)) : SeriesConv a
+:= by
+  apply SeqConvOfMonotoneBdd (Series a) 1
+  -- Demostrar la acotación
+  let b : ℕ → ℝ := fun n ↦ 1 / ((n + 1) * (n + 2))
+  have hb : ∀ n, b n = 1 / ((n + 1) * (n + 2)) := by
+    intro n; rfl
+  have hab : ∀ n, a n ≤ b n := by
+    intro n
+    rewrite [ha n, hb n]
+    field_simp
+    bound -- (n+2)^2 ≥ (n+1)(n+2)
+  intro n
+  have bLeib := LeibnizSeries' b hb n
+  have habBnd := SeriesOrderThm a b hab n
+  change Series b n = 1 - 1 / (n + 1) at bLeib
+  have h1 : (1 : ℝ) - 1 / (n + 1) ≤ 1 := by
+    field_simp; bound
+  linarith [habBnd, h1, bLeib]
+  -- Demostrar la monotonía
+  apply Monotone_of_succ
+  intro n
+  change ∑ k ∈ range n, a k ≤ ∑ k ∈ range (n + 1), a k
+  rewrite [show ∑ k ∈ range (n + 1), a k =
+    ∑ k ∈ range n, a k + a n by apply sum_range_succ]
+  rewrite [ha n]
+  have han : (0 : ℝ) ≤ 1 / ((n + 2) ^ 2) := by bound
+  linarith [han]
+\end{minted}
+
+\subsection{Lo que no hemos demostrado}
+
+Observemos que hemos probado que la serie de Basilea converge, pero no hemos calculado su valor exacto. Eso requiere técnicas mucho más sofisticadas, que Euler desarrolló mediante su revolucionario trabajo que conecta las series infinitas con las funciones trigonométricas a través de la representación en producto infinito de la función seno.
+
+El hecho de que $\sum_{k=1}^{\infty} \frac{1}{k^2} = \frac{\pi^2}{6}$ sigue siendo uno de los resultados más hermosos de las matemáticas, pues conecta el mundo discreto de los enteros con la constante trascendente $\pi$.
+
+\subsection{Generalizaciones}
+
+Euler continuó evaluando $\sum_{k=1}^{\infty} \frac{1}{k^{2n}}$ para todo entero positivo $n$, mostrando que cada una es un múltiplo racional de $\pi^{2n}$. Estos valores se conocen hoy como \emph{valores especiales} de la función zeta de Riemann $\zeta(s) = \sum_{k=1}^{\infty} \frac{1}{k^s}$.
+
+La cuestión de si $\zeta(3) = \sum_{k=1}^{\infty} \frac{1}{k^3}$ es un múltiplo racional de $\pi^3$ (o cualquier expresión simple que involucre $\pi$) sigue abierta, aunque sabemos que es irracional (teorema de Ap\'ery, 1978).
+
+%==========================================================
+\section{Digresión histórica: Los promedios de Cesàro y la búsqueda de la definición correcta de convergencia}
+
+Antes de que la definición moderna con $\varepsilon$ y $\delta$ quedara plenamente establecida en el siglo XIX, los matemáticos lidiaron con sucesiones y series que parecían ``querer'' converger pero que no encajaban en ningún marco riguroso. Esto condujo a fascinantes debates sobre lo que la convergencia debería significar realmente.
+
+\subsection{Promedios de Cesàro}
+
+Una noción alternativa de convergencia fue propuesta por Ernesto Cesàro. En lugar de mirar la sucesión $(a_n)$ misma, miramos los promedios de sus términos iniciales.
+
+\begin{definicion}[Promedio de Cesàro]
+Dada una sucesión $a : \N \to \R$, su \emph{promedio de Cesàro} (o \emph{media de Cesàro}) es la sucesión $\sigma : \N \to \R$ definida por
+\[
+  \sigma_n = \frac1n \sum_{k=0}^{n-1} a_k = \frac{a_0 + a_1 + \cdots + a_{n-1}}{n} .
+\]
+Decimos que una sucesión \emph{converge en el sentido de Cesàro} a $L$ si $\lim_{n\to\infty} \sigma_n = L$.
+\end{definicion}
+
+\subsection{El teorema de Cesàro}
+
+La relación clave entre la convergencia ordinaria y la convergencia de Cesàro viene dada por el siguiente resultado fundamental:
+
+\begin{teorema}[Cesàro]
+Si una sucesión $(a_n)$ converge a $L$ en el sentido usual, entonces sus promedios de Cesàro también convergen a $L$.
+\end{teorema}
+
+Es decir: la convergencia ordinaria implica la convergencia de Cesàro al mismo límite.
+
+\subsection{Esbozo de la demostración}
+
+Supongamos que $a_n \to L$. Queremos mostrar que $\sigma_n \to L$, donde
+\[
+  \sigma_n = \frac1n \sum_{k=0}^{n-1} a_k .
+\]
+La idea clave es dividir la suma en dos partes: un segmento inicial (donde $a_k$ puede no estar cerca de $L$) y un segmento final (donde $a_k$ está cerca de $L$).
+
+Sea $\varepsilon > 0$. Como $a_n \to L$, existe $N_0$ tal que para todo $k \ge N_0$
+\[
+  |a_k - L| < \frac{\varepsilon}{2} .
+\]
+Ahora, para $n > N_0$, podemos escribir
+\begin{align*}
+  \sigma_n - L &= \frac1n \sum_{k=0}^{n-1} a_k - L\\
+  &= \frac1n \sum_{k=0}^{n-1} (a_k - L)\\
+  &= \frac1n \sum_{k=0}^{N_0-1} (a_k - L) + \frac1n \sum_{k=N_0}^{n-1} (a_k - L) .
+\end{align*}
+Para la primera suma, notemos que tiene solo $N_0$ términos, cada uno de ellos fijo. Por lo tanto,
+\[
+  \left| \frac1n \sum_{k=0}^{N_0-1} (a_k - L) \right|
+  \le \frac1n \sum_{k=0}^{N_0-1} |a_k - L| \le \frac{C}{n}
+\]
+para cierta constante $C$ que depende de los primeros $N_0$ términos. Para $n$ suficientemente grande (digamos $n \ge N_1$ con $C/N_1 < \varepsilon/2$), esto es menor que $\varepsilon/2$.
+
+Para la segunda suma, cada término cumple $|a_k - L| < \varepsilon/2$, de modo que
+\[
+  \left| \frac1n \sum_{k=N_0}^{n-1} (a_k - L) \right|
+  \le \frac1n \sum_{k=N_0}^{n-1} |a_k - L| < \frac1n \cdot n \cdot \frac{\varepsilon}{2} = \frac{\varepsilon}{2} .
+\]
+Combinando ambas, para todo $n \ge \max(N_0, N_1)$:
+\[
+  |\sigma_n - L| \le \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon .
+\]
+Esto completa la demostración.
+
+\subsection{¡El recíproco es falso!}
+
+Fundamentalmente, el recíproco del teorema de Cesàro es falso: una sucesión puede converger en el sentido de Cesàro sin converger en el sentido usual. Aquí es donde surgió la confusión histórica.
+
+\subsection{La paradoja de la serie de Grandi}
+
+Consideremos la sucesión alternante $a_n = (-1)^n = (1,-1,1,-1,1,-1,\dots)$. ¿Converge esta sucesión? En el sentido moderno, ¡no! La sucesión oscila entre $1$ y $-1$ sin acercarse nunca a un único valor. Para cualquier límite propuesto $L$ y cualquier $\varepsilon < 1$, no podemos hallar un $N$ tal que todos los términos posteriores estén a distancia menor que $\varepsilon$ de $L$.
+
+Pero ¿qué sucede con su promedio de Cesàro? Calculemos:
+\begin{align*}
+  \sigma_1 &= 1\\
+  \sigma_2 &= \frac{1 + (-1)}{2} = 0\\
+  \sigma_3 &= \frac{1 + (-1) + 1}{3} = \frac13\\
+  \sigma_4 &= \frac{1 + (-1) + 1 + (-1)}{4} = 0\\
+  \sigma_5 &= \frac{1 + (-1) + 1 + (-1) + 1}{5} = \frac15
+\end{align*}
+En general, para $n = 2m$ par, $\sigma_n = 0$. Para $n = 2m+1$ impar, $\sigma_n = \frac{1}{2m+1}$.
+
+Por lo tanto, $\lim_{n\to\infty} \sigma_n = 0$. ¡El promedio de Cesàro converge a $0$!
+
+\subsection{La serie asociada: aún más confusión}
+
+Consideremos ahora la \emph{serie de Grandi}, la serie infinita asociada a esta sucesión:
+\[
+  \sum_{k=0}^{\infty} (-1)^k = 1 - 1 + 1 - 1 + 1 - 1 + \cdots
+\]
+Las sumas parciales son
+\[
+  S_n =
+  \begin{cases}
+    1 & \text{si } n \text{ es impar},\\
+    0 & \text{si } n \text{ es par}.
+  \end{cases}
+\]
+Esta serie no converge en el sentido usual: las sumas parciales oscilan entre $0$ y $1$.
+
+Pero ¿qué sucede con el promedio de Cesàro de las sumas parciales? Este es
+\[
+  \frac1n \sum_{k=1}^{n} S_k .
+\]
+Para $n = 2m$ grande y par:
+\[
+  \frac{1}{2m}(S_1 + S_2 + \cdots + S_{2m}) = \frac{1}{2m}(1 + 0 + 1 + 0 + \cdots + 1 + 0) = \frac{m}{2m} = \frac12 .
+\]
+Por lo tanto, la \emph{suma de Cesàro} de la serie de Grandi es $\frac12$.
+
+\subsection{La confusión histórica}
+
+Antes de que se fijara la definición moderna de convergencia, los matemáticos debatían preguntas como:
+
+\begin{quote}
+\emph{¿Converge la sucesión $(-1)^n$? Y si es así, ¿a qué valor?}
+\end{quote}
+
+Respuestas posibles:
+\begin{itemize}
+  \item \textbf{Respuesta 1:} No, no converge en absoluto: oscila para siempre.
+  \item \textbf{Respuesta 2:} Sí, converge a $0$ en el sentido de Cesàro.
+  \item \textbf{Respuesta 3:} La serie asociada tiene suma de Cesàro $\frac12$, así que quizá el ``valor promedio'' sea $\frac12$.
+\end{itemize}
+
+Y, de manera aún más confusa:
+
+\begin{quote}
+\emph{¿Cuál es el valor de $1 - 1 + 1 - 1 + 1 - 1 + \cdots$\,?}
+\end{quote}
+
+¡Distintos métodos daban respuestas distintas! Guido Grandi (1703) argumentó que debería ser igual a $\frac12$ escribiendo
+\[
+  (1-1) + (1-1) + (1-1) + \cdots = 0 + 0 + 0 + \cdots = 0
+\]
+pero también
+\[
+  1 + (-1+1) + (-1+1) + (-1+1) + \cdots = 1 + 0 + 0 + 0 + \cdots = 1 .
+\]
+¡Por lo tanto, ``promediando'', la suma es $\frac12$!
+
+Leibniz respaldó este razonamiento, argumentando que $\frac12$ representaba una especie de valor ``intermedio'' o de ``equilibrio''. Euler también aceptó que tales series podían tener valores, aunque era consciente de las paradojas.
+
+\subsection{La resolución: Cauchy y Weierstrass}
+
+La confusión fue finalmente resuelta en el siglo XIX por Augustin-Louis Cauchy (1821) y, más tarde y con mayor rigor, por Karl Weierstrass (décadas de 1850 y 1860). Ellos establecieron la definición moderna de convergencia con $\varepsilon$ y $N$:
+
+\begin{quote}
+Una sucesión $(a_n)$ \emph{converge} a $L$ si: para todo $\varepsilon > 0$ existe $N$ tal que para todo $n \ge N$, $|a_n - L| < \varepsilon$.
+\end{quote}
+
+Bajo esta definición:
+\begin{itemize}
+  \item La sucesión $(-1)^n$ no converge.
+  \item La serie $\sum (-1)^k$ no converge.
+  \item Todas las paradojas desaparecen: simplemente declaramos divergentes estas sucesiones y series.
+\end{itemize}
+
+Los promedios de Cesàro siguen siendo interesantes como \emph{método de sumabilidad} --una manera de asignar ``sumas generalizadas'' a ciertas series divergentes--, pero se distinguen claramente de la convergencia ordinaria.
+
+\subsection{Por qué ganó esta definición}
+
+La definición con $\varepsilon$ y $N$ se convirtió en el estándar por varias razones:
+
+\begin{enumerate}
+  \item \textbf{Consistencia:} Elimina las contradicciones. Ya no tenemos que decidir entre ``valores'' rivales para series divergentes.
+  \item \textbf{Propiedades algebraicas:} Si $a_n \to L$ y $b_n \to M$ (en el sentido $\varepsilon$-$N$), entonces
+  \begin{itemize}
+    \item $a_n + b_n \to L + M$,
+    \item $a_n \cdot b_n \to L \cdot M$,
+    \item si $M \ne 0$, entonces $a_n / b_n \to L/M$ (eventualmente).
+  \end{itemize}
+  Estas propiedades valen limpiamente para la convergencia $\varepsilon$-$N$, pero requieren hipótesis adicionales para la convergencia de Cesàro.
+  \item \textbf{Completitud:} La definición $\varepsilon$-$N$ encaja perfectamente con la completitud de $\R$. Una sucesión converge si y solo si es de Cauchy, lo que nos da herramientas poderosas para demostrar convergencia sin conocer de antemano el límite.
+  \item \textbf{El análisis funciona:} Límites de funciones continuas, derivadas, integrales: toda la maquinaria del análisis funciona sin problemas con esta definición.
+\end{enumerate}
+
+\subsection{Perspectiva moderna}
+
+Hoy vemos la situación con claridad:
+\begin{itemize}
+  \item La convergencia (en el sentido $\varepsilon$-$N$) es la noción fundamental.
+  \item La convergencia de Cesàro es una noción más débil: es un tipo de \emph{sumabilidad}.
+  \item Si una sucesión converge, converge en el sentido de Cesàro al mismo límite.
+  \item El recíproco es falso: la convergencia de Cesàro no implica convergencia.
+\end{itemize}
+
+La sumabilidad de Cesàro forma parte de una teoría más amplia de métodos de sumabilidad (sumación de Abel, sumación de Borel, etc.), usados en teoría analítica de números, análisis de Fourier y otros temas avanzados. Estos métodos pueden asignar ``valores generalizados'' a series divergentes de maneras útiles; por ejemplo, la sumación de Ramanujan $1 + 2 + 3 + 4 + \cdots = -\frac{1}{12}$ ¡aparece en la teoría de cuerdas!
+
+Pero para el análisis real básico, la definición estándar $\varepsilon$-$N$ reina por encima de todas, y agradecemos a Cauchy y Weierstrass por haber aclarado la confusión de épocas anteriores.
+
+\subsection{Una reflexión final: la importancia de las definiciones}
+
+Este episodio histórico nos enseña una lección profunda: las matemáticas progresan no solo demostrando teoremas, sino \emph{encontrando las definiciones correctas}.
+
+Antes de Cauchy, los matemáticos tenían intuiciones poderosas sobre límites y continuidad, pero carecían de definiciones precisas. Esto condujo a errores, paradojas y debates interminables. El logro de Cauchy no fue descubrir nuevos hechos sobre los límites, sino hallar la definición correcta que dejó todos los hechos claros.
+
+A medida que avances en matemáticas, encontrarás este patrón una y otra vez. A menudo, la parte más difícil de resolver un problema es descubrir qué pregunta estás haciendo realmente. Una vez que las definiciones son correctas, los teoremas suelen seguirse de manera natural.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

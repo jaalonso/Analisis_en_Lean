@@ -1,0 +1,469 @@
+\chapter{Los teoremas de reordenamiento}
+
+\section{Nivel 1: Un criterio de Cauchy más flexible}
+
+En este nivel reforzamos nuestra comprensión de la convergencia absoluta demostrando una versión más flexible del criterio de Cauchy. Será esencial para demostrar el Teorema del Reordenamiento.
+
+\subsection{El teorema}
+
+\begin{teorema}[StrongCauchy\_of\_AbsSeriesConv]
+Si una serie converge absolutamente, entonces para todo $\varepsilon > 0$ existe $N$ tal que, para todo conjunto finito $S \subseteq \N$ cuyos elementos superan todos a $N$, se cumple
+\[
+  \sum_{k \in S} |a_k| < \varepsilon .
+\]
+\end{teorema}
+
+Esto es más fuerte que el criterio de Cauchy usual, que solo considera intervalos consecutivos $[n, m)$.
+
+\subsection{Estrategia de la demostración}
+
+La idea clave es que, si la serie de valores absolutos es de Cauchy, entonces la cola de la serie se vuelve arbitrariamente pequeña. Como todos los elementos de $S$ están más allá de cierto punto $N$, la suma sobre $S$ está acotada por la suma sobre un intervalo mayor $[N, M)$, donde $M$ se elige lo bastante grande como para contener a todos los elementos de $S$.
+
+La demostración usa:
+\begin{itemize}
+  \item El criterio de Cauchy para la serie absolutamente convergente.
+  \item El hecho de que los conjuntos finitos están acotados, de modo que podemos hallar $M$ que contenga a todos los elementos de $S$.
+  \item La monotonía de las sumas de términos no negativos: si $S \subseteq T$, entonces $\sum_{k \in S} |a_k| \le \sum_{k \in T} |a_k|$.
+\end{itemize}
+
+\subsection{Nuevos teoremas}
+
+\begin{itemize}
+  \item \textbf{sum\_le\_sum\_of\_nonneg:} Si $S \subseteq T$ y $0 \le f(i)$ para todo $i \in T$, entonces
+  \[
+    \sum_{i \in S} f(i) \le \sum_{i \in T} f(i).
+  \]
+  \item \textbf{sum\_le\_mem\_of\_nonneg:} Si $x \in S$ y $0 \le f(i)$ para todo $i \in S$, entonces
+  \[
+    f(x) \le \sum_{i \in S} f(i).
+  \]
+  \item \textbf{mem\_Ico:} Para $a$ y $b$, se tiene $x \in [a, b) \leftrightarrow a \le x \wedge x < b$.
+\end{itemize}
+
+\subsection{La demostración formal}
+
+\begin{minted}{lean4}
+Statement StrongCauchy_of_AbsSeriesConv
+    {a : ℕ → ℝ} (ha : AbsSeriesConv a) {ε : ℝ} (hε : ε > 0) :
+    ∃ N, ∀ (S : Finset ℕ), (∀ k ∈ S, k ≥ N) →
+    ∑ k ∈ S, |a k| < ε := by
+  choose M hM using IsCauchy_of_SeqConv ha ε hε
+  use M
+  intro S hS
+  let sMax := 1 + ∑ k ∈ S, k
+  have sMaxIs : sMax = 1 + ∑ k ∈ S, k := by rfl
+  have kInS : ∀ k ∈ S, k < sMax := by
+    intro n hn
+    have f : id n ≤ ∑ k ∈ S, id k := by
+      apply sum_le_mem_of_nonneg hn (by intro; bound)
+    change n ≤ ∑ k ∈ S, k at f
+    linarith [f, sMaxIs]
+  by_cases hSne : S.Nonempty
+  choose k0 hk0 using hSne
+  have hk0' : M ≤ k0 := by apply hS k0 hk0
+  have hk0'' : k0 ≤ sMax := by linarith [kInS k0 hk0]
+  have sMaxBnd : M ≤ sMax := by linarith [hk0', hk0'']
+  specialize hM M (by bound) sMax (by bound)
+  rewrite [show Series (fun n ↦ |a n|) sMax -
+    Series (fun n ↦ |a n|) M =
+    ∑ n ∈ Ico M sMax, (|a n|) by
+      apply DiffOfSeries _ sMaxBnd] at hM
+  have f0 : 0 ≤ ∑ k ∈ S, |a k| := by
+    apply sum_nonneg; intro n hn; bound
+  have hM0 : 0 ≤ ∑ k ∈ Ico M sMax, |a k| := by
+    apply sum_nonneg; intro k hk; bound
+  rewrite [show |∑ k ∈ Ico M sMax, (|a k|)| =
+    ∑ k ∈ Ico M sMax, |a k| by
+      apply abs_of_nonneg hM0] at hM
+  have Ssub : S ⊆ Ico M sMax := by
+    intro k hk
+    rewrite [mem_Ico]
+    split_ands
+    apply hS k hk
+    linarith [kInS k hk]
+  have f2 : ∑ k ∈ S, |a k| ≤ ∑ k ∈ Ico M sMax, |a k| := by
+    apply sum_le_sum_of_nonneg Ssub
+    intro k hk
+    bound
+  linarith [f2, hM]
+  norm_num at hSne
+  rewrite [hSne]
+  norm_num
+  apply hε
+\end{minted}
+
+\subsection{Comprensión de la demostración}
+
+\textbf{Paso 1:} Usar el criterio de Cauchy para la serie absolutamente convergente para obtener $M$.
+
+\textbf{Paso 2:} Definir $\mathrm{sMax} = 1 + \sum_{k \in S} k$ como una cota superior para todos los elementos de $S$.
+
+\textbf{Paso 3:} Mostrar que todo elemento $k \in S$ satisface $M \le k < \mathrm{sMax}$, de modo que $S \subseteq [M, \mathrm{sMax})$.
+
+\textbf{Paso 4:} Por el criterio de Cauchy, $\sum_{k \in [M, \mathrm{sMax})} |a_k| < \varepsilon$.
+
+\textbf{Paso 5:} Como $S \subseteq [M, \mathrm{sMax})$ y todos los términos son no negativos, por \texttt{sum\_le\_sum\_of\_nonneg}:
+\[
+  \sum_{k \in S} |a_k| \le \sum_{k \in [M, \mathrm{sMax})} |a_k| < \varepsilon .
+\]
+
+\textbf{Paso 6:} Tratar el caso extremo en que $S$ es vacío (entonces la suma es $0 < \varepsilon$).
+
+\subsection{Por qué es importante}
+
+Este teorema es crucial para entender los reordenamientos. Nos dice que, para una serie absolutamente convergente, no solo los términos consecutivos, sino \emph{cualquier colección} de términos de índices suficientemente grandes tiene suma arbitrariamente pequeña. Esto es lo que nos permite reordenar los términos sin afectar la convergencia.
+
+%==========================================================
+\section{Nivel 2: Reordenamientos}
+
+En este nivel introducimos el concepto de reordenamiento y demostramos un lema técnico clave sobre cómo los reordenamientos terminan por cubrir todos los términos.
+
+\subsection{Nuevas definiciones}
+
+\begin{definicion}[Inyectiva]
+Una función $f : X \to Y$ se llama \emph{inyectiva} (o \emph{uno a uno}) si, para todos $i, j$, se cumple $f(i) = f(j) \Rightarrow i = j$.
+\end{definicion}
+
+\begin{definicion}[Sobreyectiva]
+Una función $f : X \to Y$ se llama \emph{sobreyectiva} (o \emph{sobre}) si, para todo $y \in Y$, existe $x \in X$ tal que $f(x) = y$.
+\end{definicion}
+
+\begin{definicion}[Reordenamiento]
+Una función $\sigma : \N \to \N$ se llama \emph{reordenamiento} si es a la vez inyectiva y sobreyectiva (es decir, una biyección).
+\end{definicion}
+
+\begin{minted}{lean4}
+def Rearrangement (σ : ℕ → ℕ) : Prop := Injective σ ∧ Surjective σ
+\end{minted}
+
+Un reordenamiento $\sigma$ permuta los números naturales: nos da un nuevo orden de $\N$. Para una sucesión $a$, la sucesión reordenada $a \circ \sigma$ se define por $(a \circ \sigma)(n) = a(\sigma(n))$.
+
+\subsection{El teorema}
+
+\begin{teorema}[EventuallyCovers\_of\_Rearrangement]
+Si $\sigma$ es un reordenamiento, entonces para todo $M \in \N$ existe $N$ tal que, para todo $n \ge N$, la imagen de $\sigma$ sobre $\{0, 1, \dots, n-1\}$ contiene a $\{0, 1, \dots, M-1\}$.
+\end{teorema}
+
+En otras palabras:
+\[
+  \rango(M) \subseteq \sigma(\rango(n)) \quad \text{para todo } n \ge N .
+\]
+
+\subsection{Estrategia de la demostración}
+
+Como $\sigma$ es sobreyectiva, todo elemento $j < M$ aparece como $\sigma(k_j)$ para algún $k_j$. Sea $N$ mayor que todos esos valores $k_j$. Entonces, para todo $n \ge N$, todas las preimágenes requeridas están en $\rango(n)$, de modo que sus imágenes cubren $\rango(M)$.
+
+La demostración usa el axioma de elección (mediante \texttt{choose}) para seleccionar las preimágenes simultáneamente.
+
+\subsection{La demostración formal}
+
+\begin{minted}{lean4}
+Statement EventuallyCovers_of_Rearrangement
+    {σ : ℕ → ℕ} (hσ : Rearrangement σ) (M : ℕ) :
+    ∃ N, ∀ n ≥ N, (range M) ⊆ image σ (range n) := by
+  have surj : ∀ j, ∃ n, σ n = j := hσ.2
+  choose τ hτ using surj
+  let N := 1 + ∑ k ∈ range M, τ k
+  have hN : N = 1 + ∑ k ∈ range M, τ k := by rfl
+  use N
+  intro n hn m hm
+  rewrite [mem_image]
+  use τ m
+  split_ands
+  rewrite [mem_range]
+  have hτ' : ∀ k ∈ range M, 0 ≤ τ k := by
+    intro k hk; bound
+  have f : τ m ≤ ∑ k ∈ range M, τ k := by
+    apply sum_le_mem_of_nonneg hm hτ'
+  linarith [f, hN, hn]
+  apply hτ m
+\end{minted}
+
+\subsection{Comprensión de la demostración}
+
+\textbf{Paso 1:} Como $\sigma$ es sobreyectiva, para cada $j$ existe $n$ tal que $\sigma(n) = j$. Usamos \texttt{choose} para obtener una función inversa por la derecha $\tau$ tal que $\sigma(\tau(j)) = j$ para todo $j$.
+
+\textbf{Paso 2:} Definimos $N = 1 + \sum_{k=0}^{M-1} \tau(k)$. Es mayor que todas las preimágenes $\tau(0), \tau(1), \dots, \tau(M-1)$.
+
+\textbf{Paso 3:} Para todo $n \ge N$ y todo $m < M$, tenemos $\tau(m) < N \le n$, de modo que $\tau(m) \in \rango(n)$.
+
+\textbf{Paso 4:} Como $\sigma(\tau(m)) = m$, se tiene $m \in \sigma(\rango(n))$.
+
+Por lo tanto, $\rango(M) \subseteq \sigma(\rango(n))$.
+
+\subsection{Intuición}
+
+Este teorema dice que un reordenamiento debe ``alcanzar eventualmente'' al orden original. Aunque $\sigma$ pueda desordenar drásticamente el orden al principio, si avanzamos lo suficiente (más allá de $N$), tenemos garantizado haber visto todos los primeros $M$ elementos.
+
+Esto es esencial para demostrar que las series reordenadas se comportan bien: necesitamos saber que, con el tiempo, capturamos todos los términos iniciales.
+
+%==========================================================
+\section{Nivel 3 -- Jefe final: El Teorema del Reordenamiento}
+
+Este es el punto culminante de nuestro estudio: ¡si una serie converge absolutamente, entonces cualquier reordenamiento de sus términos converge a la misma suma!
+
+\subsection{El teorema fundamental}
+
+\begin{teorema}[RearrangementThm]
+Si una serie $\sum a_n$ converge absolutamente, entonces para todo reordenamiento $\sigma : \N \to \N$, la serie reordenada $\sum a_{\sigma(n)}$ converge al mismo límite.
+\end{teorema}
+
+En símbolos: si \texttt{AbsSeriesConv a} y $\sigma$ es un \texttt{Rearrangement}, entonces existe $L$ tal que se cumplen \texttt{SeriesLim a L} y \texttt{SeriesLim (a ∘ σ) L}.
+
+\subsection{El significado profundo}
+
+Este teorema revela una verdad profunda sobre la suma infinita:
+
+\begin{quote}
+\textbf{La suma infinita es conmutativa si (y solo si, como mostraremos a continuación) la serie es absolutamente convergente.}
+\end{quote}
+
+Para las series absolutamente convergentes podemos reordenar los términos como queramos: la suma permanece inalterada. Esto es lo que esperamos de la suma finita, y la convergencia absoluta es precisamente lo que se necesita para extender esta propiedad a las sumas infinitas.
+
+\subsection{Nuevos teoremas}
+
+\begin{itemize}
+  \item \textbf{Series\_image:} Para una función inyectiva $\sigma$,
+  \[
+    \Series(a \circ \sigma, n) = \sum_{k \in \sigma(\rango(n))} a_k .
+  \]
+  \item \textbf{sum\_sdiff:} Si $S_1 \subseteq S_2$, entonces
+  \[
+    \sum_{x \in S_2 \setminus S_1} f(x) + \sum_{x \in S_1} f(x) = \sum_{x \in S_2} f(x).
+  \]
+  \item \textbf{abs\_sum\_le\_sum\_abs:} Desigualdad triangular para sumas finitas:
+  \[
+    \left| \sum_{x \in S} f(x) \right| \le \sum_{x \in S} |f(x)| .
+  \]
+\end{itemize}
+
+\subsection{Estrategia de la demostración}
+
+Sea $L$ el límite de la serie original $\sum a_n$. Debemos mostrar que $\sum a_{\sigma(n)} \to L$ también.
+
+Dado $\varepsilon > 0$:
+\begin{enumerate}
+  \item Usamos la propiedad de Cauchy fuerte (que acabamos de demostrar en el Nivel~1) para obtener $N_1$ tal que, para todo conjunto $S$ con elementos $\ge N_1$, se cumple $\sum_{k \in S} |a_k| < \varepsilon/2$.
+  \item Usamos la convergencia de $\sum a_n$ a $L$ para obtener $N_2$ tal que $|\Series(a, n) - L| < \varepsilon/2$ para $n \ge N_2$.
+  \item Usamos \texttt{EventuallyCovers\_of\_Rearrangement} (del Nivel~2) para obtener $N_3$ tal que, para $n \ge N_3$, se cumple $\rango(N_1 + N_2) \subseteq \sigma(\rango(n))$.
+  \item Para $n \ge N_1 + N_2 + N_3 + 1$, escribimos
+  \[
+    \Series(a \circ \sigma, n) - L = [\Series(a \circ \sigma, n) - \Series(a, N_1 + N_2)] + [\Series(a, N_1 + N_2) - L] .
+  \]
+  \item El segundo término es $< \varepsilon/2$ por el paso~1.
+  \item Para el primer término, usamos \texttt{Series\_image} para reescribirlo como una suma sobre $\sigma(\rango(n)) \setminus \rango(N_1 + N_2)$.
+  \item Por el paso~3, los elementos de esta diferencia de conjuntos son todos $\ge N_1 + N_2$.
+  \item Por la propiedad de Cauchy fuerte (paso~2), esta suma es $< \varepsilon/2$.
+  \item Por lo tanto, $|\Series(a \circ \sigma, n) - L| < \varepsilon$.
+\end{enumerate}
+
+\subsection{La demostración formal}
+
+\begin{minted}{lean4}
+Statement RearrangementThm {a : ℕ → ℝ} (ha : AbsSeriesConv a)
+    {σ : ℕ → ℕ} (hσ : Rearrangement σ) :
+    ∃ L, SeriesLim a L ∧ SeriesLim (a ∘ σ) L := by
+  choose L hL using Conv_of_AbsSeriesConv ha
+  use L
+  split_ands
+  apply hL
+  intro ε hε
+  apply IsCauchy_of_SeqConv at ha
+  choose N1 hN1 using ha (ε / 2) (by bound)
+  choose N2 hN2 using hL (ε / 2) (by bound)
+  choose N3 hN3 using EventuallyCovers_of_Rearrangement
+    hσ (N1 + N2)
+  use N1 + N2 + N3 + 1
+  intro n hn
+  specialize hN2 (N1 + N2) (by bound)
+  specialize hN1 (N1 + N2) (by bound)
+  rewrite [show Series (a ∘ σ) n - L =
+    (Series (a ∘ σ) n - Series a (N1 + N2)) +
+    (Series a (N1 + N2) - L) by ring_nf]
+  have f1 : |Series (a ∘ σ) n - Series a (N1 + N2) +
+      (Series a (N1 + N2) - L)|
+      ≤ |Series (a ∘ σ) n - Series a (N1 + N2)| +
+      |(Series a (N1 + N2) - L)| := by
+    apply abs_add
+  have f2 : |Series (a ∘ σ) n - Series a (N1 + N2)| =
+      |∑ k ∈ image σ (range n) \ range (N1 + N2), a k| := by
+    have f : Series (a ∘ σ) n = ∑ k ∈ image σ (range n), a k :=
+      Series_image a σ hσ.1 n
+    rewrite [f]
+    change |(∑ k ∈ image σ (range n), a k) -
+      (∑ k ∈ range (N1 + N2), a k)| =
+      |(∑ k ∈ image σ (range n) \ range (N1 + N2), a k)|
+    rewrite [← Finset.sum_sdiff (hN3 n (by bound))]
+    ring_nf
+  have f3 : |∑ k ∈ image σ (range n) \ range (N1 + N2), a k|
+      ≤ ∑ k ∈ image σ (range n) \ range (N1 + N2), |a k| := by
+    apply abs_sum_le_sum_abs
+  let M := N1 + N2 + 1 + ∑ k ∈ range n, σ k
+  have Mis : M = N1 + N2 + 1 + ∑ k ∈ range n, σ k := by
+    rfl
+  have Mbnd : ∀ k ∈ range n, σ k < M := by
+    intro k hk
+    rewrite [Mis]
+    have f : σ k ≤ ∑ j ∈ range n, σ j := by
+      apply sum_le_mem_of_nonneg hk; intro i hi; bound
+    linarith [f]
+  have f4 : ∑ k ∈ image σ (range n) \ range (N1 + N2), |a k| ≤
+      ∑ k ∈ Ico (N1 + N2) M, |a k| := by
+    apply sum_le_sum_of_nonneg
+    intro i hi
+    rewrite [mem_Ico]
+    rewrite [mem_sdiff] at hi
+    rewrite [mem_range] at hi
+    rewrite [mem_image] at hi
+    have hi2 : N1 + N2 ≤ i := by bound
+    split_ands
+    apply hi2
+    have hi1 : ∃ a ∈ range n, σ a = i := by apply hi.1
+    choose a ha using hi1
+    rewrite [← ha.2]
+    apply Mbnd a ha.1
+    intro i hi;
+    bound
+  have sNonneg : 0 ≤ ∑ k ∈ range n, σ k := by
+    apply sum_nonneg
+    intro i hi
+    bound
+  have Mbnd : N1 + N2 ≤ M := by
+    rewrite [Mis]; linarith [sNonneg]
+  specialize hN1 M Mbnd
+  rewrite [DiffOfSeries _ Mbnd] at hN1
+  have f5 : ∑ k ∈ Ico (N1 + N2) M, |a k| ≤
+      |∑ k ∈ Ico (N1 + N2) M, (|a k|)| := by
+    bound
+  linarith [f1, hN2, f2, f3, f4, f5, hN1, hN3]
+\end{minted}
+
+\subsection{Comprensión de la demostración}
+
+La demostración es intrincada, pero sigue la estrategia descrita arriba. Los pasos clave son:
+
+\textbf{Pasos 1--3:} Obtener tres umbrales $N_1$, $N_2$, $N_3$ a partir de las tres propiedades clave (Cauchy fuerte, convergencia, cobertura eventual).
+
+\textbf{Pasos 4--5:} Descomponer la diferencia $\Series(a \circ \sigma, n) - L$ en dos partes y aplicar la desigualdad triangular.
+
+\textbf{Pasos 6--8:} Usar \texttt{Series\_image} y \texttt{sum\_sdiff} para reescribir la primera parte como una suma sobre los elementos que aún no han sido ``cubiertos'' por el reordenamiento.
+
+\textbf{Pasos 9--12:} Mostrar que este conjunto no cubierto consiste únicamente en índices grandes y luego aplicar la propiedad de Cauchy fuerte para acotarlo.
+
+\textbf{Paso 13:} Combinar todas las desigualdades con \texttt{linarith} para obtener $|\Series(a \circ \sigma, n) - L| < \varepsilon$.
+
+\subsection{Nota histórica}
+
+Este teorema era conocido por Augustin-Louis Cauchy y Niels Henrik Abel en la década de 1820, aunque matemáticos anteriores como Dirichlet habían trabajado con ideas similares. Es una piedra angular del análisis riguroso y marca una distinción nítida entre las operaciones finitas y las infinitas.
+
+La demostración es intrincada pero hermosa, y combina toda la maquinaria que hemos desarrollado: sucesiones de Cauchy, convergencia absoluta, la propiedad de Cauchy fuerte y la propiedad de cobertura de los reordenamientos.
+
+%==========================================================
+\section{Nivel 4 -- Jefe aún mayor: El teorema de la convergencia condicional}
+
+Llegamos ahora a uno de los resultados más sorprendentes y dramáticos de todo el análisis real: el Teorema del Reordenamiento de Riemann.
+
+\subsection{El teorema impactante}
+
+\begin{teorema}[Teorema del Reordenamiento de Riemann]
+Si una serie $\sum a_n$ converge pero no converge absolutamente (es decir, es \emph{condicionalmente convergente}), entonces para todo número real $L$ existe un reordenamiento $\sigma$ tal que la serie reordenada $\sum a_{\sigma(n)}$ converge a $L$.
+\end{teorema}
+
+De hecho (aunque no demostraremos esta parte), también existen reordenamientos que divergen a $+\infty$, que divergen a $-\infty$, o que oscilan sin converger en absoluto.
+
+\subsection{Enunciado}
+
+\begin{minted}{lean4}
+Statement {a : ℕ → ℝ} (ha1 : SeriesConv a)
+    (ha2 : ¬ AbsSeriesConv a) :
+    ∀ L, ∃ (σ : ℕ → ℕ) (hσ : Rearrangement σ),
+    SeriesLim (a ∘ σ) L := by
+  sorry
+\end{minted}
+
+\subsection{Qué significa}
+
+Este teorema nos dice algo profundo:
+
+\begin{quote}
+\textbf{Si una serie es solo condicionalmente convergente, entonces la suma infinita es tan no conmutativa como es posible.}
+\end{quote}
+
+Reordenando hábilmente los términos, podemos hacer que la serie converja literalmente al valor que queramos. La suma que obtenemos depende por completo del orden en que sumemos los términos.
+
+\subsection{Un ejemplo concreto}
+
+Consideremos la serie armónica alternante:
+\[
+  S = 1 - \frac12 + \frac13 - \frac14 + \frac15 - \frac16 + \cdots = \ln 2 .
+\]
+Esta serie converge a $\ln 2 \approx 0{,}693$, pero no converge absolutamente (pues la serie armónica diverge).
+
+Por el teorema de Riemann, podemos reordenar sus términos para que converja a:
+\begin{itemize}
+  \item $\pi$ (o cualquier otro número positivo),
+  \item $0$ (o cualquier número negativo),
+  \item $1\,000\,000$ (o cualquier número enorme),
+  \item $-1/137$ (o cualquier objetivo específico).
+\end{itemize}
+
+\textbf{Ejemplo de construcción para obtener $\pi/4$:} Tomemos dos términos positivos y luego uno negativo:
+\[
+  1 + \frac13 - \frac12 + \frac15 + \frac17 - \frac14 + \frac19 + \frac1{11} - \frac16 + \cdots
+\]
+Con el patrón adecuado de términos positivos y negativos, este reordenamiento converge a $\pi/4$.
+
+\subsection{Esbozo de la demostración}
+
+La demostración (que dejamos como \texttt{sorry}) usa un algoritmo voraz. Para hacer que la serie converja a $L$:
+\begin{enumerate}
+  \item Separar los términos positivos y negativos: $P = \{a_n : a_n > 0\}$ y $N = \{a_n : a_n < 0\}$.
+  \item Como la serie converge, $a_n \to 0$, así que tanto los términos positivos como los negativos tienden a cero.
+  \item Como la serie no converge absolutamente, tanto $\sum P$ como $\sum N$ divergen (¡esto requiere demostración!).
+  \item Sumar términos positivos hasta que la suma parcial supere justo a $L$.
+  \item Sumar términos negativos hasta que la suma parcial caiga justo por debajo de $L$.
+  \item Repetir: alternar términos positivos y negativos para mantenerse cerca de $L$.
+  \item Como los términos tienden a cero, las oscilaciones se hacen arbitrariamente pequeñas y la serie converge a $L$.
+\end{enumerate}
+La demostración formal requiere una contabilidad cuidadosa para definir el reordenamiento $\sigma$ y mostrar que tiene las propiedades deseadas.
+
+Para hacer que una serie condicionalmente convergente $\sum a_n$ diverja a $+\infty$ mediante un reordenamiento, notemos que no podemos simplemente tomar todos los términos positivos e ignorar los negativos: eso no sería un reordenamiento en absoluto, pues un reordenamiento debe incluir cada término de la serie original exactamente una vez. En cambio, usa tu algoritmo voraz favorito, que intercale cuidadosamente términos positivos y negativos. Por ejemplo, comienza sumando términos positivos $a_{p_1}, a_{p_2}, a_{p_3}, \dots$ hasta que la suma parcial supere $1$. Luego suma justo los términos negativos $a_{n_1}, a_{n_2}, \dots$ necesarios para bajar la suma, digamos, hasta $0$. A continuación, suma términos positivos hasta que la suma supere $2$ y luego suma términos negativos para mantener la suma por encima de $1$. Continúa con este patrón: suma términos positivos hasta que la suma supere $k$, y luego suma términos negativos para mantenerla por encima de $k-1$. Como tanto la serie positiva como la negativa divergen (una propiedad clave de la convergencia condicional), nunca nos quedamos sin términos de ningún signo. Además, como $a_n \to 0$, cada ``corrección'' con términos negativos requiere solo finitos términos, y podemos asegurar que cada término aparezca exactamente una vez en este reordenamiento. Las sumas parciales forman un patrón de diente de sierra que asciende de manera constante, con la cota inferior aumentando en $1$ en cada etapa, lo que garantiza la divergencia a $+\infty$. Al intercalar estratégicamente los términos negativos, cumplimos el requisito de que todos los términos aparezcan y, aun así, logramos la divergencia.
+
+\subsection{Por qué ambas series divergen}
+
+\textbf{Lema clave (no demostrado aquí):} Si $\sum a_n$ converge pero $\sum |a_n|$ diverge, entonces tanto la serie de los términos positivos como la de los términos negativos deben divergir.
+
+\emph{Idea de la demostración:} Si $\sum a_n^+ < \infty$ (donde $a_n^+ = \max(a_n, 0)$), entonces, como $a_n^- = a_n^+ - a_n$ y $\sum a_n < \infty$, tendríamos $\sum a_n^- < \infty$; por lo tanto $\sum |a_n| = \sum (a_n^+ + a_n^-) < \infty$, una contradicción.
+
+\subsection{Implicaciones filosóficas}
+
+Este teorema revela una diferencia fundamental entre:
+\begin{itemize}
+  \item \textbf{Series absolutamente convergentes:} Se comportan como sumas finitas: los reordenamientos no importan.
+  \item \textbf{Series condicionalmente convergentes:} Equilibrios delicados donde el orden importa: los reordenamientos lo cambian todo.
+\end{itemize}
+Es un poderoso recordatorio de que las intuiciones de las matemáticas finitas no siempre se extienden al reino de lo infinito. ¡Las series infinitas son más sutiles de lo que parecen!
+
+\subsection{Nota histórica}
+
+Este teorema fue descubierto por Bernhard Riemann en 1854, durante su Habilitación en la Universidad de Gotinga. Formó parte de su trabajo pionero sobre las series trigonométricas y contribuyó a establecer los estándares modernos de rigor en el análisis.
+
+El resultado conmocionó a la comunidad matemática y demostró que la convergencia por sí sola no basta: \emph{cómo} converge una serie (absoluta o condicionalmente) afecta profundamente sus propiedades.
+
+Peter Gustav Lejeune Dirichlet ya había observado casos particulares, pero Riemann dio el teorema general completo. La demostración fue una de las muchas contribuciones de la disertación de Riemann que revolucionaron el análisis.
+
+\subsection{Conclusión}
+
+Con este teorema hemos llegado al pináculo de nuestro estudio de las sucesiones y las series (antes de pasar a las funciones). Hemos visto que:
+\begin{itemize}
+  \item Convergencia absoluta $\Rightarrow$ invariancia bajo reordenamientos (Nivel~3).
+  \item Convergencia condicional $\Rightarrow$ caos total bajo reordenamientos (Nivel~4).
+\end{itemize}
+Estos dos teoremas juntos nos dan una dicotomía completa: una serie tiene suma invariante bajo reordenamientos (convergencia absoluta) o su suma puede ser lo que queramos (convergencia condicional). ¡No hay término medio!
+
+Este es uno de los resultados más profundos y hermosos del análisis real, pues revela la profunda diferencia entre la convergencia absoluta y la condicional.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:

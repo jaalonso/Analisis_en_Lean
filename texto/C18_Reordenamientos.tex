@@ -1,0 +1,322 @@
+\chapter{Reordenamientos}
+
+%==========================================================
+\section*{Diálogo introductorio}
+
+\noindent\textbf{SIMPLICIO:} ¿Reordenar los términos de una serie cambia su suma?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Excelente pregunta! Así me gusta ilustrar esta idea (que aprendí de los libros de Walter Rudin). Imagina una matriz enorme, $M$, infinita en ambas direcciones: hacia la derecha y hacia abajo. Es triangular superior, tiene $-1$ en la diagonal, y en la posición $(i,j)$ con $i<j$ su entrada es $1/2^{\,j-i+1}$. Así que $M$ se ve así:
+\[
+M =
+\begin{pmatrix}
+-1 & 1/2 & 1/4 & 1/8 & 1/16 & \cdots\\
+0 & -1 & 1/2 & 1/4 & 1/8 & \cdots\\
+0 & 0 & -1 & 1/2 & 1/4 & \cdots\\
+0 & 0 & 0 & -1 & 1/2 & \cdots\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots
+\end{pmatrix}
+\]
+¿Cuál es la suma de los elementos de $M$?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Bien, veamos si lo resolvemos. Mmm, esto no es tan difícil: sumaré las filas y luego sumaré esos resultados.
+
+La primera fila suma $-1 + 1/2 + 1/4 + 1/8 + \cdots = 0$.
+
+La segunda fila suma $0 + (-1) + 1/2 + 1/4 + \cdots = 0$ también.
+
+De hecho, es obvio que toda fila suma $0$. Así que la suma de todos los elementos de $M$ es $0$.
+
+\medskip
+\noindent\textbf{SÓCRATES:} Muy bien. ¿Cuál será mi siguiente pregunta?
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Apuesto a que me vas a pedir que sume las columnas en lugar de las filas\dots{}
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Apuestas bien! :)
+
+\medskip
+\noindent\textbf{SIMPLICIO:} Está bien, hagámoslo. La primera columna suma $-1 + 0 + 0 + 0 + \cdots = -1$.
+
+La segunda columna suma $1/2 + (-1) + 0 + 0 + \cdots = -1/2$.
+
+La tercera columna suma $1/4 + 1/2 + (-1) + 0 + \cdots = -1/4$.
+
+Bien, veo el patrón. La $n$-ésima columna suma $-1/2^{n-1}$. Así que la suma de todos los elementos de $M$ es $-1 - 1/2 - 1/4 - 1/8 - \cdots = -2$.
+
+Uy, uy. Entonces, ¿cuál es la suma?
+
+\medskip
+\noindent\textbf{SÓCRATES:} ¡Precisamente ese es el punto! No existe ``la suma'', porque ¡depende del orden en que sumes los términos!
+
+\textbf{¡La suma infinita no es conmutativa!}
+
+Gran parte del análisis está dedicada al estudio de este problema. Una sucesión se llama ``condicionalmente convergente'' si converge, pero no al sumar los valores absolutos. Es decir, la matriz $|M|$ se vería así:
+\[
+|M| =
+\begin{pmatrix}
+1 & 1/2 & 1/4 & 1/8 & 1/16 & \cdots\\
+0 & 1 & 1/2 & 1/4 & 1/8 & \cdots\\
+0 & 0 & 1 & 1/2 & 1/4 & \cdots\\
+0 & 0 & 0 & 1 & 1/2 & \cdots\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots
+\end{pmatrix}
+\]
+y esperemos que quede claro (¡solo con la diagonal!) que la suma de todos sus elementos diverge (a infinito).
+
+Gente como Euler y Ramanujan eran verdaderos magos con las series divergentes, y obtenían de ellas todo tipo de resultados extraños, como $1 + 2 + 3 + 4 + \cdots$ `$=$' $-1/12$. Como supuestamente dijo el gran Oliver Heaviside: ``Esta serie es divergente, ¡por lo tanto podemos ser capaces de hacer algo con ella!''
+
+\medskip
+\noindent\textbf{SIMPLICIO:} ¡Me gusta! Vamos allá.
+
+%==========================================================
+\section{Nivel 1: La convergencia absoluta implica la convergencia}
+
+En este nivel introducimos el importante concepto de convergencia absoluta y demostramos que implica la convergencia ordinaria.
+
+\subsection{Nueva definición: AbsSeriesConv}
+
+Se dice que una serie $\Series a$ \emph{converge absolutamente} (\texttt{AbsSeriesConv}) si la serie de valores absolutos \texttt{Series (fun n ↦ |a n|)} converge.
+
+\begin{minted}{lean4}
+def AbsSeriesConv (a : ℕ → ℝ) : Prop :=
+  SeriesConv (fun n ↦ |a n|)
+\end{minted}
+
+\subsection{El teorema}
+
+\begin{teorema}[Conv\_of\_AbsSeriesConv]
+Si \texttt{Series (fun n ↦ |a n|)} converge, entonces \texttt{Series a} converge.
+\end{teorema}
+
+En otras palabras: la convergencia absoluta implica la convergencia.
+
+\subsection{Estrategia de la demostración}
+
+La idea clave es que, si la serie de valores absolutos converge, entonces es de Cauchy, lo que significa que las colas de la serie se hacen arbitrariamente pequeñas. Por la desigualdad triangular, si $\sum |a_k|$ es pequeña, entonces $\left|\sum a_k\right|$ también lo es.
+
+Para hacerlo riguroso usamos dos lemas auxiliares (que se demostrarán como tarea):
+\begin{itemize}
+  \item \textbf{DiffOfSeries:} Para $n \le m$, la diferencia de sumas parciales es igual a la suma sobre el intervalo:
+  \[
+    \Series(a, m) - \Series(a, n) = \sum_{k \in [n,m)} a(k).
+  \]
+  \item \textbf{Series\_abs\_add:} Para $n \le m$ se cumple la desigualdad triangular:
+  \[
+    \left| \sum_{k \in [n,m)} a(k) \right| \le \sum_{k \in [n,m)} |a(k)| .
+  \]
+\end{itemize}
+
+\subsection{La demostración formal}
+
+\begin{proof}
+Debemos mostrar que \texttt{Series a} converge. Por \texttt{SeqConv\_of\_IsCauchy}, basta probar que \texttt{Series a} es de Cauchy.
+
+Sea $\varepsilon > 0$. Como \texttt{Series (fun n ↦ |a n|)} converge, es de Cauchy por \texttt{IsCauchyOfSeqConv}. Usando \texttt{choose}, extraemos $N$ tal que, para todo $n \ge N$ y $m \ge n$,
+\[
+  |\Series(|a|, m) - \Series(|a|, n)| < \varepsilon .
+\]
+Usamos el mismo $N$ para la serie de $a$. Consideremos $n \ge N$ y $m \ge n$. Por \texttt{DiffOfSeries}, reescribimos
+\[
+  \Series(a, m) - \Series(a, n) = \sum_{k \in [n,m)} a(k)
+\]
+y, de manera similar, para la serie de valores absolutos,
+\[
+  \Series(|a|, m) - \Series(|a|, n) = \sum_{k \in [n,m)} |a(k)| .
+\]
+Ahora encadenamos las desigualdades. Por \texttt{Series\_abs\_add},
+\[
+  \left| \sum_{k \in [n,m)} a(k) \right| \le \sum_{k \in [n,m)} |a(k)| .
+\]
+Por la táctica \texttt{bound} (pues todo número real está acotado por su valor absoluto),
+\[
+  \sum_{k \in [n,m)} |a(k)| \le \left| \sum_{k \in [n,m)} |a(k)| \right| .
+\]
+Combinando estas con nuestra hipótesis sobre la convergencia de la serie de valores absolutos:
+\[
+  \left| \sum_{k \in [n,m)} a(k) \right| \le \sum_{k \in [n,m)} |a(k)| \le \left| \sum_{k \in [n,m)} |a(k)| \right| < \varepsilon .
+\]
+Por lo tanto, $|\Series(a, m) - \Series(a, n)| < \varepsilon$, lo que completa la demostración mediante \texttt{linarith}.
+\end{proof}
+
+\subsection{La demostración en Lean}
+
+\begin{minted}{lean4}
+Statement Conv_of_AbsSeriesConv {a : ℕ → ℝ}
+    (ha : AbsSeriesConv a) : SeriesConv a := by
+  apply SeqConv_of_IsCauchy
+  intro ε hε
+  apply IsCauchyOfSeqConv at ha
+  choose N hN using ha ε hε
+  use N
+  intro n hn m hnm
+  rewrite [DiffOfSeries _ hnm]
+  specialize hN n hn m hnm
+  rewrite [DiffOfSeries _ hnm] at hN
+  have f1 : |∑ k ∈ Ico n m, a k| ≤ ∑ k ∈ Ico n m, |a k|
+  := by
+    apply Series_abs_add _ hnm
+  have f2 : ∑ k ∈ Ico n m, |a k| ≤ |∑ k ∈ Ico n m, (|a k|)|
+  := by
+    bound
+  linarith [f1, f2, hN]
+\end{minted}
+
+\subsection{Comprensión del teorema}
+
+Este teorema nos dice que la convergencia absoluta es una condición más fuerte que la convergencia ordinaria. Algunos ejemplos importantes:
+\begin{itemize}
+  \item La serie geométrica $\sum_{k=0}^{\infty} r^k$ converge absolutamente cuando $|r| < 1$.
+  \item La serie $\sum_{k=1}^{\infty} \frac{1}{k^2}$ converge absolutamente.
+  \item La serie armónica alternante $\sum_{k=1}^{\infty} \frac{(-1)^{k+1}}{k}$ converge, pero no absolutamente (es \emph{condicionalmente convergente}).
+\end{itemize}
+La distinción entre convergencia absoluta y condicional se vuelve crucial al estudiar los reordenamientos de series, ¡como veremos!
+
+%==========================================================
+\section{Nivel 2: El criterio de las series alternantes}
+
+En este nivel demostramos uno de los resultados más elegantes de la teoría de series infinitas: el \emph{criterio de las series alternantes}, también conocido como \emph{criterio de Leibniz}.
+
+\subsection{El teorema}
+
+\begin{teorema}[AlternatingSeriesTest]
+Supongamos que $a : \N \to \R$ es una sucesión \texttt{Antitone} (decreciente) que converge a $0$. Entonces la serie alternante
+\[
+  \sum_{n=0}^{\infty} (-1)^n \cdot a_n
+\]
+converge.
+\end{teorema}
+
+En otras palabras: si los términos de una serie decrecen hacia cero, entonces la serie alternante converge.
+
+\subsection{Lemas clave (a demostrar como tarea)}
+
+La demostración se apoya en varios lemas técnicos:
+\begin{itemize}
+  \item \textbf{AntitoneLimitBound:} Si $a : \N \to \R$ es \texttt{Antitone} y converge a $L$, entonces para todo $n$, $L \le a(n)$. Es análogo a \texttt{MonotoneLimitBound}. Como $a_n \to 0$ y $a$ es decreciente, esto implica $a_n \ge 0$ para todo $n$.
+  \item \textbf{CoherenceOfReals:} Si las sucesiones $a$ y $b$ convergen a los límites $L$ y $M$ respectivamente, y su diferencia cumple $a_n - b_n \to 0$, entonces $L = M$.
+  \item \textbf{SeqEvenOdd:} Si la subsucesión de índices pares $a_{2n} \to L$ y la de índices impares $a_{2n+1} \to L$, entonces $a_n \to L$.
+  \item \textbf{MonotoneSeriesEven:} Si $a$ es \texttt{Antitone}, entonces las sumas parciales pares
+  \[
+    S_{2n} = \sum_{k=0}^{2n-1} (-1)^k a_k
+  \]
+  forman una sucesión monótona creciente.
+  \item \textbf{AntitoneSeriesOdd:} Si $a$ es \texttt{Antitone}, entonces las sumas parciales impares
+  \[
+    S_{2n+1} = \sum_{k=0}^{2n} (-1)^k a_k
+  \]
+  forman una sucesión decreciente.
+  \item \textbf{BddSeriesEven:} Si $a$ es \texttt{Antitone}, entonces para todo $n$,
+  \[
+    \sum_{k=0}^{2n-1} (-1)^k a_k \le a_0 .
+  \]
+  \item \textbf{BddSeriesOdd:} Si $a$ es \texttt{Antitone} y no negativa, entonces para todo $n$,
+  \[
+    0 \le \sum_{k=0}^{2n} (-1)^k a_k .
+  \]
+  \item \textbf{DiffGoesToZero:} Si $a$ es \texttt{Antitone} y $a_n \to 0$, entonces
+  \[
+    \sum_{k=0}^{2n} (-1)^k a_k - \sum_{k=0}^{2n-1} (-1)^k a_k \to 0 .
+  \]
+\end{itemize}
+
+\subsection{Estrategia de la demostración}
+
+La idea es mostrar que las sumas parciales pares e impares convergen ambas al mismo límite. Definimos
+\begin{align*}
+  S_{2n} &:= \sum_{k=0}^{2n-1} (-1)^k a_k,\\
+  S_{2n+1} &:= \sum_{k=0}^{2n} (-1)^k a_k .
+\end{align*}
+Las sumas parciales pares forman una sucesión monótona creciente acotada superiormente por $a_0$, así que convergen a algún límite $L$. De manera similar, las sumas parciales impares forman una sucesión decreciente acotada inferiormente por $0$, así que convergen a algún límite $M$.
+
+La observación clave es que $S_{2n+1} - S_{2n} = a_{2n} \to 0$, lo que, por \texttt{CoherenceOfReals}, implica $M = L$. Como ambas subsucesiones convergen al mismo límite, la sucesión completa de sumas parciales converge por \texttt{SeqEvenOdd}.
+
+\subsection{La demostración formal}
+
+\begin{proof}
+\textbf{Paso 1:} Por \texttt{AntitoneLimitBound}, como $a$ es decreciente y $a_n \to 0$, se tiene $a_n \ge 0$ para todo $n$.
+
+\textbf{Paso 2:} Definimos $S_{2n}$ y $S_{2n+1}$ como arriba. Por \texttt{MonotoneSeriesEven}, $S_{2n}$ es monótona creciente.
+
+\textbf{Paso 3:} Por \texttt{AntitoneSeriesOdd}, $S_{2n+1}$ es decreciente.
+
+\textbf{Paso 4:} Por \texttt{BddSeriesEven}, $S_{2n} \le a_0$ para todo $n$, así que $S_{2n}$ está acotada superiormente.
+
+\textbf{Paso 5:} Por \texttt{BddSeriesOdd}, $0 \le S_{2n+1}$ para todo $n$, así que $S_{2n+1}$ está acotada inferiormente.
+
+\textbf{Paso 6:} Por \texttt{IsCauchyOfMonotoneBdd}, la sucesión monótona acotada $S_{2n}$ es de Cauchy. Por \texttt{SeqConv\_of\_IsCauchy}, converge a algún límite $L$.
+
+\textbf{Paso 7:} De manera similar, por \texttt{IsCauchyOfAntitoneBdd}, la sucesión decreciente acotada $S_{2n+1}$ es de Cauchy y, por tanto, converge a algún límite $M$.
+
+\textbf{Paso 8:} Por \texttt{DiffGoesToZero}, tenemos $S_{2n+1} - S_{2n} \to 0$.
+
+\textbf{Paso 9:} Por \texttt{CoherenceOfReals}, como $S_{2n+1} \to M$, $S_{2n} \to L$ y $S_{2n+1} - S_{2n} \to 0$, concluimos que $M = L$.
+
+\textbf{Paso 10:} Observamos, por reflexividad, que $S_{2n} = \Series(\lambda k.\,(-1)^k \cdot a_k,\ 2n)$ y $S_{2n+1} = \Series(\lambda k.\,(-1)^k \cdot a_k,\ 2n+1)$.
+
+\textbf{Paso 11:} Como las sumas parciales de índice par convergen a $L$ y las de índice impar convergen a $L$, por \texttt{SeqEvenOdd} la sucesión completa de sumas parciales \texttt{Series (fun n ↦ (-1)\textasciicircum n * a n)} converge a $L$.
+
+Por lo tanto, la serie alternante converge.
+\end{proof}
+
+\subsection{La demostración en Lean}
+
+\begin{minted}{lean4}
+Statement AlternatingSeriesTest {a : ℕ → ℝ} (ha : Antitone a)
+    (aLim : SeqLim a 0) : SeriesConv (fun n ↦ (-1) ^ n * a n) := by
+  have TermsBddBelow : ∀ n, a n ≥ 0 := by
+    apply AntitoneLimitBound ha aLim
+  let S2n : ℕ → ℝ := (fun n ↦
+    ∑ k ∈ range (2 * n), (-1) ^ k * a k)
+  let S2np1 : ℕ → ℝ := (fun n ↦
+    ∑ k ∈ range (2 * n + 1), (-1) ^ k * a k)
+  have s2nMono : Monotone S2n := by
+    apply MonotoneSeriesEven ha
+  have s2np1Anti : Antitone S2np1 := by
+    apply AntitoneSeriesOdd ha
+  have s2nBdd : ∀ n, S2n n ≤ a 0 := by
+    apply BddSeriesEven ha
+  have s2np1Bdd : ∀ n, 0 ≤ S2np1 n := by
+    apply BddSeriesOdd ha TermsBddBelow
+  have s2nCauchy : IsCauchy S2n := by
+    apply IsCauchyOfMonotoneBdd s2nMono s2nBdd
+  have s2nLim : SeqConv S2n := by
+    apply SeqConv_of_IsCauchy s2nCauchy
+  have s2np1Cauchy : IsCauchy S2np1 := by
+    apply IsCauchyOfAntitoneBdd s2np1Anti s2np1Bdd
+  have s2np1Lim : SeqConv S2np1 := by
+    apply SeqConv_of_IsCauchy s2np1Cauchy
+  choose L hL using s2nLim
+  choose M hM using s2np1Lim
+  have diffZero : SeqLim (fun n ↦ S2np1 n - S2n n) 0 := by
+    apply DiffGoesToZero ha aLim
+  have hLM : M = L := CoherenceOfReals hM hL diffZero
+  have s2nIs : S2n = fun n ↦
+      Series (fun k ↦ (-1) ^ k * a k) (2 * n) := by
+    rfl
+  rewrite [s2nIs] at hL
+  have s2np1Is : S2np1 = fun n ↦
+      Series (fun k ↦ (-1) ^ k * a k) (2 * n + 1) := by
+    rfl
+  rewrite [s2np1Is] at hM
+  rewrite [hLM] at hM
+  use L
+  apply SeqEvenOdd hL hM
+\end{minted}
+
+\subsection{Comprensión del teorema}
+
+El criterio de las series alternantes es particularmente útil porque su hipótesis es fácil de verificar. Algunos ejemplos clásicos:
+\begin{itemize}
+  \item La serie armónica alternante $\sum_{k=1}^{\infty} \frac{(-1)^{k+1}}{k} = 1 - \frac12 + \frac13 - \frac14 + \cdots$ converge a $\ln 2$.
+  \item La serie $\sum_{k=0}^{\infty} \frac{(-1)^k}{2k+1} = 1 - \frac13 + \frac15 - \frac17 + \cdots$ converge a $\frac{\pi}{4}$.
+  \item De manera más general, toda serie $\sum_{k=1}^{\infty} \frac{(-1)^k}{k^p}$ converge para $p > 0$.
+\end{itemize}
+Notemos que la serie armónica alternante converge pero no absolutamente (pues la serie armónica diverge), lo que la convierte en un ejemplo de convergencia condicional. ¡Esto será importante en los próximos niveles, cuando estudiemos los reordenamientos!
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "Analisis_en_Lean"
+%%% End:
