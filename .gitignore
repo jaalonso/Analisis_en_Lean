@@ -1,9 +1,8 @@
-/.lake
-/lean4game-g_AlexKontorovich_RealAnalysisGame*
-/texto/_minted-Analisis_en_Lean/9B9852D6AE01F91B2F44DB6692087D4F2A15328C43FF375E2155D413D0B21AE1.pygtex
-*.pygtex
 *.aux
 *.log
 *.out
-*synctex.gz
+*.pygtex
 *.toc
+*.synctex.gz
+/.lake
+/lean4game-g_AlexKontorovich_RealAnalysisGame*
